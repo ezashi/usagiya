@@ -1,49 +1,242 @@
-<div class="max-w-2xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8">お問い合わせ</h1>
+<% content_for :title, "お問い合わせ - うさぎや" %>
+<% content_for :description, "うさぎやへのお問い合わせフォーム。商品やご注文に関するご質問など、お気軽にお問い合わせください。" %>
 
-    <%= form_with model: @inquiry, url: inquiries_path, class: "space-y-6" do |f| %>
+<div class="w-full max-w-3xl mx-auto">
+    <!-- ページヘッダー -->
+    <div class="mb-12 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">お問い合わせ</h1>
+        <p class="text-gray-600 text-lg">ご質問やご相談など、お気軽にお問い合わせください</p>
+    </div>
+
+    <!-- パンくずリスト -->
+    <nav class="mb-8" aria-label="パンくずリスト">
+        <ol class="flex items-center space-x-2 text-sm text-gray-600">
+            <li>
+                <%= link_to root_path, class: "hover:text-pink-600 transition-colors" do %>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                <% end %>
+            </li>
+            <li>
+                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            </li>
+            <li class="font-medium text-gray-800">お問い合わせ</li>
+        </ol>
+    </nav>
+
+    <!-- 連絡方法選択 -->
+    <div class="bg-gradient-to-br from-pink-50 to-orange-50 rounded-2xl p-6 md:p-8 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <svg class="w-6 h-6 mr-2 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            お問い合わせ方法
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- 電話 -->
+            <a href="tel:0776-22-4152" class="bg-white hover:bg-gray-50 rounded-xl p-6 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg group">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mr-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 mb-1 group-hover:text-blue-600 transition-colors">お電話でのお問い合わせ</h3>
+                        <p class="text-2xl font-bold text-blue-600 mb-1">0776-22-4152</p>
+                        <p class="text-sm text-gray-600">営業時間: 9:00～19:00<br>定休日: 日曜日</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- メールフォーム -->
+            <div class="bg-white rounded-xl p-6 shadow-md border-2 border-pink-200">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mr-4">
+                        <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 mb-1">メールフォーム</h3>
+                        <p class="text-sm text-gray-600 mb-2">24時間受付中<br>2営業日以内にご返信いたします</p>
+                        <p class="text-xs text-pink-600 font-medium">▼ 下記フォームよりお問い合わせください</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- お問い合わせフォーム -->
+    <%= form_with model: @inquiry, url: inquiries_path, local: true, class: "space-y-6" do |f| %>
+    <!-- エラーメッセージ -->
     <% if @inquiry.errors.any? %>
-    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-        <h2 class="font-bold mb-2"><%= pluralize(@inquiry.errors.count, "件") %>のエラーがあります:</h2>
-        <ul class="list-disc list-inside">
-            <% @inquiry.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-            <% end %>
-        </ul>
+    <div class="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl" role="alert">
+        <div class="flex items-start">
+            <svg class="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+            <div>
+                <h3 class="font-bold mb-2">入力内容にエラーがあります</h3>
+                <ul class="list-disc list-inside space-y-1 text-sm">
+                    <% @inquiry.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                    <% end %>
+                </ul>
+            </div>
+        </div>
     </div>
     <% end %>
 
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
-        <div class="mb-4">
-            <%= f.label :name, "お名前", class: "block text-gray-700 font-bold mb-2" %>
-            <%= f.text_field :name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+        <!-- お名前 -->
+        <div class="mb-6">
+            <%= f.label :name, class: "block text-gray-800 font-bold mb-2" do %>
+            お名前
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <%= f.text_field :name, 
+          class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none #{@inquiry.errors[:name].any? ? 'border-red-300 bg-red-50' : ''}", 
+          placeholder: "山田 太郎",
+          aria_required: "true" %>
+            <% if @inquiry.errors[:name].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= @inquiry.errors[:name].first %>
+            </p>
+            <% end %>
         </div>
 
-        <div class="mb-4">
-            <%= f.label :phone, "電話番号", class: "block text-gray-700 font-bold mb-2" %>
-            <%= f.text_field :phone, placeholder: "09012345678", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        <!-- 電話番号 -->
+        <div class="mb-6">
+            <%= f.label :phone, class: "block text-gray-800 font-bold mb-2" do %>
+            電話番号
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <%= f.tel_field :phone, 
+          class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none #{@inquiry.errors[:phone].any? ? 'border-red-300 bg-red-50' : ''}", 
+          placeholder: "09012345678（ハイフンなし）",
+          aria_required: "true" %>
+            <p class="mt-1 text-sm text-gray-500">※ハイフンなしで入力してください</p>
+            <% if @inquiry.errors[:phone].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= @inquiry.errors[:phone].first %>
+            </p>
+            <% end %>
         </div>
 
-        <div class="mb-4">
-            <%= f.label :email, "E-MAIL", class: "block text-gray-700 font-bold mb-2" %>
-            <%= f.email_field :email, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        <!-- メールアドレス -->
+        <div class="mb-6">
+            <%= f.label :email, class: "block text-gray-800 font-bold mb-2" do %>
+            メールアドレス
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <%= f.email_field :email, 
+          class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none #{@inquiry.errors[:email].any? ? 'border-red-300 bg-red-50' : ''}", 
+          placeholder: "example@example.com",
+          aria_required: "true" %>
+            <p class="mt-1 text-sm text-gray-500">※確認のため、正確に入力してください</p>
+            <% if @inquiry.errors[:email].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= @inquiry.errors[:email].first %>
+            </p>
+            <% end %>
         </div>
 
-        <div class="mb-4">
-            <%= f.label :content, "お問い合わせ内容", class: "block text-gray-700 font-bold mb-2" %>
-            <%= f.text_area :content, rows: 8, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        <!-- お問い合わせ内容 -->
+        <div class="mb-6">
+            <%= f.label :content, class: "block text-gray-800 font-bold mb-2" do %>
+            お問い合わせ内容
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <%= f.text_area :content, 
+          rows: 8, 
+          class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none resize-y #{@inquiry.errors[:content].any? ? 'border-red-300 bg-red-50' : ''}", 
+          placeholder: "お問い合わせ内容をできるだけ詳しくご記入ください。\n\n例：\n・商品について\n・配送について\n・その他ご質問など",
+          aria_required: "true" %>
+            <% if @inquiry.errors[:content].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= @inquiry.errors[:content].first %>
+            </p>
+            <% end %>
         </div>
 
-        <% if ENV['RECAPTCHA_SITE_KEY'].present? %>
-        <div class="mb-4">
-            <%= f.label :recaptcha, "画像認証", class: "block text-gray-700 font-bold mb-2" %>
+        <!-- reCAPTCHA -->
+        <div class="mb-6">
             <%= recaptcha_tags %>
         </div>
-        <% end %>
-    </div>
 
-    <div class="flex justify-center">
-        <%= f.submit "送信する", class: "bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg cursor-pointer" %>
+        <!-- プライバシーポリシー同意 -->
+        <div class="mb-6 p-4 bg-gray-50 rounded-xl">
+            <label class="flex items-start cursor-pointer">
+                <input type="checkbox" required class="mt-1 w-5 h-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500">
+                <span class="ml-3 text-sm text-gray-700">
+                    <a href="#" class="text-pink-600 hover:text-pink-700 underline font-medium" target="_blank">個人情報保護方針</a>に同意の上、送信してください
+                </span>
+            </label>
+        </div>
+
+        <!-- 送信ボタン -->
+        <div class="flex flex-col sm:flex-row gap-4">
+            <%= link_to "戻る", :back, class: "flex-1 text-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-6 rounded-xl transition-colors" %>
+            <%= f.submit "送信する", 
+          class: "flex-1 bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer",
+          data: { confirm: "この内容で送信してよろしいですか？" } %>
+        </div>
     </div>
     <% end %>
+
+    <!-- 注意事項 -->
+    <div class="mt-8 bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
+        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+            </svg>
+            ご注意事項
+        </h3>
+        <ul class="space-y-2 text-sm text-gray-700">
+            <li class="flex items-start">
+                <svg class="w-4 h-4 mr-2 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                お問い合わせ内容の確認後、2営業日以内にご返信いたします
+            </li>
+            <li class="flex items-start">
+                <svg class="w-4 h-4 mr-2 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                お急ぎの場合は、お電話でのお問い合わせをおすすめします
+            </li>
+            <li class="flex items-start">
+                <svg class="w-4 h-4 mr-2 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                メールアドレスが間違っている場合、返信できませんのでご注意ください
+            </li>
+            <li class="flex items-start">
+                <svg class="w-4 h-4 mr-2 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                ドメイン指定受信をされている場合は「@usagiya-fukui.jp」からのメールを受信できるよう設定してください
+            </li>
+        </ul>
+    </div>
 </div>

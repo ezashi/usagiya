@@ -1,36 +1,96 @@
-<div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold">お知らせ管理</h1>
-    <%= link_to "新規お知らせ追加", new_admin_notice_path, class: "bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
-</div>
+<% content_for :page_title, "お知らせ管理" %>
 
-<div class="bg-white shadow-md rounded overflow-hidden">
-    <table class="min-w-full">
-        <thead class="bg-gray-200">
-            <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">投稿日</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">タイトル</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">操作</th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-            <% @notices.each do |notice| %>
-            <tr>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <%= notice.published_at.strftime("%Y年%m月%d日") %>
-                </td>
-                <td class="px-6 py-4">
-                    <%= notice.title %>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <%= link_to "編集", edit_admin_notice_path(notice), class: "text-blue-600 hover:text-blue-900" %>
-                    <%= link_to "削除", admin_notice_path(notice), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "text-red-600 hover:text-red-900" %>
-                </td>
-            </tr>
-            <% end %>
-        </tbody>
-    </table>
-</div>
+<div class="space-y-6">
+    <!-- ヘッダー -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">お知らせ管理</h1>
+            <p class="text-gray-600 mt-1">公開されているお知らせの管理</p>
+        </div>
+        <%= link_to new_admin_notice_path, class: "inline-flex items-center justify-center bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg" do %>
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        新規お知らせ追加
+        <% end %>
+    </div>
 
-<% if @notices.empty? %>
-<p class="text-center text-gray-500 mt-8">お知らせが登録されていません</p>
-<% end %>
+    <% if @notices.any? %>
+    <!-- お知らせリスト -->
+    <div class="space-y-4">
+        <% @notices.each do |notice| %>
+        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
+            <div class="p-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <!-- 日付と内容 -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-3 mb-3">
+                            <!-- 日付バッジ -->
+                            <div class="bg-pink-100 text-pink-700 px-4 py-2 rounded-lg flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span class="font-bold text-sm">
+                                    <%= notice.published_at.strftime("%Y年%m月%d日") %>
+                                </span>
+                            </div>
+
+                            <!-- NEWバッジ -->
+                            <% if notice.published_at > 7.days.ago %>
+                            <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                NEW
+                            </span>
+                            <% end %>
+                        </div>
+
+                        <h3 class="text-xl font-bold text-gray-800 mb-2 line-clamp-2">
+                            <%= notice.title %>
+                        </h3>
+                        <p class="text-gray-600 line-clamp-2 leading-relaxed">
+                            <%= notice.content.truncate(100) %>
+                        </p>
+                    </div>
+
+                    <!-- アクションボタン -->
+                    <div class="flex flex-row md:flex-col gap-2 md:w-32">
+                        <%= link_to edit_admin_notice_path(notice), class: "flex-1 md:flex-none flex items-center justify-center bg-blue-50 hover:bg-blue-100 text-blue-600 font-medium py-2 px-4 rounded-lg transition-colors" do %>
+                        <svg class="w-4 h-4 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        <span class="hidden md:inline">編集</span>
+                        <% end %>
+
+                        <%= link_to admin_notice_path(notice), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "flex-1 md:flex-none flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-600 font-medium py-2 px-4 rounded-lg transition-colors" do %>
+                        <svg class="w-4 h-4 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        <span class="hidden md:inline">削除</span>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% end %>
+    </div>
+
+    <!-- ページネーション -->
+    <div class="mt-8">
+        <%#= paginate @notices if @notices.respond_to?(:total_pages) %>
+    </div>
+
+    <% else %>
+    <!-- お知らせがない場合 -->
+    <div class="bg-white rounded-2xl shadow-md p-12 text-center">
+        <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+        </svg>
+        <p class="text-xl text-gray-500 mb-6">まだお知らせが登録されていません</p>
+        <%= link_to new_admin_notice_path, class: "inline-flex items-center bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg" do %>
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        最初のお知らせを追加
+        <% end %>
+    </div>
+    <% end %>
+</div>

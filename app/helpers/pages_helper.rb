@@ -20,43 +20,43 @@ module PagesHelper
   end
 
   def calendar_day_class(day_info)
-    return "bg-gray-100" unless day_info[:date]
+    return "bg-gray-50" unless day_info[:date]
 
-    classes = [ "border border-gray-200" ]
+    classes = [ "border" ]
 
     # 日曜日
     if day_info[:date].sunday?
-      classes << "bg-red-50 text-red-700"
+      classes << "bg-red-50 border-red-200"
     # 土曜日
     elsif day_info[:date].saturday?
-      classes << "bg-blue-50 text-blue-700"
+      classes << "bg-blue-50 border-blue-200"
     else
-      classes << "bg-white"
+      classes << "bg-white border-gray-200"
     end
 
     # 今日
     if day_info[:date] == Date.today
-      classes << "ring-2 ring-red-500"
+      classes << "ring-2 ring-pink-500 ring-inset"
     end
 
     # 定休日・不定休
     if day_info[:events].any? { |e| e.regular_holiday? || e.irregular_holiday? }
-      classes << "bg-gray-200"
+      classes << "bg-gray-200 border-gray-300"
     end
 
     classes.join(" ")
   end
 
-  def event_badge_class(event_type)
+  def event_badge_color_class(event_type)
     case event_type
     when "regular_holiday", "irregular_holiday"
-      "text-red-600"
+      "bg-gray-500 text-white"
     when "sales_start"
-      "text-green-600"
+      "bg-green-500 text-white"
     when "sales_end"
-      "text-orange-600"
+      "bg-orange-500 text-white"
     else
-      "text-blue-600"
+      "bg-blue-500 text-white"
     end
   end
 
@@ -71,7 +71,7 @@ module PagesHelper
     when "sales_end"
       "販売終了"
     else
-      "他"
+      "イベント"
     end
   end
 end

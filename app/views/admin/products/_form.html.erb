@@ -1,0 +1,183 @@
+<%= form_with model: [:admin, product], class: "space-y-6" do |f| %>
+<!-- エラーメッセージ -->
+<% if product.errors.any? %>
+<div class="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl" role="alert">
+    <div class="flex items-start">
+        <svg class="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        </svg>
+        <div>
+            <h3 class="font-bold mb-2"><%= pluralize(product.errors.count, "件") %>のエラーがあります</h3>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <% product.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+    </div>
+</div>
+<% end %>
+
+<div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+    <div class="bg-gradient-to-r from-pink-500 to-pink-600 px-6 py-4">
+        <h2 class="text-xl font-bold text-white flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+            商品情報
+        </h2>
+    </div>
+
+    <div class="p-6 md:p-8 space-y-6">
+        <!-- 商品画像 -->
+        <div>
+            <%= f.label :image, class: "block text-gray-800 font-bold mb-2" do %>
+            商品画像
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+
+            <% if product.image.attached? %>
+            <div class="mb-4">
+                <div class="relative inline-block">
+                    <%= image_tag product.image, class: "h-48 w-48 object-cover rounded-xl shadow-md" %>
+                    <div class="absolute top-2 right-2">
+                        <span class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                            登録済み
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <% end %>
+
+            <div class="relative">
+                <%= f.file_field :image, 
+            accept: "image/*", 
+            class: "block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 file:cursor-pointer cursor-pointer",
+            onchange: "previewImage(event)" %>
+            </div>
+            <p class="mt-2 text-sm text-gray-500 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+                JPEG、PNG、GIF形式、5MB以下
+            </p>
+
+            <!-- 画像プレビュー -->
+            <div id="image-preview" class="mt-4 hidden">
+                <p class="text-sm font-medium text-gray-700 mb-2">プレビュー:</p>
+                <img id="preview" class="h-48 w-48 object-cover rounded-xl shadow-md" />
+            </div>
+
+            <% if product.errors[:image].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= product.errors[:image].first %>
+            </p>
+            <% end %>
+        </div>
+
+        <!-- 商品名 -->
+        <div>
+            <%= f.label :name, class: "block text-gray-800 font-bold mb-2" do %>
+            商品名
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <%= f.text_field :name, 
+          class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none #{product.errors[:name].any? ? 'border-red-300 bg-red-50' : ''}", 
+          placeholder: "例：冷凍もちパイ 6個入り" %>
+            <% if product.errors[:name].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= product.errors[:name].first %>
+            </p>
+            <% end %>
+        </div>
+
+        <!-- 価格 -->
+        <div>
+            <%= f.label :price, class: "block text-gray-800 font-bold mb-2" do %>
+            価格（円）
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <div class="relative">
+                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold">¥</span>
+                <%= f.number_field :price, 
+            class: "w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none #{product.errors[:price].any? ? 'border-red-300 bg-red-50' : ''}", 
+            placeholder: "1000",
+            min: 0 %>
+            </div>
+            <% if product.errors[:price].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= product.errors[:price].first %>
+            </p>
+            <% end %>
+        </div>
+
+        <!-- 説明文 -->
+        <div>
+            <%= f.label :description, class: "block text-gray-800 font-bold mb-2" do %>
+            説明文
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <%= f.text_area :description, 
+          rows: 8, 
+          class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none resize-y #{product.errors[:description].any? ? 'border-red-300 bg-red-50' : ''}", 
+          placeholder: "商品の詳しい説明を入力してください。\n\n例：\n福井県産のもち米を使用した、伝統の味わいです。\n冷凍保存で約3ヶ月保存可能です。" %>
+            <% if product.errors[:description].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= product.errors[:description].first %>
+            </p>
+            <% end %>
+        </div>
+
+        <!-- トップページ表示 -->
+        <div class="bg-pink-50 border-2 border-pink-200 rounded-xl p-4">
+            <label class="flex items-start cursor-pointer">
+                <%= f.check_box :featured, class: "mt-1 w-5 h-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500" %>
+                <div class="ml-3">
+                    <span class="font-bold text-gray-800">トップページに表示する</span>
+                    <p class="text-sm text-gray-600 mt-1">
+                        チェックを入れると、おすすめ・季節限定商品としてトップページに表示されます
+                    </p>
+                </div>
+            </label>
+        </div>
+    </div>
+</div>
+
+<!-- アクションボタン -->
+<div class="flex flex-col sm:flex-row gap-4">
+    <%= link_to "キャンセル", admin_products_path, class: "flex-1 text-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-6 rounded-xl transition-colors" %>
+    <%= f.submit product.new_record? ? "商品を登録" : "変更を保存", 
+      class: "flex-1 bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer" %>
+</div>
+<% end %>
+
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('preview');
+        const previewContainer = document.getElementById('image-preview');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                previewContainer.classList.remove('hidden');
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

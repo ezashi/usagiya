@@ -1,43 +1,33 @@
 Rails.application.routes.draw do
-  # Root path
+  # 公開ページ
   root "pages#home"
 
-  # Public pages
   resources :products, only: [ :index, :show ]
   resources :notices, only: [ :index, :show ]
 
-  # Orders
   resources :orders, only: [ :new, :create ] do
     collection do
       post :confirm
     end
   end
 
-  # Inquiries
   resources :inquiries, only: [ :new, :create ]
 
-  # Admin namespace
-  namespace :admin do
-    # Admin authentication
-    get "login", to: "sessions#new", as: :login
-    post "login", to: "sessions#create"
-    delete "logout", to: "sessions#destroy", as: :logout
+  get "orders/complete", to: "orders#complete", as: :complete_order
+  get "inquiries/complete", to: "inquiries#complete", as: :complete_inquiry
 
-    # Admin dashboard
+  # 管理画面
+  namespace :admin do
+    get "login", to: "sessions#new"
+    post "login", to: "sessions#create"
+    delete "logout", to: "sessions#destroy"
+
     root "dashboard#index"
 
-    # Admin resources
-    resources :products do
-      member do
-        patch :toggle_featured
-      end
-    end
+    resources :products
     resources :notices
     resources :calendar_events
     resources :orders, only: [ :index, :show ]
     resources :inquiries, only: [ :index, :show ]
   end
-
-  # Health check
-  get "up" => "rails/health#show", as: :rails_health_check
 end

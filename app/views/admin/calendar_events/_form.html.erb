@@ -1,0 +1,197 @@
+<%= form_with model: [:admin, calendar_event], class: "space-y-6" do |f| %>
+<!-- エラーメッセージ -->
+<% if calendar_event.errors.any? %>
+<div class="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl" role="alert">
+    <div class="flex items-start">
+        <svg class="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        </svg>
+        <div>
+            <h3 class="font-bold mb-2"><%= pluralize(calendar_event.errors.count, "件") %>のエラーがあります</h3>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <% calendar_event.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+    </div>
+</div>
+<% end %>
+
+<div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+    <div class="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
+        <h2 class="text-xl font-bold text-white flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            イベント情報
+        </h2>
+    </div>
+
+    <div class="p-6 md:p-8 space-y-6">
+        <!-- 日付 -->
+        <div>
+            <%= f.label :event_date, class: "block text-gray-800 font-bold mb-2" do %>
+            日付
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <%= f.date_field :event_date, 
+          class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none #{calendar_event.errors[:event_date].any? ? 'border-red-300 bg-red-50' : ''}" %>
+            <% if calendar_event.errors[:event_date].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= calendar_event.errors[:event_date].first %>
+            </p>
+            <% end %>
+        </div>
+
+        <!-- イベント種類 -->
+        <div>
+            <%= f.label :event_type, class: "block text-gray-800 font-bold mb-2" do %>
+            イベント種類
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <div class="space-y-3">
+                <% CalendarEvent.event_type_options.each do |label, value| %>
+                <label class="flex items-start p-4 border-2 border-gray-200 rounded-xl hover:border-green-300 cursor-pointer transition-colors <%= calendar_event.event_type == value ? 'border-green-500 bg-green-50' : '' %>">
+                    <%= f.radio_button :event_type, value, class: "mt-1 w-5 h-5 text-green-600 border-gray-300 focus:ring-green-500" %>
+                    <div class="ml-3 flex-1">
+                        <span class="font-bold text-gray-800"><%= label %></span>
+                        <p class="text-sm text-gray-600 mt-1">
+                            <% case value %>
+                            <% when 'regular_holiday' %>
+                            定休日（日曜日など）を設定します
+                            <% when 'irregular_holiday' %>
+                            不定休の日を設定します。自動でお知らせに投稿できます
+                            <% when 'sales_start' %>
+                            季節商品などの販売開始日を設定します
+                            <% when 'sales_end' %>
+                            季節商品などの販売終了日を設定します
+                            <% when 'other' %>
+                            その他のイベントを設定します
+                            <% end %>
+                        </p>
+                    </div>
+                </label>
+                <% end %>
+            </div>
+            <% if calendar_event.errors[:event_type].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= calendar_event.errors[:event_type].first %>
+            </p>
+            <% end %>
+        </div>
+
+        <!-- 説明 -->
+        <div>
+            <%= f.label :description, "説明（任意）", class: "block text-gray-800 font-bold mb-2" %>
+            <%= f.text_area :description, 
+          rows: 6, 
+          class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none resize-y", 
+          placeholder: "例：\n冬季限定商品の販売を開始します。\nもちパイの他、季節の和菓子をご用意しております。" %>
+            <p class="mt-2 text-sm text-gray-500 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+                説明を入力すると、お知らせに投稿できます
+            </p>
+        </div>
+
+        <!-- お知らせ自動投稿 -->
+        <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+            <label class="flex items-start cursor-pointer">
+                <%= f.check_box :auto_notice, class: "mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500", id: "auto-notice-checkbox" %>
+                <div class="ml-3 flex-1">
+                    <span class="font-bold text-gray-800">お知らせに自動投稿する</span>
+                    <p class="text-sm text-gray-600 mt-1">
+                        チェックを入れると、このイベントをお知らせとして公開サイトに投稿します
+                    </p>
+                    <div class="mt-3 text-xs text-gray-600 bg-white rounded-lg p-3">
+                        <p class="font-semibold mb-1">📝 投稿される内容：</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li><strong>不定休の場合：</strong>月の不定休をまとめたお知らせが自動作成されます</li>
+                            <li><strong>説明がある場合：</strong>上記の説明文がそのままお知らせとして投稿されます</li>
+                        </ul>
+                    </div>
+                </div>
+            </label>
+        </div>
+
+        <!-- プレビュー（お知らせ投稿時のみ表示） -->
+        <div id="notice-preview" class="hidden bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6">
+            <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                お知らせプレビュー
+            </h3>
+            <div class="bg-white rounded-lg p-4 shadow-sm" id="preview-content">
+                <p class="text-gray-600 text-sm">お知らせの内容がここに表示されます</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- アクションボタン -->
+<div class="flex flex-col sm:flex-row gap-4">
+    <%= link_to "キャンセル", admin_calendar_events_path, class: "flex-1 text-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-6 rounded-xl transition-colors" %>
+    <%= f.submit calendar_event.new_record? ? "イベントを登録" : "変更を保存", 
+      class: "flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer" %>
+</div>
+<% end %>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const autoNoticeCheckbox = document.getElementById('auto-notice-checkbox');
+        const descriptionTextarea = document.querySelector('#calendar_event_description');
+        const eventTypeRadios = document.querySelectorAll('input[name="calendar_event[event_type]"]');
+        const noticePreview = document.getElementById('notice-preview');
+        const previewContent = document.getElementById('preview-content');
+
+        function updatePreview() {
+            const autoNotice = autoNoticeCheckbox?.checked;
+            const description = descriptionTextarea?.value;
+            let eventType = null;
+
+            eventTypeRadios.forEach(radio => {
+                if (radio.checked) eventType = radio.value;
+            });
+
+            if (autoNotice && (eventType === 'irregular_holiday' || description)) {
+                noticePreview.classList.remove('hidden');
+
+                if (eventType === 'irregular_holiday') {
+                    previewContent.innerHTML = `
+          <p class="font-bold text-gray-800 mb-2">不定休のお知らせ</p>
+          <p class="text-sm text-gray-600">
+            ※この月の不定休として自動的にお知らせが作成されます<br>
+            複数の不定休がある場合は、まとめて表示されます
+          </p>
+        `;
+                } else if (description) {
+                    previewContent.innerHTML = `
+          <p class="font-bold text-gray-800 mb-2">営業カレンダーのお知らせ</p>
+          <p class="text-sm text-gray-600 whitespace-pre-wrap">${description || 'まだ説明が入力されていません'}</p>
+        `;
+                }
+            } else {
+                noticePreview.classList.add('hidden');
+            }
+        }
+
+        autoNoticeCheckbox?.addEventListener('change', updatePreview);
+        descriptionTextarea?.addEventListener('input', updatePreview);
+        eventTypeRadios.forEach(radio => {
+            radio.addEventListener('change', updatePreview);
+        });
+
+        // 初期表示
+        updatePreview();
+    });
+</script>

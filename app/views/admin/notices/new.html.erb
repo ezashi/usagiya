@@ -1,36 +1,19 @@
-<h1 class="text-3xl font-bold mb-6">新規お知らせ追加</h1>
+<% content_for :page_title, "新規お知らせ追加" %>
 
-<%= form_with model: @notice, url: admin_notices_path, class: "max-w-2xl" do |f| %>
-<% if @notice.errors.any? %>
-<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-    <h2 class="font-bold mb-2"><%= pluralize(@notice.errors.count, "件") %>のエラーがあります:</h2>
-    <ul class="list-disc list-inside">
-        <% @notice.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-        <% end %>
-    </ul>
-</div>
-<% end %>
-
-<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-    <div class="mb-4">
-        <%= f.label :title, "タイトル", class: "block text-gray-700 font-bold mb-2" %>
-        <%= f.text_field :title, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+<div class="max-w-4xl mx-auto">
+    <!-- ページヘッダー -->
+    <div class="mb-8">
+        <div class="flex items-center text-sm text-gray-600 mb-4">
+            <%= link_to admin_notices_path, class: "hover:text-blue-600 transition-colors" do %>
+            お知らせ管理
+            <% end %>
+            <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-gray-800 font-medium">新規お知らせ追加</span>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-800">新規お知らせ追加</h1>
     </div>
 
-    <div class="mb-4">
-        <%= f.label :content, "内容", class: "block text-gray-700 font-bold mb-2" %>
-        <%= f.text_area :content, rows: 10, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
-    </div>
-
-    <div class="mb-4">
-        <%= f.label :published_at, "公開日時", class: "block text-gray-700 font-bold mb-2" %>
-        <%= f.datetime_local_field :published_at, value: Time.current.strftime("%Y-%m-%dT%H:%M"), class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
-    </div>
+    <%= render 'form', notice: @notice %>
 </div>
-
-<div class="flex items-center justify-between">
-    <%= link_to "キャンセル", admin_notices_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
-    <%= f.submit "登録する", class: "bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer" %>
-</div>
-<% end %>

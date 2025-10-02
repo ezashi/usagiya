@@ -1,0 +1,165 @@
+<%= form_with model: [:admin, notice], class: "space-y-6" do |f| %>
+<!-- エラーメッセージ -->
+<% if notice.errors.any? %>
+<div class="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl" role="alert">
+    <div class="flex items-start">
+        <svg class="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        </svg>
+        <div>
+            <h3 class="font-bold mb-2"><%= pluralize(notice.errors.count, "件") %>のエラーがあります</h3>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <% notice.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+    </div>
+</div>
+<% end %>
+
+<div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+    <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+        <h2 class="text-xl font-bold text-white flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+            </svg>
+            お知らせ内容
+        </h2>
+    </div>
+
+    <div class="p-6 md:p-8 space-y-6">
+        <!-- タイトル -->
+        <div>
+            <%= f.label :title, class: "block text-gray-800 font-bold mb-2" do %>
+            タイトル
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <%= f.text_field :title, 
+          class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none #{notice.errors[:title].any? ? 'border-red-300 bg-red-50' : ''}", 
+          placeholder: "例：年末年始の営業のお知らせ" %>
+            <% if notice.errors[:title].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= notice.errors[:title].first %>
+            </p>
+            <% end %>
+        </div>
+
+        <!-- 公開日時 -->
+        <div>
+            <%= f.label :published_at, class: "block text-gray-800 font-bold mb-2" do %>
+            公開日時
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <div class="relative">
+                <%= f.datetime_local_field :published_at, 
+            value: (notice.published_at || Time.current).strftime("%Y-%m-%dT%H:%M"), 
+            class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none #{notice.errors[:published_at].any? ? 'border-red-300 bg-red-50' : ''}" %>
+            </div>
+            <p class="mt-2 text-sm text-gray-500 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+                この日時に公開されます
+            </p>
+            <% if notice.errors[:published_at].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= notice.errors[:published_at].first %>
+            </p>
+            <% end %>
+        </div>
+
+        <!-- 内容 -->
+        <div>
+            <%= f.label :content, class: "block text-gray-800 font-bold mb-2" do %>
+            内容
+            <span class="text-red-600 text-sm ml-1">必須</span>
+            <% end %>
+            <%= f.text_area :content, 
+          rows: 12, 
+          class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none resize-y #{notice.errors[:content].any? ? 'border-red-300 bg-red-50' : ''}", 
+          placeholder: "お知らせの内容を入力してください。\n\n例：\n誠に勝手ながら、12月31日から1月3日まで年末年始のお休みをいただきます。\n\n1月4日より通常営業いたします。\nよろしくお願いいたします。" %>
+            <p class="mt-2 text-sm text-gray-500 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+                改行は自動的に反映されます
+            </p>
+            <% if notice.errors[:content].any? %>
+            <p class="mt-2 text-sm text-red-600 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <%= notice.errors[:content].first %>
+            </p>
+            <% end %>
+        </div>
+
+        <!-- プレビュー -->
+        <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+            <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                公開イメージ
+            </h3>
+            <div class="bg-white rounded-lg p-4 shadow-sm">
+                <p class="text-sm text-gray-500 mb-2" id="preview-date">
+                    <%= (notice.published_at || Time.current).strftime("%Y年%m月%d日") %>
+                </p>
+                <h4 class="font-bold text-gray-800 mb-2" id="preview-title">
+                    <%= notice.title.presence || "タイトルがここに表示されます" %>
+                </h4>
+                <p class="text-gray-600 text-sm whitespace-pre-wrap" id="preview-content">
+                    <%= notice.content.presence || "内容がここに表示されます" %>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- アクションボタン -->
+<div class="flex flex-col sm:flex-row gap-4">
+    <%= link_to "キャンセル", admin_notices_path, class: "flex-1 text-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-6 rounded-xl transition-colors" %>
+    <%= f.submit notice.new_record? ? "お知らせを投稿" : "変更を保存", 
+      class: "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer" %>
+</div>
+<% end %>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleInput = document.querySelector('#notice_title');
+        const contentInput = document.querySelector('#notice_content');
+        const dateInput = document.querySelector('#notice_published_at');
+        const previewTitle = document.getElementById('preview-title');
+        const previewContent = document.getElementById('preview-content');
+        const previewDate = document.getElementById('preview-date');
+
+        function updatePreview() {
+            if (titleInput) {
+                previewTitle.textContent = titleInput.value || 'タイトルがここに表示されます';
+            }
+            if (contentInput) {
+                previewContent.textContent = contentInput.value || '内容がここに表示されます';
+            }
+            if (dateInput && dateInput.value) {
+                const date = new Date(dateInput.value);
+                const formatted = date.getFullYear() + '年' +
+                    (date.getMonth() + 1) + '月' +
+                    date.getDate() + '日';
+                previewDate.textContent = formatted;
+            }
+        }
+
+        titleInput?.addEventListener('input', updatePreview);
+        contentInput?.addEventListener('input', updatePreview);
+        dateInput?.addEventListener('change', updatePreview);
+    });
+</script>
