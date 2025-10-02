@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+
+<body>
+    <h2>新しいお問い合わせがあります</h2>
+
+    <h3>お問い合わせ者情報</h3>
+    <ul>
+        <li>お名前: <%= @inquiry.name %></li>
+        <li>電話番号: <%= @inquiry.phone %></li>
+        <li>メールアドレス: <%= @inquiry.email %></li>
+    </ul>
+
+    <h3>お問い合わせ内容</h3>
+    <p><%= simple_format(@inquiry.content) %></p>
+
+    <p>
+        管理画面で確認:
+        <%= link_to "お問い合わせ詳細を見る", admin_inquiry_url(@inquiry) %>
+    </p>
+</body>
+
+</html>

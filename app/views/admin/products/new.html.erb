@@ -1,4 +1,47 @@
-<div>
-  <h1 class="font-bold text-4xl">Admin::Products#new</h1>
-  <p>Find me in app/views/admin/products/new.html.erb</p>
+<h1 class="text-3xl font-bold mb-6">新規商品追加</h1>
+
+<%= form_with model: @product, url: admin_products_path, class: "max-w-2xl" do |f| %>
+<% if @product.errors.any? %>
+<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+    <h2 class="font-bold mb-2"><%= pluralize(@product.errors.count, "件") %>のエラーがあります:</h2>
+    <ul class="list-disc list-inside">
+        <% @product.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+        <% end %>
+    </ul>
 </div>
+<% end %>
+
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div class="mb-4">
+        <%= f.label :name, "商品名", class: "block text-gray-700 font-bold mb-2" %>
+        <%= f.text_field :name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <div class="mb-4">
+        <%= f.label :price, "価格（円）", class: "block text-gray-700 font-bold mb-2" %>
+        <%= f.number_field :price, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <div class="mb-4">
+        <%= f.label :description, "説明文", class: "block text-gray-700 font-bold mb-2" %>
+        <%= f.text_area :description, rows: 6, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <div class="mb-4">
+        <%= f.label :image, "商品画像", class: "block text-gray-700 font-bold mb-2" %>
+        <%= f.file_field :image, accept: "image/*", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        <p class="text-sm text-gray-600 mt-1">※JPEG、PNG、GIF形式、5MB以下</p>
+    </div>
+
+    <div class="mb-4">
+        <%= f.check_box :featured, class: "mr-2" %>
+        <%= f.label :featured, "トップページに表示する" %>
+    </div>
+</div>
+
+<div class="flex items-center justify-between">
+    <%= link_to "キャンセル", admin_products_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
+    <%= f.submit "登録する", class: "bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer" %>
+</div>
+<% end %>

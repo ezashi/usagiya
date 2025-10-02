@@ -6,7 +6,7 @@ class CalendarEvent < ApplicationRecord
     sales_end: 2,            # 販売終了日
     irregular_holiday: 3,    # 不定休
     other: 4                 # その他
-  }, prefix: true
+  }
 
   # Validations
   validates :event_type, presence: { message: "イベントタイプを選択してください" }

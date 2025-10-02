@@ -1,0 +1,28 @@
+<div class="w-full max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">お知らせ</h1>
+
+    <div class="space-y-6">
+        <% @notices.each do |notice| %>
+        <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+            <%= link_to notice_path(notice), class: "block" do %>
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <p class="text-sm text-gray-500 mb-2"><%= notice.published_at.strftime("%Y年%m月%d日") %></p>
+                    <h2 class="text-xl font-bold text-gray-800 mb-2"><%= notice.title %></h2>
+                    <p class="text-gray-600 line-clamp-2"><%= notice.content %></p>
+                </div>
+                <svg class="w-6 h-6 text-gray-400 ml-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </div>
+            <% end %>
+        </div>
+        <% end %>
+    </div>
+
+    <% if @notices.empty? %>
+    <div class="text-center py-16">
+        <p class="text-gray-500 text-lg">現在、お知らせはありません</p>
+    </div>
+    <% end %>
+</div>

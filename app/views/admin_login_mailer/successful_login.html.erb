@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+
+<body>
+    <h2>管理者ページに新たにログインがありました</h2>
+
+    <ul>
+        <li>ユーザーID: <%= @admin_user.email %></li>
+        <li>ログイン日時: <%= @login_time.strftime("%Y年%m月%d日 %H:%M:%S") %></li>
+    </ul>
+
+    <p>
+        ※このログインに心当たりがない場合は、至急パスワードを変更してください。
+    </p>
+</body>
+
+</html>

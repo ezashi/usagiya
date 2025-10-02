@@ -1,4 +1,132 @@
-<div>
-  <h1 class="font-bold text-4xl">Pages#home</h1>
-  <p>Find me in app/views/pages/home.html.erb</p>
+<div class="w-full">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-12 mb-12 text-center">
+        <h1 class="text-5xl font-bold text-gray-800 mb-4">うさぎや</h1>
+        <p class="text-xl text-gray-600 mb-8">福井の老舗和菓子店</p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <%= link_to "商品一覧", products_path, class: "bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-200" %>
+            <%= link_to "冷凍もちパイ注文", new_order_path, class: "bg-white hover:bg-gray-100 text-red-600 font-bold py-3 px-8 rounded-lg border-2 border-red-600 transition-colors duration-200" %>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <% if @featured_products.any? %>
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">おすすめ・季節限定商品</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <% @featured_products.each do |product| %>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <%= link_to product_path(product) do %>
+                <% if product.image.attached? %>
+                <%= image_tag product.image, class: "w-full h-64 object-cover" %>
+                <% else %>
+                <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+                    <span class="text-gray-400">No Image</span>
+                </div>
+                <% end %>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2"><%= product.name %></h3>
+                    <p class="text-2xl font-bold text-red-600">¥<%= number_with_delimiter(product.price) %></p>
+                    <p class="text-gray-600 mt-2 line-clamp-2"><%= product.description %></p>
+                </div>
+                <% end %>
+            </div>
+            <% end %>
+        </div>
+        <div class="text-center mt-8">
+            <%= link_to "すべての商品を見る →", products_path, class: "text-red-600 hover:text-red-700 font-bold" %>
+        </div>
+    </section>
+    <% end %>
+
+    <!-- Notices -->
+    <% if @notices.any? %>
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">お知らせ</h2>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="divide-y divide-gray-200">
+                <% @notices.each do |notice| %>
+                <div class="py-4 first:pt-0 last:pb-0">
+                    <%= link_to notice_path(notice), class: "block hover:bg-gray-50 -mx-6 px-6 py-2 transition-colors duration-200" do %>
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-500 mb-1"><%= notice.published_at.strftime("%Y年%m月%d日") %></p>
+                            <p class="font-semibold text-gray-800"><%= notice.title %></p>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-400 ml-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                    <% end %>
+                </div>
+                <% end %>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <%= link_to "すべてのお知らせを見る →", notices_path, class: "text-red-600 hover:text-red-700 font-bold" %>
+        </div>
+    </section>
+    <% end %>
+
+    <!-- Calendar -->
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">営業カレンダー</h2>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="grid grid-cols-7 gap-2">
+                <% %w[日 月 火 水 木 金 土].each do |day| %>
+                <div class="text-center font-bold text-gray-700 py-2">
+                    <%= day %>
+                </div>
+                <% end %>
+
+                <% calendar = generate_calendar(Date.today.year, Date.today.month, @calendar_events) %>
+                <% calendar.each do |day_info| %>
+                <div class="text-center py-3 <%= calendar_day_class(day_info) %>">
+                    <% if day_info[:date] %>
+                    <div class="font-semibold"><%= day_info[:date].day %></div>
+                    <% if day_info[:events].any? %>
+                    <div class="text-xs mt-1">
+                        <% day_info[:events].each do |event| %>
+                        <span class="block <%= event_badge_class(event.event_type) %>">
+                            <%= event_type_label(event.event_type) %>
+                        </span>
+                        <% end %>
+                    </div>
+                    <% end %>
+                    <% end %>
+                </div>
+                <% end %>
+            </div>
+        </div>
+    </section>
+
+    <!-- External Links -->
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6">外部リンク</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <%= link_to "https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1", target: "_blank", rel: "noopener noreferrer", class: "block bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow duration-300 text-center" do %>
+            <div class="text-4xl mb-4">🎁</div>
+            <h3 class="text-xl font-bold mb-2">さとふる</h3>
+            <p class="text-gray-600">ふるさと納税でお得に購入</p>
+            <% end %>
+
+            <%= link_to "https://page.line.me/296kbwry?openQrModal=true", target: "_blank", rel: "noopener noreferrer", class: "block bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow duration-300 text-center" do %>
+            <div class="text-4xl mb-4">💬</div>
+            <h3 class="text-xl font-bold mb-2">LINE</h3>
+            <p class="text-gray-600">公式アカウントをフォロー</p>
+            <% end %>
+
+            <%= link_to "https://www.instagram.com/usagiya.fukui/?hl=ja", target: "_blank", rel: "noopener noreferrer", class: "block bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow duration-300 text-center" do %>
+            <div class="text-4xl mb-4">📷</div>
+            <h3 class="text-xl font-bold mb-2">Instagram</h3>
+            <p class="text-gray-600">最新情報をチェック</p>
+            <% end %>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="text-center">
+        <%= link_to "お問い合わせ", new_inquiry_path, class: "inline-block bg-gray-600 hover:bg-gray-700 text-white font-bold py-4 px-12 rounded-lg transition-colors duration-200" %>
+    </section>
 </div>

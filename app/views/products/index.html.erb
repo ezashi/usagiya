@@ -1,4 +1,31 @@
-<div>
-  <h1 class="font-bold text-4xl">Products#index</h1>
-  <p>Find me in app/views/products/index.html.erb</p>
+<div class="w-full">
+    <h1 class="text-3xl font-bold mb-8">商品一覧</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <% @products.each do |product| %>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <%= link_to product_path(product) do %>
+            <% if product.image.attached? %>
+            <%= image_tag product.image, class: "w-full h-64 object-cover" %>
+            <% else %>
+            <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+                <span class="text-gray-400">No Image</span>
+            </div>
+            <% end %>
+
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb<h3 class=" text-xl font-bold mb-2"><%= product.name %></h3>
+                <p class="text-2xl font-bold text-red-600">¥<%= number_with_delimiter(product.price) %></p>
+                <p class="text-gray-600 mt-2 line-clamp-3"><%= product.description %></p>
+            </div>
+            <% end %>
+        </div>
+        <% end %>
+    </div>
+
+    <% if @products.empty? %>
+    <div class="text-center py-16">
+        <p class="text-gray-500 text-lg">現在、商品の登録がありません</p>
+    </div>
+    <% end %>
 </div>

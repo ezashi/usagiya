@@ -8,7 +8,7 @@ class Order < ApplicationRecord
     cash_on_delivery: 1,
     fukui_bank_transfer: 2,
     yucho_bank_transfer: 3
-  }, prefix: true
+  }
 
   # Validations
   validates :customer_name, presence: { message: "ご注文者様のお名前を入力してください" }

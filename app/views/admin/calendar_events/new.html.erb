@@ -1,4 +1,85 @@
-<div>
-  <h1 class="font-bold text-4xl">Admin::CalendarEvents#new</h1>
-  <p>Find me in app/views/admin/calendar_events/new.html.erb</p>
+<h1 class="text-3xl font-bold mb-6">新規イベント追加</h1>
+
+<%= form_with model: @calendar_event, url: admin_calendar_events_path, class: "max-w-2xl" do |f| %>
+<% if @calendar_event.errors.any? %>
+<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+    <h2 class="font-bold mb-2"><%= pluralize(@calendar_event.errors.count, "件") %>のエラーがあります:</h2>
+    <ul class="list-disc list-inside">
+        <% @calendar_event.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+        <% end %>
+    </ul>
 </div>
+<% end %>
+
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div class="mb-4">
+        <%= f.label :event_date, "日付", class: "block text-gray-700 font-bold mb-2" %>
+        <%= f.date_field :event_date, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <div class="mb-4">
+        <%= f.label :event_type, "イベント種類", class: "block text-gray-700 font-bold mb-2" %>
+        <%= f.select :event_type, CalendarEvent.event_type_options, { prompt: "選択してください" }, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <div class="mb-4">
+        <%= f.label :description, "説明（任意）", class: "block text-gray-700 font-bold mb-2" %>
+        <%= f.text_area :description, rows: 6, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <div class="mb-4">
+        <%= f.check_box :auto_notice, class: "mr-2" %>
+        <%= f.label :auto_notice, "お知らせに自動投稿する" %>
+        <p class="text-sm text-gray-600 mt-1">※不定休を選択した場合は、自動で月の不定休のお知らせが作成されます</p>
+    </div>
+
+    <div id="notice-preview" class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded hidden">
+        <h3 class="font-bold mb-2">お知らせプレビュー</h3>
+        <div id="preview-content"></div>
+    </div>
+</div>
+
+<div class="flex items-center justify-between">
+    <%= link_to "キャンセル", admin_calendar_events_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
+    <%= f.submit "登録する", class: "bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer" %>
+</div>
+<% end %>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const eventTypeSelect = document.querySelector('#calendar_event_event_type');
+        const autoNoticeCheckbox = document.querySelector('#calendar_event_auto_notice');
+        const descriptionTextarea = document.querySelector('#calendar_event_description');
+        const noticePreview = document.querySelector('#notice-preview');
+        const previewContent = document.querySelector('#preview-content');
+
+        function updatePreview() {
+            const eventType = eventTypeSelect.value;
+            const autoNotice = autoNoticeCheckbox.checked;
+            const description = descriptionTextarea.value;
+
+            if (autoNotice && (eventType === 'irregular_holiday' || description)) {
+                noticePreview.classList.remove('hidden');
+
+                if (eventType === 'irregular_holiday') {
+                    previewContent.innerHTML = `
+          <p class="font-bold">不定休のお知らせ</p>
+          <p class="text-sm">※月の不定休として自動的にお知らせが作成されます</p>
+        `;
+                } else if (description) {
+                    previewContent.innerHTML = `
+          <p class="font-bold">営業カレンダーのお知らせ</p>
+          <p class="text-sm whitespace-pre-wrap">${description}</p>
+        `;
+                }
+            } else {
+                noticePreview.classList.add('hidden');
+            }
+        }
+
+        eventTypeSelect.addEventListener('change', updatePreview);
+        autoNoticeCheckbox.addEventListener('change', updatePreview);
+        descriptionTextarea.addEventListener('input', updatePreview);
+    });
+</script>
