@@ -7,9 +7,9 @@ class InquiriesController < ApplicationController
     @inquiry = Inquiry.new(inquiry_params)
 
     if verify_recaptcha(model: @inquiry) && @inquiry.save
-      redirect_to root_path, notice: "お問い合わせありがとうございました。確認メールをお送りしました。"
+      redirect_to root_path, notice: "お問い合わせありがとうございました。"
     else
-      flash.now[:alert] = "画像認証に失敗しました。もう一度お試しください。" unless verify_recaptcha
+      flash.now[:alert] = "画像認証に失敗しました。" unless verify_recaptcha
       render :new, status: :unprocessable_entity
     end
   end
