@@ -1,36 +1,30 @@
 <!DOCTYPE html>
 <html lang="ja">
 
-<header class="flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200">
-    <!-- モバイルメニューボタン -->
-    <button id="open-sidebar" class="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-    </button>
+<head>
+    <title><%= content_for(:title) || "管理画面" %> - うさぎや</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
 
-    <!-- ページタイトル（デスクトップのみ） -->
-    <div class="hidden lg:block">
-        <h1 class="text-xl font-semibold text-gray-800">
-            <%= content_for(:page_title) || "管理画面" %>
-        </h1>
-    </div>
+    <style>
+        /* サイドバーのトランジション */
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
 
-    <!-- ユーザーメニュー -->
-    <div class="flex items-center space-x-4">
-        <span class="text-sm text-gray-600 hidden md:block">
-            <%= current_admin_user&.email %>
-        </span>
-        <%= button_to admin_logout_path, method: :delete, class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" do %>
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-        </svg>
-        <span class="hidden sm:inline">ログアウト</span>
-        <% end %>
-    </div>
-</header>
+        /* モバイルメニューのオーバーレイ */
+        .overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
 
 <body class="bg-gray-100">
+    <% if current_admin_user %>
     <div class="flex h-screen overflow-hidden">
         <!-- サイドバー（デスクトップ） -->
         <aside class="hidden lg:flex lg:flex-shrink-0">
@@ -200,7 +194,7 @@
                     <span class="text-sm text-gray-600 hidden md:block">
                         <%= current_admin_user&.email %>
                     </span>
-                    <%= button_to "ログアウト", destroy_admin_user_session_path, method: :delete, class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" do %>
+                    <%= button_to admin_logout_path, method: :delete, class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" do %>
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
@@ -265,6 +259,10 @@
         closeSidebarBtn?.addEventListener('click', closeSidebar);
         sidebarOverlay?.addEventListener('click', closeSidebar);
     </script>
+    <% else %>
+    <!-- ログインページ用のシンプルなレイアウト -->
+    <%= yield %>
+    <% end %>
 </body>
 
 </html>
