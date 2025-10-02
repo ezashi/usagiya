@@ -4,7 +4,7 @@
 <head>
     <title><%= content_for(:title) || "うさぎや - 福井の老舗和菓子店" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="<%= content_for(:description) || '福井県福井市にある老舗和菓子店うさぎや。冷凍もちパイをはじめとした和菓子をお届けします。' %>">
+    <meta name="description" content="<%= content_for(:description) || '福井県鯖江市にある老舗和菓子店うさぎや。冷凍もちパイをはじめとした和菓子をお届けします。' %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
@@ -16,7 +16,7 @@
 
     <!-- OGP Tags -->
     <meta property="og:title" content="<%= content_for(:title) || 'うさぎや - 福井の老舗和菓子店' %>">
-    <meta property="og:description" content="<%= content_for(:description) || '福井県福井市にある老舗和菓子店うさぎや。冷凍もちパイをはじめとした和菓子をお届けします。' %>">
+    <meta property="og:description" content="<%= content_for(:description) || '福井県鯖江市にある老舗和菓子店うさぎや。冷凍もちパイをはじめとした和菓子をお届けします。' %>">
     <meta property="og:type" content="website">
     <meta property="og:url" content="<%= request.original_url %>">
 
