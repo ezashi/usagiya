@@ -40,6 +40,6 @@ class OrderItem < ApplicationRecord
 
   def set_unit_price
     # This is stored for historical record in case prices change
-    self.unit_price = price_per_unit if product_type.present?
+    self.unit_price = PRODUCT_TYPES.dig(product_type, :price) if product_type.present?
   end
 end
