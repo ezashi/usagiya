@@ -1,9 +1,13 @@
 class Admin::ProductsController < Admin::BaseController
-  before_action :set_product, only: [ :show, :edit, :update, :destroy, :toggle_featured ]
+  before_action :set_product, only: [ :edit, :update, :destroy, :toggle_featured ]
 
   def index
     @products = Product.all.recent
     @products = @products.where("name LIKE ?", "%#{params[:search]}%") if params[:search].present?
+  end
+
+  def show
+    @product = Product.find(params[:id])
   end
 
   def new
