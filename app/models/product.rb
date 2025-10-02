@@ -1,33 +1,31 @@
 class Product < ApplicationRecord
-  has_one_attached :image
-  has_many :order_items, dependent: :destroy
+  # バリデーション(エラーメッセージはja.ymlで管理)
+  validates :name, presence: true
+  validates :price,
+    presence: true,
+    numericality: { greater_than_or_equal_to: 0 }
+  validates :image_filename, presence: true
 
-  # Validations
-  validates :name, presence: { message: "商品名を入力してください" }
-  validates :price, presence: { message: "値段を入力してください" },
-                    numericality: { only_integer: true, greater_than_or_equal_to: 0, message: "値段は0以上の整数で入力してください" }
-  validates :description, presence: { message: "説明文を入力してください" }
-  validates :image, presence: { message: "画像を添付してください" }
-
-  # Scopes
+  # スコープ
+  scope :visible, -> { where(visible: true) }
   scope :featured, -> { where(featured: true) }
-  scope :recent, -> { order(created_at: :desc) }
+  scope :ordered, -> { order(display_order: :asc, created_at: :desc) }
+  scope :by_category, ->(category) { where(category: category) }
 
-  # Custom validation for image
-  validate :acceptable_image
+  # カテゴリの定数
+  CATEGORIES = {
+    "recommended" => "おすすめ商品",
+    "seasonal" => "季節限定商品",
+    "regular" => "定番商品"
+  }.freeze
 
-  private
+  # 画像パスを返すメソッド
+  def image_path
+    "products/#{image_filename}"
+  end
 
-  def acceptable_image
-    return unless image.attached?
-
-    unless image.blob.byte_size <= 5.megabytes
-      errors.add(:image, "は5MB以下にしてください")
-    end
-
-    acceptable_types = [ "image/jpeg", "image/jpg", "image/png", "image/gif" ]
-    unless acceptable_types.include?(image.blob.content_type)
-      errors.add(:image, "はJPEG、PNG、GIF形式でアップロードしてください")
-    end
+  # カテゴリ名を日本語で返す
+  def category_name
+    CATEGORIES[category] || category
   end
 end

@@ -1,0 +1,26 @@
+ja:
+  activerecord:
+    models:
+      product: 商品
+    attributes:
+      product:
+        name: 商品名
+        price: 価格
+        description: 商品説明
+        image_filename: 商品画像
+        category: カテゴリ
+        visible: 表示設定
+        display_order: 表示順序
+        featured: 注目商品
+    errors:
+      models:
+        product:
+          attributes:
+            name:
+              blank: を入力してください
+            price:
+              blank: を入力してください
+              not_a_number: は数値で入力してください
+              greater_than_or_equal_to: は%{count}円以上で入力してください
+            image_filename:
+              blank: を選択してください

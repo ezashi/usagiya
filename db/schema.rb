@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_02_024629) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_02_234917) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -112,6 +112,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_02_024629) do
     t.boolean "featured", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image_filename", default: "", null: false
+    t.string "category"
+    t.boolean "visible", default: true
+    t.integer "display_order", default: 0
+    t.index ["category"], name: "index_products_on_category"
+    t.index ["display_order"], name: "index_products_on_display_order"
+    t.index ["visible"], name: "index_products_on_visible"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
