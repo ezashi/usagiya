@@ -1,12 +1,12 @@
 class CalendarEvent < ApplicationRecord
   # Enums
-  enum event_type: {
+  enum :event_type, {
     regular_holiday: 0,      # 定休日
     sales_start: 1,          # 商品販売開始日
     sales_end: 2,            # 販売終了日
     irregular_holiday: 3,    # 不定休
     other: 4                 # その他
-  }
+  }, prefix: true
 
   # Validations
   validates :event_type, presence: { message: "イベントタイプを選択してください" }

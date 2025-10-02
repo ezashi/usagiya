@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+
+<body>
+    <h2>新規注文が入りました</h2>
+
+    <h3>注文者情報</h3>
+    <ul>
+        <li>お名前: <%= @order.customer_name %></li>
+        <li>メールアドレス: <%= @order.email %></li>
+        <li>電話番号: <%= @order.phone %></li>
+        <li>郵便番号: <%= @order.postal_code %></li>
+        <li>住所: <%= @order.address %></li>
+    </ul>
+
+    <h3>注文内容</h3>
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>商品名</th>
+                <th>数量</th>
+                <th>小計</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @order.order_items.each do |item| %>
+            <tr>
+                <td><%= item.product_name %></td>
+                <td><%= item.quantity %>個</td>
+                <td>¥<%= number_with_delimiter(item.subtotal || 0) %></td>
+            </tr>
+            <% end %>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="2">合計</th>
+                <th>¥<%= number_with_delimiter(@order.total_amount || 0) %></th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <h3>配送先情報</h3>
+    <% if @order.same_address? %>
+    <p>注文者と同じ</p>
+    <% else %>
+    <ul>
+        <li>お名前: <%= @order.delivery_name %></li>
+        <li>郵便番号: <%= @order.delivery_postal_code %></li>
+        <li>住所: <%= @order.delivery_address %></li>
+        <li>電話番号: <%= @order.delivery_phone %></li>
+    </ul>
+    <% end %>
+
+    <% if @order.delivery_date.present? %>
+    <p>到着希望日: <%= @order.delivery_date.strftime("%Y年%m月%d日") %></p>
+    <% end %>
+
+    <% if @order.delivery_time.present? %>
+    <p>希望到着時間: <%= @order.delivery_time %></p>
+    <% end %>
+
+    <h3>お支払い方法</h3>
+    <p><%= @order.payment_method.humanize %></p>
+
+    <% if @order.wrapping_type.present? %>
+    <p>包装: <%= @order.wrapping_type %></p>
+    <% end %>
+
+    <% if @order.notes.present? %>
+    <h3>ご希望内容</h3>
+    <p><%= simple_format(@order.notes) %></p>
+    <% end %>
+
+    <p>
+        管理画面で確認:
+        <%= link_to "注文詳細を見る", admin_order_url(@order) %>
+    </p>
+</body>
+
+</html>

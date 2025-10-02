@@ -34,10 +34,12 @@
             <%= f.text_area :content, rows: 8, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
         </div>
 
+        <% if ENV['RECAPTCHA_SITE_KEY'].present? %>
         <div class="mb-4">
-            <p class="text-sm text-gray-600 mb-2">画像認証（今後実装予定）</p>
-            <!-- reCAPTCHA will be implemented here -->
+            <%= f.label :recaptcha, "画像認証", class: "block text-gray-700 font-bold mb-2" %>
+            <%= recaptcha_tags %>
         </div>
+        <% end %>
     </div>
 
     <div class="flex justify-center">

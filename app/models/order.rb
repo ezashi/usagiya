@@ -3,12 +3,12 @@ class Order < ApplicationRecord
   accepts_nested_attributes_for :order_items, allow_destroy: true, reject_if: :all_blank
 
   # Enums
-  enum payment_method: {
+  enum :payment_method, {
     credit_card: 0,
     cash_on_delivery: 1,
     fukui_bank_transfer: 2,
     yucho_bank_transfer: 3
-  }
+  }, prefix: true
 
   # Validations
   validates :customer_name, presence: { message: "ご注文者様のお名前を入力してください" }

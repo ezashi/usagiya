@@ -6,11 +6,21 @@ class InquiriesController < ApplicationController
   def create
     @inquiry = Inquiry.new(inquiry_params)
 
-    if verify_recaptcha(model: @inquiry) && @inquiry.save
-      redirect_to root_path, notice: "お問い合わせありがとうございました。"
+    # reCAPTCHAが設定されている場合のみ検証
+    if recaptcha_configured?
+      if verify_recaptcha(model: @inquiry) && @inquiry.save
+        redirect_to root_path, notice: "お問い合わせありがとうございました。確認メールをお送りしました。"
+      else
+        @inquiry.errors.add(:base, "画像認証に失敗しました。もう一度お試しください。") unless verify_recaptcha(model: @inquiry)
+        render :new, status: :unprocessable_entity
+      end
     else
-      flash.now[:alert] = "画像認証に失敗しました。" unless verify_recaptcha
-      render :new, status: :unprocessable_entity
+      # reCAPTCHAが設定されていない場合はスキップ
+      if @inquiry.save
+        redirect_to root_path, notice: "お問い合わせありがとうございました。確認メールをお送りしました。"
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 
@@ -20,9 +30,7 @@ class InquiriesController < ApplicationController
     params.require(:inquiry).permit(:name, :phone, :email, :content)
   end
 
-  def verify_recaptcha
-    # For now, return true. In production, integrate with reCAPTCHA
-    # gem 'recaptcha' を追加して実装してください
-    true
+  def recaptcha_configured?
+    ENV["RECAPTCHA_SITE_KEY"].present? && ENV["RECAPTCHA_SECRET_KEY"].present?
   end
 end

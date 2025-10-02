@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #dc2626;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .order-details {
+            background-color: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ご注文ありがとうございます</h1>
+        </div>
+
+        <div class="content">
+            <p><%= @order.customer_name %> 様</p>
+
+            <p>この度は、うさぎやをご利用いただき誠にありがとうございます。<br>
+                以下の内容でご注文を承りました。</p>
+
+            <div class="order-details">
+                <h3>ご注文内容</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>商品名</th>
+                            <th>数量</th>
+                            <th>小計</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @order.order_items.each do |item| %>
+                        <tr>
+                            <td><%= item.product_name %></td>
+                            <td><%= item.quantity %>個</td>
+                            <td>¥<%= number_with_delimiter(item.subtotal || 0) %></td>
+                        </tr>
+                        <% end %>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="2">合計</th>
+                            <th>¥<%= number_with_delimiter(@order.total_amount || 0) %></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="order-details">
+                <h3>配送先情報</h3>
+                <% if @order.same_address? %>
+                <p>
+                    <%= @order.customer_name %><br>
+                    〒<%= @order.postal_code %><br>
+                    <%= @order.address %><br>
+                    TEL: <%= @order.phone %>
+                </p>
+                <% else %>
+                <p>
+                    <%= @order.delivery_name %><br>
+                    〒<%= @order.delivery_postal_code %><br>
+                    <%= @order.delivery_address %><br>
+                    TEL: <%= @order.delivery_phone %>
+                </p>
+                <% end %>
+
+                <% if @order.delivery_date.present? %>
+                <p><strong>到着希望日:</strong> <%= @order.delivery_date.strftime("%Y年%m月%d日") %></p>
+                <% end %>
+
+                <% if @order.delivery_time.present? %>
+                <p><strong>希望到着時間:</strong> <%= @order.delivery_time %></p>
+                <% end %>
+            </div>
+
+            <div class="order-details">
+                <h3>お支払い方法</h3>
+                <p><%= @order.payment_method.humanize %></p>
+
+                <% if @order.wrapping_type.present? %>
+                <p><strong>包装:</strong> <%= @order.wrapping_type %></p>
+                <% end %>
+            </div>
+
+            <% if @order.notes.present? %>
+            <div class="order-details">
+                <h3>ご希望内容</h3>
+                <p><%= simple_format(@order.notes) %></p>
+            </div>
+            <% end %>
+
+            <p>ご不明な点がございましたら、お気軽にお問い合わせください。</p>
+        </div>
+
+        <div class="footer">
+            <p>
+                うさぎや<br>
+                〒910-0006 福井県福井市中央1-21-23<br>
+                TEL: 0776-22-4152<br>
+                営業時間: 9:00～19:00（日曜定休）
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>
