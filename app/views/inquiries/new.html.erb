@@ -1,0 +1,47 @@
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">お問い合わせ</h1>
+
+    <%= form_with model: @inquiry, url: inquiries_path, class: "space-y-6" do |f| %>
+    <% if @inquiry.errors.any? %>
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+        <h2 class="font-bold mb-2"><%= pluralize(@inquiry.errors.count, "件") %>のエラーがあります:</h2>
+        <ul class="list-disc list-inside">
+            <% @inquiry.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+            <% end %>
+        </ul>
+    </div>
+    <% end %>
+
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <div class="mb-4">
+            <%= f.label :name, "お名前", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.text_field :name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+
+        <div class="mb-4">
+            <%= f.label :phone, "電話番号", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.text_field :phone, placeholder: "09012345678", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+
+        <div class="mb-4">
+            <%= f.label :email, "E-MAIL", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.email_field :email, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+
+        <div class="mb-4">
+            <%= f.label :content, "お問い合わせ内容", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.text_area :content, rows: 8, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+
+        <div class="mb-4">
+            <p class="text-sm text-gray-600 mb-2">画像認証（今後実装予定）</p>
+            <!-- reCAPTCHA will be implemented here -->
+        </div>
+    </div>
+
+    <div class="flex justify-center">
+        <%= f.submit "送信する", class: "bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg cursor-pointer" %>
+    </div>
+    <% end %>
+</div>

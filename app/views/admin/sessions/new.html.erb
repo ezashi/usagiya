@@ -1,0 +1,27 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="max-w-md w-full bg-white shadow-md rounded-lg px-8 pt-6 pb-8">
+        <h1 class="text-2xl font-bold text-center mb-8">管理者ログイン</h1>
+
+        <% if flash[:alert] %>
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+            <%= flash[:alert] %>
+        </div>
+        <% end %>
+
+        <%= form_with url: admin_login_path, method: :post, class: "space-y-6" do |f| %>
+        <div>
+            <%= f.label :email, "管理者ユーザーID", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.email_field :email, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", required: true %>
+        </div>
+
+        <div>
+            <%= f.label :password, "パスワード", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.password_field :password, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", required: true %>
+        </div>
+
+        <div>
+            <%= f.submit "ログイン", class: "w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer" %>
+        </div>
+        <% end %>
+    </div>
+</div>

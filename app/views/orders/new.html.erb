@@ -1,0 +1,167 @@
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">冷凍もちパイのご注文</h1>
+
+    <%= form_with model: @order, url: confirm_orders_path, method: :post, class: "space-y-8" do |f| %>
+    <% if @order.errors.any? %>
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+        <h2 class="font-bold mb-2"><%= pluralize(@order.errors.count, "件") %>のエラーがあります:</h2>
+        <ul class="list-disc list-inside">
+            <% @order.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+            <% end %>
+        </ul>
+    </div>
+    <% end %>
+
+    <!-- ご注文者様情報 -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <h2 class="text-2xl font-bold mb-4">ご注文者様情報</h2>
+
+        <div class="mb-4">
+            <%= f.label :customer_name, "お名前", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.text_field :customer_name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+
+        <div class="mb-4">
+            <%= f.label :postal_code, "郵便番号", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.text_field :postal_code, placeholder: "123-4567", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+
+        <div class="mb-4">
+            <%= f.label :address, "ご住所", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.text_area :address, rows: 3, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+
+        <div class="mb-4">
+            <%= f.label :phone, "電話番号", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.text_field :phone, placeholder: "09012345678", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+
+        <div class="mb-4">
+            <%= f.label :email, "E-MAIL", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.email_field :email, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+    </div>
+
+    <!-- お送り先情報 -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <h2 class="text-2xl font-bold mb-4">お送り先</h2>
+
+        <div class="mb-4">
+            <%= f.check_box :same_address, class: "mr-2" %>
+            <%= f.label :same_address, "ご注文者様と同じ住所に送る" %>
+        </div>
+
+        <div id="delivery-address-fields" class="space-y-4">
+            <div class="mb-4">
+                <%= f.label :delivery_name, "お送り先のお名前", class: "block text-gray-700 font-bold mb-2" %>
+                <%= f.text_field :delivery_name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+            </div>
+
+            <div class="mb-4">
+                <%= f.label :delivery_postal_code, "お送り先の郵便番号", class: "block text-gray-700 font-bold mb-2" %>
+                <%= f.text_field :delivery_postal_code, placeholder: "123-4567", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+            </div>
+
+            <div class="mb-4">
+                <%= f.label :delivery_address, "お送り先の住所", class: "block text-gray-700 font-bold mb-2" %>
+                <%= f.text_area :delivery_address, rows: 3, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+            </div>
+
+            <div class="mb-4">
+                <%= f.label :delivery_phone, "お送り先の電話番号", class: "block text-gray-700 font-bold mb-2" %>
+                <%= f.text_field :delivery_phone, placeholder: "09012345678", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注文商品 -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <h2 class="text-2xl font-bold mb-4">注文商品</h2>
+        <p class="text-sm text-gray-600 mb-4">※もちパイは組み合わせができますので、種類と個数をご希望欄にご記入ください。（ご記入がない場合はおまかせとなります）</p>
+
+        <div id="order-items">
+            <% OrderItem::PRODUCT_TYPES.each_with_index do |(key, value), index| %>
+            <%= f.fields_for :order_items, @order.order_items.build(product_type: key) do |item_form| %>
+            <div class="mb-4 flex items-center justify-between">
+                <label class="text-gray-700 flex-1"><%= value[:name] %>（¥<%= number_with_delimiter(value[:price]) %>）</label>
+                <%= item_form.hidden_field :product_type, value: key %>
+                <%= item_form.number_field :quantity, value: 0, min: 0, class: "shadow appearance-none border rounded py-2 px-3 text-gray-700 w-24 text-center" %>
+                <span class="text-gray-700 ml-2">個</span>
+            </div>
+            <% end %>
+            <% end %>
+        </div>
+    </div>
+
+    <!-- 支払い方法 -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <h2 class="text-2xl font-bold mb-4">お支払い方法</h2>
+
+        <%= f.select :payment_method, 
+                   Order.payment_method_options, 
+                   { prompt: "選択してください" },
+                   class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <!-- 配送情報 -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <h2 class="text-2xl font-bold mb-4">配送情報</h2>
+
+        <div class="mb-4">
+            <%= f.label :delivery_date, "到着希望日", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.date_field :delivery_date, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+
+        <div class="mb-4">
+            <%= f.label :delivery_time, "希望到着時間", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.select :delivery_time, 
+                     Order.delivery_time_options, 
+                     { prompt: "選択してください" },
+                     class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+
+        <div class="mb-4">
+            <%= f.label :wrapping_type, "包装", class: "block text-gray-700 font-bold mb-2" %>
+            <%= f.select :wrapping_type, 
+                     Order.wrapping_options, 
+                     { prompt: "選択してください" },
+                     class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+    </div>
+
+    <!-- ご希望欄 -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <h2 class="text-2xl font-bold mb-4">ご希望欄</h2>
+        <p class="text-sm text-gray-600 mb-4">
+            ※もちパイは組み合わせができますので、種類と個数をご記入ください。（ご記入がない場合はおまかせとなります）<br>
+            ※包装の場合、熨斗の有無（お名前の記入）もあればご記入ください。<br>
+            ※手提げ袋が必要な方はご記入ください。
+        </p>
+
+        <%= f.text_area :notes, rows: 6, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <div class="flex justify-center">
+        <%= f.submit "確認画面へ", class: "bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg cursor-pointer" %>
+    </div>
+    <% end %>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sameAddressCheckbox = document.querySelector('#order_same_address');
+        const deliveryFields = document.querySelector('#delivery-address-fields');
+
+        function toggleDeliveryFields() {
+            if (sameAddressCheckbox.checked) {
+                deliveryFields.style.display = 'none';
+            } else {
+                deliveryFields.style.display = 'block';
+            }
+        }
+
+        sameAddressCheckbox.addEventListener('change', toggleDeliveryFields);
+        toggleDeliveryFields();
+    });
+</script>
