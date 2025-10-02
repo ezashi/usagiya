@@ -22,16 +22,16 @@
 
                     <!-- スライド2 -->
                     <div data-carousel-target="slide" class="absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0">
-                        <%= image_tag "もちパイ.jpg", 
+                        <%= image_tag "うさぎまんじゅう.jpg", 
                             class: "w-full h-full object-cover", 
-                            alt: "もちパイ" %>
+                            alt: "うさぎまんじゅう" %>
                     </div>
 
                     <!-- スライド3 -->
                     <div data-carousel-target="slide" class="absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0">
-                        <%= image_tag "うさぎまんじゅう.jpg", 
+                        <%= image_tag "もちパイ.jpg", 
                             class: "w-full h-full object-cover", 
-                            alt: "うさぎまんじゅう" %>
+                            alt: "もちパイ" %>
                     </div>
 
                     <!-- 前へボタン -->
@@ -55,36 +55,6 @@
                         <button data-carousel-target="indicator" data-action="click->carousel#goTo" data-index="2" class="transition-all duration-300 rounded-full h-3 w-3 bg-white/50 hover:bg-white/75" aria-label="画像3へ移動"></button>
                     </div>
                 </div>
-            </div>
-
-            <div class="inline-block border-4 border-gray-800 px-8 py-4 mb-6 bg-white">
-                <h1 class="text-4xl md:text-6xl font-bold tracking-wider">うさぎや</h1>
-            </div>
-
-            <p class="text-xl md:text-2xl text-gray-700 mb-4 font-medium">福井の老舗和菓子店</p>
-            <p class="text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-                伝統の味を守りながら、心を込めて作る和菓子。<br class="hidden md:block">
-                福井の素材と職人の技が織りなす、やさしい味わいをお届けします。
-            </p>
-
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <%= link_to products_path, class: "w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" do %>
-                <span class="flex items-center justify-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                    </svg>
-                    商品一覧を見る
-                </span>
-                <% end %>
-
-                <%= link_to new_order_path, class: "w-full sm:w-auto bg-white hover:bg-gray-50 text-pink-600 font-bold py-4 px-10 rounded-full border-2 border-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" do %>
-                <span class="flex items-center justify-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                    冷凍もちパイを注文
-                </span>
-                <% end %>
             </div>
         </div>
     </section>
@@ -215,7 +185,9 @@
     </section>
     <% end %>
 
-    <!-- 営業カレンダー -->
+    <!-- 営業カレンダー（一時的にコメントアウト） -->
+    <%# カレンダーパーシャルが必要な場合は、app/views/shared/_calendar.html.erb を作成してください %>
+    <%# 
     <section class="mb-16">
         <div class="flex items-center justify-between mb-8">
             <div>
@@ -227,101 +199,102 @@
         <div class="bg-white rounded-2xl shadow-lg p-8">
             <div id="calendar" class="text-center">
                 <%= render 'shared/calendar', calendar_events: @calendar_events %>
-            </div>
+</div>
 
-            <div class="mt-6 flex flex-wrap gap-4 justify-center text-sm">
-                <div class="flex items-center">
-                    <span class="w-4 h-4 bg-red-100 border border-red-200 rounded mr-2"></span>
-                    <span class="text-gray-700">定休日</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-4 h-4 bg-green-100 border border-green-200 rounded mr-2"></span>
-                    <span class="text-gray-700">販売開始</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-4 h-4 bg-orange-100 border border-orange-200 rounded mr-2"></span>
-                    <span class="text-gray-700">販売終了</span>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="mt-6 flex flex-wrap gap-4 justify-center text-sm">
+    <div class="flex items-center">
+        <span class="w-4 h-4 bg-red-100 border border-red-200 rounded mr-2"></span>
+        <span class="text-gray-700">定休日</span>
+    </div>
+    <div class="flex items-center">
+        <span class="w-4 h-4 bg-green-100 border border-green-200 rounded mr-2"></span>
+        <span class="text-gray-700">販売開始</span>
+    </div>
+    <div class="flex items-center">
+        <span class="w-4 h-4 bg-orange-100 border border-orange-200 rounded mr-2"></span>
+        <span class="text-gray-700">販売終了</span>
+    </div>
+</div>
+</div>
+</section>
+%>
 
-    <!-- 外部リンク -->
-    <section class="mb-16">
-        <div class="mb-8">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">外部リンク</h2>
-            <p class="text-gray-600">SNSやふるさと納税でもご利用いただけます</p>
-        </div>
+<!-- 外部リンク -->
+<section class="mb-16">
+    <div class="mb-8">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">外部リンク</h2>
+        <p class="text-gray-600">SNSやふるさと納税でもご利用いただけます</p>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <%= link_to "https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1", 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <%= link_to "https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1", 
         target: "_blank", 
         rel: "noopener noreferrer", 
         class: "group" do %>
-            <div class="bg-white rounded-2xl shadow-md p-8 text-center transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2">
-                <div class="w-20 h-20 mx-auto mb-4 bg-orange-100 rounded-full flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
-                    🎁
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-pink-600 transition-colors">さとふる</h3>
-                <p class="text-gray-600 mb-4">ふるさと納税でお得に購入できます</p>
-                <span class="inline-flex items-center text-pink-600 text-sm font-medium">
-                    サイトを見る
-                    <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
-                </span>
+        <div class="bg-white rounded-2xl shadow-md p-8 text-center transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2">
+            <div class="w-20 h-20 mx-auto mb-4 bg-orange-100 rounded-full flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                🎁
             </div>
-            <% end %>
-
-            <%= link_to "https://page.line.me/296kbwry?openQrModal=true", 
-        target: "_blank", 
-        rel: "noopener noreferrer", 
-        class: "group" do %>
-            <div class="bg-white rounded-2xl shadow-md p-8 text-center transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2">
-                <div class="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
-                    💬
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-pink-600 transition-colors">LINE公式</h3>
-                <p class="text-gray-600 mb-4">最新情報をお届けします</p>
-                <span class="inline-flex items-center text-pink-600 text-sm font-medium">
-                    友だち追加
-                    <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
-                </span>
-            </div>
-            <% end %>
-
-            <%= link_to "https://www.instagram.com/usagiya.fukui/?hl=ja", 
-        target: "_blank", 
-        rel: "noopener noreferrer", 
-        class: "group" do %>
-            <div class="bg-white rounded-2xl shadow-md p-8 text-center transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2">
-                <div class="w-20 h-20 mx-auto mb-4 bg-pink-100 rounded-full flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
-                    📷
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-pink-600 transition-colors">Instagram</h3>
-                <p class="text-gray-600 mb-4">日々の様子を発信中</p>
-                <span class="inline-flex items-center text-pink-600 text-sm font-medium">
-                    フォローする
-                    <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
-                </span>
-            </div>
-            <% end %>
+            <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-pink-600 transition-colors">さとふる</h3>
+            <p class="text-gray-600 mb-4">ふるさと納税でお得に購入できます</p>
+            <span class="inline-flex items-center text-pink-600 text-sm font-medium">
+                サイトを見る
+                <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </span>
         </div>
-    </section>
-
-    <!-- お問い合わせCTA -->
-    <section class="text-center bg-gradient-to-br from-pink-50 to-orange-50 rounded-2xl p-12">
-        <h2 class="text-3xl font-bold text-gray-800 mb-4">お気軽にお問い合わせください</h2>
-        <p class="text-gray-600 mb-8">商品やご注文に関するご質問など、何でもお答えします</p>
-        <%= link_to new_inquiry_path, class: "inline-flex items-center bg-gray-700 hover:bg-gray-800 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" do %>
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-        </svg>
-        お問い合わせフォームへ
         <% end %>
-    </section>
+
+        <%= link_to "https://page.line.me/296kbwry?openQrModal=true", 
+        target: "_blank", 
+        rel: "noopener noreferrer", 
+        class: "group" do %>
+        <div class="bg-white rounded-2xl shadow-md p-8 text-center transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2">
+            <div class="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                💬
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-pink-600 transition-colors">LINE公式</h3>
+            <p class="text-gray-600 mb-4">最新情報をお届けします</p>
+            <span class="inline-flex items-center text-pink-600 text-sm font-medium">
+                友だち追加
+                <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </span>
+        </div>
+        <% end %>
+
+        <%= link_to "https://www.instagram.com/usagiya.fukui/?hl=ja", 
+        target: "_blank", 
+        rel: "noopener noreferrer", 
+        class: "group" do %>
+        <div class="bg-white rounded-2xl shadow-md p-8 text-center transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2">
+            <div class="w-20 h-20 mx-auto mb-4 bg-pink-100 rounded-full flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                📷
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-pink-600 transition-colors">Instagram</h3>
+            <p class="text-gray-600 mb-4">日々の様子を発信中</p>
+            <span class="inline-flex items-center text-pink-600 text-sm font-medium">
+                フォローする
+                <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </span>
+        </div>
+        <% end %>
+    </div>
+</section>
+
+<!-- お問い合わせCTA -->
+<section class="text-center bg-gradient-to-br from-pink-50 to-orange-50 rounded-2xl p-12">
+    <h2 class="text-3xl font-bold text-gray-800 mb-4">お気軽にお問い合わせください</h2>
+    <p class="text-gray-600 mb-8">商品やご注文に関するご質問など、何でもお答えします</p>
+    <%= link_to new_inquiry_path, class: "inline-flex items-center bg-gray-700 hover:bg-gray-800 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" do %>
+    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+    </svg>
+    お問い合わせフォームへ
+    <% end %>
+</section>
 </div>
