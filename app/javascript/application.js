@@ -6,10 +6,10 @@ import "@rails/actiontext"
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 
-// Reactコンポーネントは後ほど追加します
-console.log('Application.js loaded successfully!')
+// コンポーネントのインポート
+import Home from './components/Home'
 
-// Reactコンポーネントをマウントする関数（後で使用）
+// Reactコンポーネントをマウントする関数
 window.mountComponent = (componentName, Component) => {
   const element = document.getElementById(componentName)
   if (element) {
@@ -18,3 +18,16 @@ window.mountComponent = (componentName, Component) => {
     root.render(<Component {...props} />)
   }
 }
+
+// DOMContentLoadedイベントでコンポーネントをマウント
+document.addEventListener('DOMContentLoaded', () => {
+  // 一般ユーザー用コンポーネント
+  window.mountComponent('home-root', Home)
+})
+
+// Turbo対応（ページ遷移時にも再マウント）
+document.addEventListener('turbo:load', () => {
+  window.mountComponent('home-root', Home)
+})
+
+console.log('Application.js loaded successfully!')

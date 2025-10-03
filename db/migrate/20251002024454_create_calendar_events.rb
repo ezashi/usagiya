@@ -1,4 +1,4 @@
-class CreateCalendarEvents < ActiveRecord::Migration[7.0]
+class CreateCalendarEvents < ActiveRecord::Migration[8.0]
   def change
     create_table :calendar_events do |t|
       t.string :event_type, null: false # 定休日/休業日/販売開始日/販売終了日/不定休/その他

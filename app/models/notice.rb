@@ -1,18 +1,29 @@
 class Notice < ApplicationRecord
+  # Active Storage and Action Text
+  has_rich_text :content
+
   # Validations
-  validates :title, presence: { message: "タイトルを入力してください" }
-  validates :content, presence: { message: "内容を入力してください" }
+  validates :content, presence: true
 
   # Scopes
-  scope :published, -> { where("published_at <= ?", Time.current).order(published_at: :desc) }
-  scope :recent, -> { order(published_at: :desc) }
+  # published_atが設定されていれば公開済みとみなす
+  scope :published, -> { where.not(published_at: nil).order(published_at: :desc) }
+  scope :recent, -> { order(created_at: :desc) }
 
-  # Callbacks
-  before_validation :set_published_at, on: :create
+  # Instance methods
+  def publish!
+    update(published_at: Time.current)
+  end
 
-  private
+  def unpublish!
+    update(published_at: nil)
+  end
 
-  def set_published_at
-    self.published_at ||= Time.current
+  def published?
+    published_at.present?
+  end
+
+  def draft?
+    !published?
   end
 end

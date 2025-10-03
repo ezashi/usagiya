@@ -1,4 +1,4 @@
-class CreateNotices < ActiveRecord::Migration[7.0]
+class CreateNotices < ActiveRecord::Migration[8.0]
   def change
     create_table :notices do |t|
       t.string :title

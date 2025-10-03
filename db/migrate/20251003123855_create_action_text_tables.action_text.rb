@@ -1,5 +1,5 @@
 # This migration comes from action_text (originally 20180528164100)
-class CreateActionTextTables < ActiveRecord::Migration[6.0]
+class CreateActionTextTables < ActiveRecord::Migration[8.0]
   def change
     # Use Active Record's configured type for primary and foreign keys
     primary_key_type, foreign_key_type = primary_and_foreign_key_types

@@ -1,14 +1,12 @@
-class ProductsController < ApplicationController
-  def index
-    @products = Product.visible.ordered
+class PagesController < ApplicationController
+  def home
+    # トップ画面用のデータを取得
+    @featured_products = Product.published.featured.limit(10)
+    @seasonal_products = Product.published.seasonal.limit(10)
+    @recent_notices = Notice.published.limit(3)
   end
 
-  def show
-    @product = Product.find(params[:id])
-  end
-
-  # おすすめ商品ページ
-  def featured
-    @featured_products = Product.visible.featured.ordered
+  def philosophy
+    # 御菓子処うさぎやの想い
   end
 end

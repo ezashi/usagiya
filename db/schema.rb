@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_03_123855) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_03_143047) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,6 +83,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_123855) do
     t.datetime "published_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "published", default: false
+    t.index ["published"], name: "index_notices_on_published"
   end
 
   create_table "order_items", force: :cascade do |t|
@@ -126,8 +128,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_123855) do
     t.string "category"
     t.boolean "visible", default: true
     t.integer "display_order", default: 0
+    t.boolean "seasonal", default: false
+    t.integer "featured_order"
+    t.integer "seasonal_order"
+    t.datetime "published_at"
     t.index ["category"], name: "index_products_on_category"
     t.index ["display_order"], name: "index_products_on_display_order"
+    t.index ["featured"], name: "index_products_on_featured"
+    t.index ["featured_order"], name: "index_products_on_featured_order"
+    t.index ["seasonal"], name: "index_products_on_seasonal"
+    t.index ["seasonal_order"], name: "index_products_on_seasonal_order"
     t.index ["visible"], name: "index_products_on_visible"
   end
 
