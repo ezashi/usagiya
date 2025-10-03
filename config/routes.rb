@@ -1,33 +1,18 @@
 Rails.application.routes.draw do
-  # 公開ページ
-  root "pages#home"
-
-  resources :products, only: [ :index, :show ]
-  resources :notices, only: [ :index, :show ]
-
-  resources :orders, only: [ :new, :create ] do
-    collection do
-      post :confirm
+  # 管理画面
+  namespace :admin do
+    root "dashboard#index"  # 管理画面トップ
+    resources :products do
+      member do
+        patch :toggle_visibility  # 表示/非表示の切り替え
+      end
     end
   end
 
-  resources :inquiries, only: [ :new, :create ]
+  # 公開ページ
+  root "pages#home"
 
-  get "orders/complete", to: "orders#complete", as: :complete_order
-  get "inquiries/complete", to: "inquiries#complete", as: :complete_inquiry
-
-  # 管理画面
-  namespace :admin do
-    get "login", to: "sessions#new"
-    post "login", to: "sessions#create"
-    delete "logout", to: "sessions#destroy"
-
-    root "dashboard#index"
-
-    resources :products
-    resources :notices
-    resources :calendar_events
-    resources :orders, only: [ :index, :show ]
-    resources :inquiries, only: [ :index, :show ]
-  end
+  get "up" => "rails/health#show", as: :rails_health_check
+  get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 end

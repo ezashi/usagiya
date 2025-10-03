@@ -1,8 +1,7 @@
-class Admin::DashboardController < Admin::BaseController
+class Admin::DashboardController < ApplicationController
   def index
-    @recent_orders = Order.order(created_at: :desc).limit(10)
-    @recent_inquiries = Inquiry.order(created_at: :desc).limit(10)
-    @total_orders = Order.count
-    @total_inquiries = Inquiry.count
+    @total_products = Product.count
+    @visible_products = Product.visible.count
+    @featured_products = Product.featured.count
   end
 end
