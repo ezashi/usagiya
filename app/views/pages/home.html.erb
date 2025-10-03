@@ -5,171 +5,390 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>御菓子処うさぎや</title>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
     <style>
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-
-            to {
-                opacity: 0;
-            }
+        body {
+            font-family: 'Noto Serif JP', serif;
+            color: #4a3728;
+            overflow-x: hidden;
         }
 
-        .slide-image {
-            animation: fadeIn 1s ease-in-out;
+        /* ヘッダー */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
         }
 
-        .slide-image.fade-out {
-            animation: fadeOut 1s ease-in-out;
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #8b4513;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #4a3728;
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #d4a574;
+        }
+
+        /* ハンバーガーメニュー */
+        .hamburger {
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .hamburger span {
+            width: 100%;
+            height: 2px;
+            background: #4a3728;
+            transition: transform 0.3s;
+        }
+
+        .hamburger:hover span:first-child {
+            transform: translateY(-3px);
+        }
+
+        .hamburger:hover span:last-child {
+            transform: translateY(3px);
+        }
+
+        /* サイドメニュー */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 400px;
+            height: 100vh;
+            background: #f5f0e8;
+            z-index: 2000;
+            padding: 80px 50px;
+            transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        .side-menu-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #4a3728;
+        }
+
+        .side-menu-links {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+
+        .side-menu-links li {
+            margin-bottom: 25px;
+        }
+
+        .side-menu-links a {
+            text-decoration: none;
+            color: #4a3728;
+            font-size: 16px;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            display: block;
+        }
+
+        .side-menu-links a:hover {
+            color: #d4a574;
+        }
+
+        /* オーバーレイ */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* メインビジュアル */
+        .main-visual {
+            width: 100%;
+            height: calc(100vh - 80px);
+            position: relative;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 店舗情報セクション */
+        .shop-info {
+            padding: 100px 50px;
+            background: #f5f0e8;
+            text-align: center;
+        }
+
+        .shop-info h2 {
+            font-size: 32px;
+            margin-bottom: 50px;
+            color: #8b4513;
+            letter-spacing: 3px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .info-item {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #8b4513;
+        }
+
+        .info-item p {
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .sns-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .sns-links a {
+            display: inline-block;
+            padding: 10px 25px;
+            background: #8b4513;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background 0.3s;
+            font-size: 14px;
+        }
+
+        .sns-links a:hover {
+            background: #d4a574;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .side-menu {
+                width: 80%;
+            }
+
+            .shop-info {
+                padding: 60px 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
-<body class="bg-black text-white overflow-x-hidden">
+<body>
     <!-- ヘッダー -->
-    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6">
-        <!-- ロゴ -->
-        <div class="flex items-center">
-            <a href="<%= root_path %>" class="text-2xl font-serif tracking-wider hover:opacity-70 transition-opacity">
-                御菓子処 うさぎや
-            </a>
-        </div>
-
-        <!-- ナビゲーション -->
-        <nav class="hidden md:flex items-center space-x-8 text-sm tracking-wide">
-            <%= link_to "ホーム", root_path, class: "hover:opacity-70 transition-opacity" %>
-            <%= link_to "おすすめ商品", products_path(category: "recommended"), class: "hover:opacity-70 transition-opacity" %>
-            <%= link_to "季節限定商品", products_path(category: "seasonal"), class: "hover:opacity-70 transition-opacity" %>
-            <%= link_to "お知らせ", notices_path, class: "hover:opacity-70 transition-opacity" %>
-            <%= link_to "お問い合わせ", new_inquiry_path, class: "hover:opacity-70 transition-opacity" %>
+    <header>
+        <div class="logo">御菓子処うさぎや</div>
+        <nav>
+            <a href="#home">ホーム</a>
+            <a href="#recommended">おすすめ商品</a>
+            <a href="#seasonal">季節限定商品</a>
+            <a href="#news">お知らせ</a>
+            <a href="#contact">お問い合わせ</a>
         </nav>
-
-        <!-- ハンバーガーメニュー -->
-        <button id="menuToggle" class="relative w-10 h-10 flex flex-col items-center justify-center group">
-            <div class="w-8 h-0.5 bg-white transition-all duration-300 group-hover:-translate-y-1"></div>
-            <div class="w-8 h-0.5 bg-white mt-2 transition-all duration-300 group-hover:translate-y-1"></div>
-        </button>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+        </div>
     </header>
 
-    <!-- メインビジュアル -->
-    <div class="relative w-full h-screen">
-        <div id="slideshow" class="relative w-full h-screen">
-            <%= image_tag "top/mamedaifuku_kusamoti.jpg", class: "slide-image absolute inset-0 w-full h-full object-cover", data: { slide: 0 } %>
-            <%= image_tag "top/usagimanju.jpg", class: "slide-image absolute inset-0 w-full h-full object-cover opacity-0", data: { slide: 1 } %>
-            <%= image_tag "top/motipai.jpg", class: "slide-image absolute inset-0 w-full h-full object-cover opacity-0", data: { slide: 2 } %>
-            <div class="absolute inset-0 bg-black opacity-30"></div>
-        </div>
-
-        <!-- スクロール可能なコンテンツ -->
-        <div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black to-transparent">
-            <div class="max-w-4xl mx-auto text-center space-y-4">
-                <h2 class="text-xl font-serif mb-4">店舗情報</h2>
-                <p class="text-sm">〒910-0003 福井県福井市松本3丁目16-14</p>
-                <p class="text-sm">営業時間: 9:00 - 18:00 / 定休日: 水曜日</p>
-                <div class="flex justify-center space-x-6 mt-6">
-                    <a href="https://line.me/ti/p/your-line-id" target="_blank" class="hover:opacity-70 transition-opacity">
-                        <div class="text-sm">LINE</div>
-                    </a>
-                    <a href="https://www.instagram.com/your-instagram" target="_blank" class="hover:opacity-70 transition-opacity">
-                        <div class="text-sm">Instagram</div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- オーバーレイ -->
+    <div class="overlay" id="overlay"></div>
 
     <!-- サイドメニュー -->
-    <div id="sideMenu" class="fixed top-0 right-0 h-full w-full md:w-1/2 bg-white text-black transform translate-x-full transition-transform duration-500 z-50">
-        <button id="menuClose" class="absolute top-6 right-8 text-black">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-        </button>
+    <div class="side-menu" id="sideMenu">
+        <div class="side-menu-close" id="closeMenu">&times;</div>
+        <ul class="side-menu-links">
+            <li><a href="#philosophy">御菓子処うさぎやの想い</a></li>
+            <li><a href="#recommended">おすすめ商品</a></li>
+            <li><a href="#seasonal">季節限定商品</a></li>
+            <li><a href="#delivery">冷凍もちパイの発送</a></li>
+            <li><a href="#satofuru">さとふる</a></li>
+            <li><a href="#news">お知らせ</a></li>
+            <li><a href="#calendar">営業カレンダー</a></li>
+            <li><a href="#line">LINE</a></li>
+            <li><a href="#instagram">Instagram</a></li>
+            <li><a href="#contact">お問い合わせ</a></li>
+        </ul>
+    </div>
 
-        <div class="flex h-full">
-            <!-- メニューリスト -->
-            <div class="w-full md:w-1/2 p-12 flex flex-col justify-center space-y-6 overflow-y-auto">
-                <h2 class="text-xs tracking-widest mb-8 opacity-50">MENU</h2>
-                <%= link_to "御菓子処うさぎやの想い", "#philosophy", class: "text-2xl font-serif hover:opacity-70 transition-opacity" %>
-                <%= link_to "おすすめ商品", products_path(category: "recommended"), class: "text-2xl font-serif hover:opacity-70 transition-opacity" %>
-                <%= link_to "季節限定商品", products_path(category: "seasonal"), class: "text-2xl font-serif hover:opacity-70 transition-opacity" %>
-                <%= link_to "冷凍もちパイの発送", "#frozen-shipping", class: "text-2xl font-serif hover:opacity-70 transition-opacity" %>
-                <%= link_to "さとふる", "https://www.satofull.jp/", target: "_blank", class: "text-2xl font-serif hover:opacity-70 transition-opacity" %>
-                <%= link_to "お知らせ", notices_path, class: "text-2xl font-serif hover:opacity-70 transition-opacity" %>
-                <%= link_to "営業カレンダー", "#calendar", class: "text-2xl font-serif hover:opacity-70 transition-opacity" %>
+    <!-- メインビジュアル -->
+    <section class="main-visual">
+        <div class="slide active">
+            <%= image_tag 'top/mamedaifuku_kusamoti.jpg' %>
+        </div>
+        <div class="slide">
+            <%= image_tag 'top/usagimanju.jpg' %>
+        </div>
+        <div class="slide">
+            <%= image_tag 'top/motipai.jpg' %>
+        </div>
+    </section>
 
-                <div class="pt-8 space-y-4">
-                    <a href="https://line.me/ti/p/your-line-id" target="_blank" class="block text-sm hover:opacity-70 transition-opacity">LINE</a>
-                    <a href="https://www.instagram.com/your-instagram" target="_blank" class="block text-sm hover:opacity-70 transition-opacity">Instagram</a>
-                    <%= link_to "お問い合わせ", new_inquiry_path, class: "block text-sm hover:opacity-70 transition-opacity" %>
-                </div>
+    <!-- 店舗情報セクション -->
+    <section class="shop-info" id="shop-info">
+        <h2>店舗情報</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <h3>住所</h3>
+                <p>
+                    〒000-0000<br>
+                    ○○県○○市○○町0-0-0<br>
+                    御菓子処うさぎや
+                </p>
             </div>
-
-            <!-- おすすめ商品画像 -->
-            <div class="hidden md:block w-1/2 bg-gradient-to-br from-pink-100 to-amber-50 p-12">
-                <div class="h-full flex flex-col justify-center">
-                    <h3 class="text-xs tracking-widest mb-4 opacity-50">FEATURED</h3>
-                    <div class="bg-white rounded-lg shadow-xl overflow-hidden">
-                        <%= image_tag "products/mamedaifuku.jpg", alt: "おすすめ商品", class: "w-full h-auto" %>
-                    </div>
-                    <p class="mt-6 text-center font-serif text-lg">季節の和菓子</p>
+            <div class="info-item">
+                <h3>営業時間</h3>
+                <p>
+                    平日：9:00 - 18:00<br>
+                    土日祝：9:00 - 17:00<br>
+                    定休日：水曜日
+                </p>
+            </div>
+            <div class="info-item">
+                <h3>SNS</h3>
+                <p>最新情報はこちらから</p>
+                <div class="sns-links">
+                    <a href="#line">LINE</a>
+                    <a href="#instagram">Instagram</a>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <script>
         // スライドショー機能
         let currentSlide = 0;
-        const slides = document.querySelectorAll('[data-slide]');
-        const totalSlides = slides.length;
+        const slides = document.querySelectorAll('.slide');
+        const slideInterval = 3000; // 3秒
 
         function showSlide(index) {
             slides.forEach((slide, i) => {
+                slide.classList.remove('active');
                 if (i === index) {
-                    slide.style.opacity = '1';
-                } else {
-                    slide.style.opacity = '0';
+                    slide.classList.add('active');
                 }
             });
         }
 
         function nextSlide() {
-            currentSlide = (currentSlide + 1) % totalSlides;
+            currentSlide = (currentSlide + 1) % slides.length;
             showSlide(currentSlide);
         }
 
-        // 4秒ごとにスライド切り替え
-        setInterval(nextSlide, 4000);
+        setInterval(nextSlide, slideInterval);
 
-        // メニューの開閉
-        const menuToggle = document.getElementById('menuToggle');
-        const menuClose = document.getElementById('menuClose');
+        // ハンバーガーメニュー
+        const hamburger = document.getElementById('hamburger');
         const sideMenu = document.getElementById('sideMenu');
+        const closeMenu = document.getElementById('closeMenu');
+        const overlay = document.getElementById('overlay');
 
-        menuToggle.addEventListener('click', () => {
-            sideMenu.classList.remove('translate-x-full');
-        });
+        function openMenu() {
+            sideMenu.classList.add('active');
+            overlay.classList.add('active');
+        }
 
-        menuClose.addEventListener('click', () => {
-            sideMenu.classList.add('translate-x-full');
-        });
+        function closeMenuFunc() {
+            sideMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        hamburger.addEventListener('click', openMenu);
+        closeMenu.addEventListener('click', closeMenuFunc);
+        overlay.addEventListener('click', closeMenuFunc);
     </script>
 </body>
 
