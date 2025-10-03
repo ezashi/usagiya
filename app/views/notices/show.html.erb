@@ -1,123 +1,19 @@
-<% content_for :title, "#{@notice.title} - お知らせ - うさぎや" %>
-<% content_for :description, @notice.content.truncate(150) %>
-
-<div class="w-full max-w-4xl mx-auto">
-    <!-- パンくずリスト -->
-    <nav class="mb-8" aria-label="パンくずリスト">
-        <ol class="flex items-center space-x-2 text-sm text-gray-600">
-            <li>
-                <%= link_to root_path, class: "hover:text-pink-600 transition-colors" do %>
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                <% end %>
-            </li>
-            <li>
-                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                </svg>
-            </li>
-            <li>
-                <%= link_to "お知らせ", notices_path, class: "hover:text-pink-600 transition-colors" %>
-            </li>
-            <li>
-                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                </svg>
-            </li>
-            <li class="font-medium text-gray-800 truncate max-w-[300px]"><%= @notice.title %></li>
-        </ol>
-    </nav>
-
-    <!-- お知らせ詳細カード -->
-    <article class="bg-white rounded-2xl shadow-2xl overflow-hidden mb-12">
-        <!-- ヘッダー -->
-        <div class="bg-gradient-to-br from-pink-50 to-orange-50 p-8 md:p-12 border-b">
-            <!-- 日付とバッジ -->
-            <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center space-x-4">
-                    <div class="bg-white rounded-xl px-4 py-2 shadow-md">
-                        <div class="flex items-center text-pink-600">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <time datetime="<%= @notice.published_at.iso8601 %>" class="font-medium">
-                                <%= @notice.published_at.strftime("%Y年%m月%d日") %>
-                                (<%= %w[日 月 火 水 木 金 土][@notice.published_at.wday] %>)
-                            </time>
-                        </div>
-                    </div>
-
-                    <% if @notice.published_at > 7.days.ago %>
-                    <span class="inline-flex items-center bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
-                        </svg>
-                        NEW
-                    </span>
-                    <% end %>
-                </div>
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="mb-4">
+                <span class="text-sm text-gray-500"><%= @notice.published_at.strftime('%Y年%m月%d日') %></span>
             </div>
 
-            <!-- タイトル -->
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 leading-tight">
-                <%= @notice.title %>
-            </h1>
-        </div>
+            <h1 class="text-3xl font-bold mb-6"><%= @notice.title %></h1>
 
-        <!-- コンテンツ -->
-        <div class="p-8 md:p-12">
-            <div class="prose prose-lg max-w-none">
-                <%= simple_format(@notice.content, class: "text-gray-700 leading-relaxed whitespace-pre-wrap") %>
+            <div class="prose max-w-none">
+                <%= @notice.content %>
             </div>
         </div>
-    </article>
 
-    <!-- ナビゲーション -->
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-12">
-        <%= link_to notices_path, class: "flex items-center text-gray-600 hover:text-gray-800 font-medium transition-colors" do %>
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        お知らせ一覧に戻る
-        <% end %>
-
-        <%= link_to root_path, class: "flex items-center text-gray-600 hover:text-gray-800 font-medium transition-colors" do %>
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-        </svg>
-        トップページに戻る
-        <% end %>
-    </div>
-
-    <!-- お問い合わせCTA -->
-    <div class="bg-gradient-to-br from-pink-50 to-orange-50 rounded-2xl p-8 md:p-12 text-center">
-        <div class="max-w-2xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">ご不明な点がございますか？</h2>
-            <p class="text-gray-600 mb-8 leading-relaxed">
-                お知らせの内容についてご質問がある場合や、その他ご不明な点がございましたら、<br class="hidden md:block">
-                お気軽にお問い合わせください。
-            </p>
-
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <%= link_to new_inquiry_path, class: "inline-flex items-center justify-center bg-gray-700 hover:bg-gray-800 text-white font-bold py-4 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" do %>
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-                お問い合わせフォーム
-                <% end %>
-
-                <a href="tel:0776-22-4152" class="inline-flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 font-bold py-4 px-8 rounded-full border-2 border-gray-300 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                    </svg>
-                    0776-22-4152
-                </a>
-            </div>
-
-            <p class="text-sm text-gray-500 mt-6">
-                営業時間: 9:00～19:00（日曜定休）
-            </p>
+        <div class="mt-8">
+            <a href="<%= notices_path %>" class="text-pink-600 hover:underline">← お知らせ一覧に戻る</a>
         </div>
     </div>
 </div>

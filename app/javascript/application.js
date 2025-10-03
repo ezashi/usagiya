@@ -9,25 +9,34 @@ import { createRoot } from 'react-dom/client'
 // コンポーネントのインポート
 import Home from './components/Home'
 
+console.log('Application.js loading...')
+
 // Reactコンポーネントをマウントする関数
-window.mountComponent = (componentName, Component) => {
-  const element = document.getElementById(componentName)
-  if (element) {
-    const root = createRoot(element)
-    const props = JSON.parse(element.dataset.props || '{}')
-    root.render(<Component {...props} />)
+const mountComponents = () => {
+  console.log('Mounting components...')
+  
+  const homeRoot = document.getElementById('home-root')
+  if (homeRoot) {
+    console.log('Found home-root, mounting Home component')
+    const props = JSON.parse(homeRoot.dataset.props || '{}')
+    console.log('Props:', props)
+    const root = createRoot(homeRoot)
+    root.render(<Home {...props} />)
+    console.log('Home component mounted successfully')
+  } else {
+    console.log('home-root not found')
   }
 }
 
-// DOMContentLoadedイベントでコンポーネントをマウント
-document.addEventListener('DOMContentLoaded', () => {
-  // 一般ユーザー用コンポーネント
-  window.mountComponent('home-root', Home)
-})
+// 初回読み込み時
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', mountComponents)
+} else {
+  mountComponents()
+}
 
-// Turbo対応（ページ遷移時にも再マウント）
-document.addEventListener('turbo:load', () => {
-  window.mountComponent('home-root', Home)
-})
+// Turbo対応
+document.addEventListener('turbo:load', mountComponents)
+document.addEventListener('turbo:render', mountComponents)
 
 console.log('Application.js loaded successfully!')

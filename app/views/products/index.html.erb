@@ -1,0 +1,23 @@
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">商品一覧</h1>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <% @products.each do |product| %>
+        <a href="<%= product_path(product) %>" class="block group">
+            <div class="aspect-square bg-gray-200 rounded-lg overflow-hidden mb-3">
+                <% if product.image_url %>
+                <img src="<%= product.image_url %>" alt="<%= product.name %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                <% else %>
+                <div class="w-full h-full flex items-center justify-center text-gray-400">画像なし</div>
+                <% end %>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 group-hover:text-pink-600"><%= product.name %></h3>
+            <p class="text-gray-600">¥<%= number_to_currency(product.price, unit: '', precision: 0) %></p>
+        </a>
+        <% end %>
+    </div>
+
+    <div class="mt-8">
+        <a href="<%= root_path %>" class="text-pink-600 hover:underline">← トップに戻る</a>
+    </div>
+</div>

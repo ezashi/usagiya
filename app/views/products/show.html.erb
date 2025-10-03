@@ -1,0 +1,26 @@
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                <% if @product.image_url %>
+                <img src="<%= @product.image_url %>" alt="<%= @product.name %>" class="w-full h-full object-cover">
+                <% else %>
+                <div class="w-full h-full flex items-center justify-center text-gray-400">画像なし</div>
+                <% end %>
+            </div>
+
+            <div>
+                <h1 class="text-3xl font-bold mb-4"><%= @product.name %></h1>
+                <p class="text-2xl text-pink-600 font-bold mb-6">¥<%= number_to_currency(@product.price, unit: '', precision: 0) %></p>
+
+                <div class="prose max-w-none">
+                    <%= @product.description %>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <a href="<%= root_path %>" class="text-pink-600 hover:underline">← トップに戻る</a>
+        </div>
+    </div>
+</div>

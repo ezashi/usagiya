@@ -1,116 +1,21 @@
-<% content_for :title, "お知らせ一覧 - うさぎや" %>
-<% content_for :description, "うさぎやからのお知らせ一覧。営業情報や新商品のご案内など、最新情報をお届けします。" %>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">お知らせ</h1>
 
-<div class="w-full max-w-4xl mx-auto">
-    <!-- ページヘッダー -->
-    <div class="mb-12 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">お知らせ</h1>
-        <p class="text-gray-600 text-lg">うさぎやからの最新情報をお届けします</p>
-    </div>
-
-    <!-- パンくずリスト -->
-    <nav class="mb-8" aria-label="パンくずリスト">
-        <ol class="flex items-center space-x-2 text-sm text-gray-600">
-            <li>
-                <%= link_to root_path, class: "hover:text-pink-600 transition-colors" do %>
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                <% end %>
-            </li>
-            <li>
-                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                </svg>
-            </li>
-            <li class="font-medium text-gray-800">お知らせ</li>
-        </ol>
-    </nav>
-
-    <% if @notices.any? %>
-    <!-- お知らせリスト -->
     <div class="space-y-6">
         <% @notices.each do |notice| %>
-        <%= link_to notice_path(notice), class: "block group" do %>
-        <article class="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-1">
-            <div class="p-6 md:p-8">
-                <!-- 日付バッジ -->
-                <div class="flex items-start mb-4">
-                    <div class="flex-shrink-0 mr-6">
-                        <div class="bg-pink-50 border-2 border-pink-200 rounded-xl px-4 py-3 text-center min-w-[90px] group-hover:bg-pink-100 transition-colors">
-                            <div class="text-xs font-medium text-pink-600 uppercase">
-                                <%= notice.published_at.strftime("%Y") %>
-                            </div>
-                            <div class="text-3xl font-bold text-pink-600">
-                                <%= notice.published_at.strftime("%m/%d") %>
-                            </div>
-                            <div class="text-xs text-pink-500 mt-1">
-                                <%= %w[日 月 火 水 木 金 土][notice.published_at.wday] %>曜日
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- タイトルと概要 -->
-                    <div class="flex-1 min-w-0">
-                        <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-3 group-hover:text-pink-600 transition-colors line-clamp-2">
-                            <%= notice.title %>
-                        </h2>
-                        <p class="text-gray-600 leading-relaxed line-clamp-3 mb-4">
-                            <%= notice.content.truncate(150) %>
-                        </p>
-
-                        <!-- 続きを読むリンク -->
-                        <div class="flex items-center text-pink-600 font-medium">
-                            <span class="text-sm">続きを読む</span>
-                            <svg class="w-4 h-4 ml-2 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
+        <a href="<%= notice_path(notice) %>" class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
+            <div class="flex justify-between items-start mb-3">
+                <h2 class="text-xl font-semibold text-gray-800"><%= notice.title %></h2>
+                <span class="text-sm text-gray-500"><%= notice.published_at.strftime('%Y年%m月%d日') %></span>
             </div>
-
-            <!-- NEWバッジ（7日以内の投稿） -->
-            <% if notice.published_at > 7.days.ago %>
-            <div class="px-6 pb-6 md:px-8">
-                <span class="inline-flex items-center bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
-                    </svg>
-                    NEW
-                </span>
+            <div class="text-gray-600 line-clamp-2">
+                <%= strip_tags(notice.content.to_s) %>
             </div>
-            <% end %>
-        </article>
-        <% end %>
+        </a>
         <% end %>
     </div>
 
-    <!-- ページネーション -->
-    <div class="mt-12">
-        <%#= paginate @notices if @notices.respond_to?(:total_pages) %>
-    </div>
-
-    <% else %>
-    <!-- お知らせがない場合 -->
-    <div class="text-center py-20">
-        <div class="inline-block p-8 bg-white rounded-2xl shadow-lg">
-            <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-            </svg>
-            <p class="text-gray-500 text-lg font-medium mb-2">現在、お知らせはありません</p>
-            <p class="text-gray-400 text-sm">しばらくお待ちください</p>
-        </div>
-    </div>
-    <% end %>
-
-    <!-- トップページへのリンク -->
-    <div class="mt-12 text-center">
-        <%= link_to root_path, class: "inline-flex items-center text-gray-600 hover:text-gray-800 font-medium transition-colors" do %>
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        トップページに戻る
-        <% end %>
+    <div class="mt-8">
+        <a href="<%= root_path %>" class="text-pink-600 hover:underline">← トップに戻る</a>
     </div>
 </div>

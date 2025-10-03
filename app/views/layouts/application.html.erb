@@ -32,43 +32,13 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Arial, sans-serif;
             overflow-x: hidden;
         }
-
-        /* ハンバーガーメニューアニメーション */
-        .hamburger-line {
-            transition: transform 0.3s ease;
-        }
-
-        .hamburger:hover .hamburger-line:first-child {
-            transform: translateY(-3px);
-        }
-
-        .hamburger:hover .hamburger-line:last-child {
-            transform: translateY(3px);
-        }
-
-        /* フルスクリーンメニュー */
-        .fullscreen-menu {
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .fullscreen-menu.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .fullscreen-menu.visible {
-            opacity: 1;
-            visibility: visible;
-        }
     </style>
 
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
 </head>
 
 <body>
-    <main class="container mx-auto mt-28 px-5 flex">
-        <%= yield %>
-    </main>
+    <%= yield %>
 </body>
 
 </html>

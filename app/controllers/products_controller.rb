@@ -1,14 +1,20 @@
+# app/controllers/products_controller.rb
 class ProductsController < ApplicationController
   def index
-    @products = Product.visible.ordered
+    @products = Product.published.ordered_by_display
   end
 
   def show
     @product = Product.find(params[:id])
   end
 
-  # おすすめ商品ページ
   def featured
-    @featured_products = Product.visible.featured.ordered
+    @products = Product.published.featured
+    render :index
+  end
+
+  def seasonal
+    @products = Product.published.seasonal
+    render :index
   end
 end
