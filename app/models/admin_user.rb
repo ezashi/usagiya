@@ -1,36 +1,24 @@
 class AdminUser < ApplicationRecord
-  has_secure_password
+  # Devise modules
+  devise :database_authenticatable,
+         :rememberable,
+         :trackable,
+         :validatable
 
   # Validations
-  validates :email, presence: { message: "管理者ユーザーIDを入力してください" },
-                    uniqueness: { message: "このユーザーIDは既に使用されています" },
-                    format: { with: URI::MailTo::EMAIL_REGEXP, message: "正しいメールアドレス形式で入力してください" }
-  validates :password, presence: { message: "パスワードを入力してください" },
-                       length: { minimum: 7, message: "パスワードは7文字以上で入力してください" },
-                       on: :create
-  validates :password, length: { minimum: 7, message: "パスワードは7文字以上で入力してください" },
-                       allow_blank: true,
-                       on: :update
+  validates :email, presence: true, uniqueness: true
+  validates :password, length: { minimum: 7 }, if: :password_required?
 
   # Callbacks
-  after_initialize :set_defaults, if: :new_record?
-
-  # Authentication
-  def self.authenticate(email, password)
-    user = find_by(email: email)
-
-    if user&.authenticate(password)
-      AdminLoginMailer.successful_login(user).deliver_later
-      user
-    else
-      AdminLoginMailer.failed_login_attempt(email).deliver_later
-      nil
-    end
-  end
+  after_create :send_login_notification
 
   private
 
-  def set_defaults
-    # Set any default values if needed
+  def send_login_notification
+    AdminLoginMailer.successful_login(self).deliver_later
+  end
+
+  def password_required?
+    !persisted? || !password.nil? || !password_confirmation.nil?
   end
 end
