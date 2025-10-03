@@ -4,7 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>御菓子処うさぎや</title>
+    <title>御菓子処うさぎや - トップページ</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
     <style>
         * {
             margin: 0;
@@ -13,91 +18,114 @@
         }
 
         body {
-            font-family: 'Noto Serif JP', serif;
-            color: #4a3728;
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: #333;
             overflow-x: hidden;
         }
 
-        /* ヘッダー */
+        /* ヘッダー - 画像の上に重ねる */
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 80px;
             z-index: 1000;
-            background: transparent;
-            padding: 0 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 30px 40px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 1.5rem;
             font-weight: bold;
-            color: #ffffff;
-            letter-spacing: 2px;
+            color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
+        /* ナビゲーション - 常に表示 */
         nav {
             display: flex;
-            gap: 40px;
+            gap: 30px;
             align-items: center;
         }
 
         nav a {
             text-decoration: none;
-            color: #ffffff;
-            font-size: 14px;
-            letter-spacing: 1px;
-            transition: color 0.3s;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
         }
 
         nav a:hover {
-            color: #d4a574;
+            color: #ffb3d9;
+            transform: translateY(-2px);
         }
 
-        /* ハンバーガーメニュー */
+        /* ハンバーガーメニュー - 横棒が近づく動き */
         .hamburger {
-            width: 30px;
-            height: 20px;
-            cursor: pointer;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            position: relative;
+            cursor: pointer;
+            gap: 8px;
+            padding: 10px;
+            margin-left: 20px;
         }
 
         .hamburger span {
-            width: 100%;
-            height: 2px;
-            background: #ffffff;
-            transition: transform 0.3s;
+            width: 30px;
+            height: 3px;
+            background: white;
+            transition: all 0.3s ease;
+            border-radius: 2px;
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
+        /* ホバー時：上の横棒は下に、下の横棒は上に */
         .hamburger:hover span:first-child {
-            transform: translateY(-3px);
+            transform: translateY(4px);
+            background: #ffb3d9;
         }
 
         .hamburger:hover span:last-child {
-            transform: translateY(3px);
+            background: #ffb3d9;
         }
 
-        /* サイドメニュー */
+        /* クリック時 */
+        .hamburger:active span {
+            background: #ff8ec9;
+        }
+
+        /* オーバーレイとサイドメニュー */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
         .side-menu {
             position: fixed;
             top: 0;
-            right: -100%;
-            width: 400px;
-            height: 100vh;
-            background: #f5f0e8;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+            transition: right 0.3s;
             z-index: 2000;
-            padding: 80px 50px;
-            transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
         }
 
@@ -106,73 +134,63 @@
         }
 
         .side-menu-close {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            font-size: 30px;
+            text-align: right;
+            font-size: 2rem;
+            padding: 20px;
             cursor: pointer;
-            color: #4a3728;
+            color: #d4006a;
+            transition: color 0.3s;
+        }
+
+        .side-menu-close:hover {
+            color: #ff1493;
         }
 
         .side-menu-links {
             list-style: none;
-            margin-bottom: 40px;
+            padding: 20px;
         }
 
         .side-menu-links li {
-            margin-bottom: 25px;
+            margin: 20px 0;
         }
 
         .side-menu-links a {
             text-decoration: none;
-            color: #4a3728;
-            font-size: 16px;
-            letter-spacing: 1px;
-            transition: color 0.3s;
+            color: #333;
+            font-size: 1.1rem;
             display: block;
+            padding: 10px;
+            transition: all 0.3s;
         }
 
         .side-menu-links a:hover {
-            color: #d4a574;
+            background: #f0f0f0;
+            color: #d4006a;
+            transform: translateX(5px);
         }
 
-        /* オーバーレイ */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1500;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* メインビジュアル */
+        /* メインビジュアル - 画面いっぱい（レスポンシブ対応） */
         .main-visual {
+            position: relative;
             width: 100%;
             height: 100vh;
-            position: relative;
             overflow: hidden;
-            background: #f5f0e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
         }
 
         .slide {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
-            overflow: hidden;
+            transition: opacity 1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .slide.active {
@@ -180,118 +198,189 @@
         }
 
         .slide img {
+            max-width: 100%;
+            max-height: 100%;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
+            object-position: center;
+        }
+
+        /* コンテンツエリア */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
         }
 
         /* 店舗情報セクション */
         .shop-info {
-            padding: 100px 50px;
-            background: #f5f0e8;
+            padding: 80px 40px;
+            background: #f9f9f9;
             text-align: center;
         }
 
         .shop-info h2 {
-            font-size: 32px;
-            margin-bottom: 50px;
-            color: #8b4513;
-            letter-spacing: 3px;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #d4006a;
         }
 
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 40px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .info-item {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
         .info-item h3 {
-            font-size: 20px;
-            margin-bottom: 15px;
-            color: #8b4513;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #d4006a;
         }
 
         .info-item p {
-            line-height: 1.8;
-            font-size: 14px;
+            color: #666;
         }
 
-        .sns-links {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .sns-links a {
-            display: inline-block;
-            padding: 10px 25px;
-            background: #8b4513;
-            color: white;
+        .info-item a {
+            color: #d4006a;
             text-decoration: none;
-            border-radius: 25px;
-            transition: background 0.3s;
-            font-size: 14px;
+            font-weight: 500;
         }
 
-        .sns-links a:hover {
-            background: #d4a574;
+        .info-item a:hover {
+            text-decoration: underline;
         }
 
-        @media (max-width: 768px) {
+        /* レスポンシブ */
+        @media (max-width: 1024px) {
             header {
-                padding: 0 20px;
-                height: 60px;
+                padding: 20px 30px;
             }
 
             nav {
-                display: none;
+                gap: 20px;
             }
 
-            .side-menu {
-                width: 80%;
+            nav a {
+                font-size: 0.9rem;
             }
 
             .main-visual {
                 height: 80vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 20px;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            nav {
+                gap: 15px;
+            }
+
+            nav a {
+                font-size: 0.85rem;
+            }
+
+            .hamburger {
+                margin-left: 10px;
+            }
+
+            .hamburger span {
+                width: 25px;
+            }
+
+            .main-visual {
+                height: 60vh;
+                min-height: 400px;
+            }
+
+            .slide img {
+                object-fit: contain;
             }
 
             .shop-info {
                 padding: 60px 20px;
             }
 
+            .shop-info h2 {
+                font-size: 1.75rem;
+            }
+
             .info-grid {
                 grid-template-columns: 1fr;
             }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            nav {
+                gap: 10px;
+            }
+
+            nav a {
+                font-size: 0.75rem;
+            }
+
+            .hamburger span {
+                width: 22px;
+                height: 2px;
+            }
+
+            .main-visual {
+                height: 50vh;
+                min-height: 350px;
+            }
+
+            .shop-info h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* 画像が読み込まれない場合の背景 */
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0.1;
+            z-index: -1;
         }
     </style>
 </head>
 
 <body>
-    <!-- ヘッダー -->
+    <!-- ヘッダー（画像の上に重なる） -->
     <header>
         <div class="logo">御菓子処うさぎや</div>
         <nav>
-            <a href="#home">ホーム</a>
-            <a href="#recommended">おすすめ商品</a>
-            <a href="#seasonal">季節限定商品</a>
-            <a href="#news">お知らせ</a>
-            <a href="#contact">お問い合わせ</a>
+            <%= link_to "ホーム", root_path %>
+            <%= link_to "おすすめ商品", featured_products_path %>
+            <%= link_to "季節限定商品", "#seasonal" %>
+            <%= link_to "お知らせ", notices_path %>
+            <%= link_to "お問い合わせ", new_inquiry_path %>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+            </div>
         </nav>
-        <div class="hamburger" id="hamburger">
-            <span></span>
-            <span></span>
-        </div>
     </header>
 
     <!-- オーバーレイ -->
@@ -301,68 +390,83 @@
     <div class="side-menu" id="sideMenu">
         <div class="side-menu-close" id="closeMenu">&times;</div>
         <ul class="side-menu-links">
-            <li><a href="#philosophy">御菓子処うさぎやの想い</a></li>
-            <li><a href="#recommended">おすすめ商品</a></li>
-            <li><a href="#seasonal">季節限定商品</a></li>
-            <li><a href="#delivery">冷凍もちパイの発送</a></li>
-            <li><a href="#satofuru">さとふる</a></li>
-            <li><a href="#news">お知らせ</a></li>
-            <li><a href="#calendar">営業カレンダー</a></li>
-            <li><a href="#line">LINE</a></li>
-            <li><a href="#instagram">Instagram</a></li>
-            <li><a href="#contact">お問い合わせ</a></li>
+            <li><%= link_to "ホーム", root_path %></li>
+            <li><%= link_to "御菓子処うさぎやの想い", "#philosophy" %></li>
+            <li><%= link_to "おすすめ商品", featured_products_path %></li>
+            <li><%= link_to "季節限定商品", "#seasonal" %></li>
+            <li><%= link_to "全商品一覧", products_path %></li>
+            <li><%= link_to "冷凍もちパイの発送", "#delivery" %></li>
+            <li><%= link_to "さとふる", "https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1" %></li>
+            <li><%= link_to "お知らせ", notices_path %></li>
+            <li><%= link_to "営業カレンダー", "#calendar" %></li>
+            <li><%= link_to "LINE", "#line" %></li>
+            <li><%= link_to "Instagram", "#instagram" %></li>
+            <li><%= link_to "お問い合わせ", new_inquiry_path %></li>
         </ul>
     </div>
 
-    <!-- メインビジュアル -->
+    <!-- メインビジュアル（画面いっぱい） -->
     <section class="main-visual">
         <div class="slide active">
-            <%= image_tag 'top/mamedaifuku_kusamoti.jpg' %>
+            <%= image_tag 'top/mamedaifuku_kusamoti.jpg', alt: '豆大福と草餅' %>
         </div>
         <div class="slide">
-            <%= image_tag 'top/usagimanju.jpg' %>
+            <%= image_tag 'top/usagimanju.jpg', alt: 'うさぎまんじゅう' %>
         </div>
         <div class="slide">
-            <%= image_tag 'top/motipai.jpg' %>
+            <%= image_tag 'top/motipai.jpg', alt: 'もちパイ' %>
+        </div>
+        <div class="slide">
+            <%= link_to image_tag('top/satofuru.jpg', alt: 'さとふる'), 'https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1' %>
         </div>
     </section>
 
-    <!-- 店舗情報セクション -->
-    <section class="shop-info" id="shop-info">
-        <h2>店舗情報</h2>
-        <div class="info-grid">
-            <div class="info-item">
-                <h3>住所</h3>
-                <p>
-                    〒000-0000<br>
-                    ○○県○○市○○町0-0-0<br>
-                    御菓子処うさぎや
-                </p>
-            </div>
-            <div class="info-item">
-                <h3>営業時間</h3>
-                <p>
-                    平日：9:00 - 18:00<br>
-                    土日祝：9:00 - 17:00<br>
-                    定休日：水曜日
-                </p>
-            </div>
-            <div class="info-item">
-                <h3>SNS</h3>
-                <p>最新情報はこちらから</p>
-                <div class="sns-links">
-                    <a href="#line">LINE</a>
-                    <a href="#instagram">Instagram</a>
+    <!-- コンテンツエリア -->
+    <div class="content-wrapper">
+        <!-- 店舗情報セクション -->
+        <section class="shop-info" id="shop-info">
+            <h2>店舗情報</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>住所</h3>
+                    <p>
+                        〒910-0001<br>
+                        福井県鯖江市持明寺町5-10-1
+                    </p>
                 </div>
-            </div>
-        </div>
-    </section>
+                <div class="info-item">
+                    <h3>営業時間</h3>
+                    <p>
+                        平日・土曜日: 9:00〜18:00<br>
+                        定休日: 日曜日<br>
+                        （月曜日に不定休あり）
+                    </p>
+                </div>
+                <div class="info-item">
+                    <h3>電話番号</h3>
+                    <p>
+                        TEL: 0778-62-0861
+                    </p>
+                </div>
+                <div class="info-item">
+                    <h3>アクセス</h3>
+                    <p>
+                        <%= link_to "Googleマップで見る", "#", target: "_blank" %>
+                    </p>
+                    <h3>SNS</h3>
+                    <p>
+                        <%= link_to image_tag('shop/line.png', alt: 'LINE'), 'https://page.line.me/296kbwry?openQrModal=true' %>
+                        <%= link_to image_tag('shop/instagram.png', alt: 'Instagram'), 'https://www.instagram.com/usagiya.fukui/?hl=ja' %>
+                    </p>
+                </div>
+        </section>
+    </div>
 
+    <!-- JavaScriptでスライドショーとハンバーガーメニューを制御 -->
     <script>
-        // スライドショー機能
+        // スライドショー
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
-        const slideInterval = 3000; // 3秒
 
         function showSlide(index) {
             slides.forEach((slide, i) => {
@@ -378,27 +482,28 @@
             showSlide(currentSlide);
         }
 
-        setInterval(nextSlide, slideInterval);
+        setInterval(nextSlide, 5000); // 5秒ごとにスライド切り替え
 
         // ハンバーガーメニュー
         const hamburger = document.getElementById('hamburger');
         const sideMenu = document.getElementById('sideMenu');
-        const closeMenu = document.getElementById('closeMenu');
         const overlay = document.getElementById('overlay');
+        const closeMenu = document.getElementById('closeMenu');
 
-        function openMenu() {
+        hamburger.addEventListener('click', () => {
             sideMenu.classList.add('active');
             overlay.classList.add('active');
-        }
+        });
 
-        function closeMenuFunc() {
+        closeMenu.addEventListener('click', () => {
             sideMenu.classList.remove('active');
             overlay.classList.remove('active');
-        }
+        });
 
-        hamburger.addEventListener('click', openMenu);
-        closeMenu.addEventListener('click', closeMenuFunc);
-        overlay.addEventListener('click', closeMenuFunc);
+        overlay.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        });
     </script>
 </body>
 

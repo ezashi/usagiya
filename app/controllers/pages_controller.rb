@@ -1,7 +1,14 @@
-class PagesController < ApplicationController
-  def home
-    # トップページに表示する商品を取得
-    @featured_products = Product.visible.featured.ordered.limit(6)
-    @all_products = Product.visible.ordered
+class ProductsController < ApplicationController
+  def index
+    @products = Product.visible.ordered
+  end
+
+  def show
+    @product = Product.find(params[:id])
+  end
+
+  # おすすめ商品ページ
+  def featured
+    @featured_products = Product.visible.featured.ordered
   end
 end
