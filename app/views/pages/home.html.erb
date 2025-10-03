@@ -1,175 +1,358 @@
-<!-- ヘッダー -->
-<header class="fixed top-0 left-0 right-0 z-50 bg-transparent">
-    <div class="flex items-center justify-between px-8 py-6">
-        <!-- ロゴ -->
-        <div class="flex items-center space-x-12">
-            <%= link_to root_path, class: "text-white text-2xl font-bold tracking-widest" do %>
-            うさぎや
-            <% end %>
+<!DOCTYPE html>
+<html lang="ja">
 
-            <!-- ナビゲーション -->
-            <nav class="hidden md:flex items-center space-x-8 text-white text-sm">
-                <%= link_to "ホーム", root_path, class: "hover:opacity-70 transition-opacity" %>
-                <%= link_to "おすすめ商品", "#recommended", class: "hover:opacity-70 transition-opacity" %>
-                <%= link_to "季節限定商品", "#seasonal", class: "hover:opacity-70 transition-opacity" %>
-                <%= link_to "お知らせ", notices_path, class: "hover:opacity-70 transition-opacity" %>
-                <%= link_to "お問い合わせ", new_inquiry_path, class: "hover:opacity-70 transition-opacity" %>
-            </nav>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>うさぎや</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ヘッダー */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 100%);
+        }
+
+        .logo {
+            font-size: 24px;
+            color: white;
+            text-decoration: none;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+        }
+
+        nav {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.7;
+        }
+
+        /* ハンバーガーメニューボタン */
+        .menu-button {
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            position: relative;
+            margin-left: 20px;
+        }
+
+        .menu-line {
+            width: 100%;
+            height: 2px;
+            background: white;
+            position: absolute;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-line:first-child {
+            top: 0;
+        }
+
+        .menu-line:last-child {
+            bottom: 0;
+        }
+
+        .menu-button:hover .menu-line:first-child {
+            transform: translateY(-3px);
+        }
+
+        .menu-button:hover .menu-line:last-child {
+            transform: translateY(3px);
+        }
+
+        .menu-button.active .menu-line:first-child {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .menu-button.active .menu-line:last-child {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* メインビジュアル */
+        .main-visual {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* スクロールエリア */
+        .info-section {
+            padding: 80px 40px;
+            background: #f9f9f9;
+            text-align: center;
+        }
+
+        .info-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .info-content h2 {
+            font-size: 28px;
+            margin-bottom: 40px;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+        }
+
+        .info-item {
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .info-item strong {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .social-links a {
+            color: #333;
+            text-decoration: none;
+            font-size: 16px;
+            transition: opacity 0.3s;
+        }
+
+        .social-links a:hover {
+            opacity: 0.6;
+        }
+
+        /* サイドメニュー */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100vh;
+            background: white;
+            z-index: 999;
+            transition: right 0.5s ease;
+            display: flex;
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        .menu-links {
+            width: 50%;
+            padding: 100px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .menu-links a {
+            color: #333;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            transition: opacity 0.3s;
+        }
+
+        .menu-links a:hover {
+            opacity: 0.6;
+        }
+
+        .menu-image {
+            width: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .menu-image img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            nav {
+                gap: 20px;
+            }
+
+            nav a {
+                font-size: 12px;
+            }
+
+            .side-menu {
+                flex-direction: column;
+            }
+
+            .menu-links,
+            .menu-image {
+                width: 100%;
+            }
+
+            .menu-links {
+                padding: 80px 30px 40px;
+            }
+
+            .menu-image {
+                height: 40vh;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <a href="#" class="logo">うさぎや</a>
+        <nav>
+            <a href="#home">ホーム</a>
+            <a href="#recommend">おすすめ商品</a>
+            <a href="#seasonal">季節限定商品</a>
+            <a href="#news">お知らせ</a>
+            <a href="#contact">お問い合わせ</a>
+            <div class="menu-button" onclick="toggleMenu()">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- メインビジュアル -->
+    <div class="main-visual">
+        <div class="slide active">
+            <img src="/app/assets/images/top/mamedaifuku_kusamoti.jpg" alt="豆大福・草もち">
         </div>
-
-        <!-- 言語切替とハンバーガーメニュー -->
-        <div class="flex items-center space-x-6">
-            <span class="text-white text-sm">JA</span>
-
-            <!-- ハンバーガーメニュー -->
-            <button id="hamburgerBtn" class="hamburger flex flex-col justify-center items-center w-8 h-8 space-y-2">
-                <span class="hamburger-line block w-8 h-0.5 bg-white"></span>
-                <span class="hamburger-line block w-8 h-0.5 bg-white"></span>
-            </button>
+        <div class="slide">
+            <img src="/app/assets/images/top/usagimanju.jpg" alt="うさぎやまんじゅう">
+        </div>
+        <div class="slide">
+            <img src="/app/assets/images/top/motipai.jpg" alt="もちパイ">
         </div>
     </div>
-</header>
 
-<!-- フルスクリーンメニュー -->
-<div id="fullscreenMenu" class="fullscreen-menu hidden fixed inset-0 bg-white z-40 flex items-center justify-center">
-    <button id="closeMenuBtn" class="absolute top-8 right-8 text-4xl text-gray-800 hover:opacity-70">×</button>
+    <!-- スクロールエリア -->
+    <section class="info-section">
+        <div class="info-content">
+            <h2>店舗情報</h2>
 
-    <nav class="text-center">
-        <ul class="space-y-6 text-2xl">
-            <li><%= link_to "おすすめ商品", "#recommended", class: "hover:opacity-70 transition-opacity" %></li>
-            <li><%= link_to "季節限定商品", "#seasonal", class: "hover:opacity-70 transition-opacity" %></li>
-            <li><%= link_to "冷凍もちパイの発送", new_order_path, class: "hover:opacity-70 transition-opacity" %></li>
-            <li><%= link_to "さとふる", "#", target: "_blank", class: "hover:opacity-70 transition-opacity" %></li>
-            <li><%= link_to "お知らせ", notices_path, class: "hover:opacity-70 transition-opacity" %></li>
-            <li><%= link_to "営業カレンダー", "#", class: "hover:opacity-70 transition-opacity" %></li>
-            <li><%= link_to "LINE", "#", target: "_blank", class: "hover:opacity-70 transition-opacity" %></li>
-            <li><%= link_to "Instagram", "#", target: "_blank", class: "hover:opacity-70 transition-opacity" %></li>
-            <li><%= link_to "お問い合わせ", new_inquiry_path, class: "hover:opacity-70 transition-opacity" %></li>
-        </ul>
-    </nav>
-</div>
-
-<!-- メインビジュアル（フルスクリーン画像スライダー） -->
-<section class="relative w-full h-screen overflow-hidden">
-    <!-- スライド1 -->
-    <div class="hero-slide absolute inset-0 opacity-100 transition-opacity duration-1000">
-        <%= image_tag "top/mamedaifuku_kusamoti.jpg", 
-        class: "w-full h-full object-cover", 
-        alt: "豆大福と草餅" %>
-        <div class="absolute inset-0 bg-black bg-opacity-30"></div>
-    </div>
-
-    <!-- スライド2 -->
-    <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-1000">
-        <%= image_tag "top/usagimanju.jpg", 
-        class: "w-full h-full object-cover", 
-        alt: "うさぎまんじゅう" %>
-        <div class="absolute inset-0 bg-black bg-opacity-30"></div>
-    </div>
-
-    <!-- スライド3 -->
-    <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-1000">
-        <%= image_tag "top/motipai.jpg", 
-        class: "w-full h-full object-cover", 
-        alt: "もちパイ" %>
-        <div class="absolute inset-0 bg-black bg-opacity-30"></div>
-    </div>
-
-    <!-- スクロールダウン表示 -->
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white text-sm animate-bounce">
-        <div class="flex flex-col items-center">
-            <span class="mb-2">SCROLL</span>
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-        </div>
-    </div>
-</section>
-
-<!-- 店舗情報セクション -->
-<section class="py-20 bg-white">
-    <div class="max-w-4xl mx-auto px-8 text-center">
-        <h2 class="text-3xl font-light mb-12 tracking-wider">店舗情報</h2>
-
-        <div class="space-y-6 text-gray-700">
-            <div>
-                <h3 class="text-lg font-medium mb-2">住所</h3>
-                <p>〒XXX-XXXX 東京都XX区XXXX</p>
+            <div class="info-item">
+                <strong>住所</strong>
+                東京都○○区○○ 1-2-3
             </div>
 
-            <div>
-                <h3 class="text-lg font-medium mb-2">営業時間</h3>
-                <p>平日: 9:00 - 18:00</p>
-                <p>土日祝: 9:00 - 17:00</p>
-                <p class="text-sm text-gray-500 mt-2">定休日: 水曜日</p>
+            <div class="info-item">
+                <strong>営業時間</strong>
+                10:00 - 18:00<br>
+                定休日: 水曜日
             </div>
 
-            <div class="flex justify-center space-x-8 mt-8">
-                <%= link_to "#", target: "_blank", class: "hover:opacity-70 transition-opacity" do %>
-                <div class="flex flex-col items-center">
-                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white mb-2">
-                        <span class="text-xl font-bold">LINE</span>
-                    </div>
-                    <span class="text-sm">LINE</span>
-                </div>
-                <% end %>
-
-                <%= link_to "#", target: "_blank", class: "hover:opacity-70 transition-opacity" do %>
-                <div class="flex flex-col items-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white mb-2">
-                        <span class="text-xl font-bold">IG</span>
-                    </div>
-                    <span class="text-sm">Instagram</span>
-                </div>
-                <% end %>
+            <div class="social-links">
+                <a href="#line">LINE</a>
+                <a href="#instagram">Instagram</a>
             </div>
         </div>
+    </section>
+
+    <!-- サイドメニュー -->
+    <div class="side-menu">
+        <div class="menu-links">
+            <a href="#explanation">御菓子処うさぎやの想い</a>
+            <a href="#recommend">おすすめ商品</a>
+            <a href="#seasonal">季節限定商品</a>
+            <a href="#frozen">冷凍もちパイの発送</a>
+            <a href="#satofuru">さとふる</a>
+            <a href="#news">お知らせ</a>
+            <a href="#calendar">営業カレンダー</a>
+            <a href="#line">LINE</a>
+            <a href="#instagram">Instagram</a>
+            <a href="#contact">お問い合わせ</a>
+        </div>
     </div>
-</section>
 
-<!-- JavaScript -->
-<script>
-    // スライドショー
-    const slides = document.querySelectorAll('.hero-slide');
-    let currentSlide = 0;
+    <script>
+        // スライドショー
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
 
-    function showSlide(index) {
-        slides.forEach((slide, i) => {
-            slide.style.opacity = i === index ? '1' : '0';
-        });
-    }
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
 
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-    }
+        setInterval(() => {
+            showSlide(currentSlide + 1);
+        }, 4000);
 
-    // 4秒ごとにスライド切り替え
-    setInterval(nextSlide, 4000);
+        // メニュー切り替え
+        function toggleMenu() {
+            const menu = document.querySelector('.side-menu');
+            const button = document.querySelector('.menu-button');
+            menu.classList.toggle('active');
+            button.classList.toggle('active');
+        }
+    </script>
+</body>
 
-    // ハンバーガーメニュー
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-    const fullscreenMenu = document.getElementById('fullscreenMenu');
-    const closeMenuBtn = document.getElementById('closeMenuBtn');
-
-    hamburgerBtn.addEventListener('click', () => {
-        fullscreenMenu.classList.remove('hidden');
-        fullscreenMenu.classList.add('visible');
-        document.body.style.overflow = 'hidden';
-    });
-
-    closeMenuBtn.addEventListener('click', () => {
-        fullscreenMenu.classList.remove('visible');
-        fullscreenMenu.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    });
-
-    // メニューリンククリックで閉じる
-    fullscreenMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            fullscreenMenu.classList.remove('visible');
-            fullscreenMenu.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        });
-    });
-</script>
+</html>
