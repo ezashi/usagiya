@@ -7,7 +7,7 @@ const getInitialBgColor = () => {
 }
 
 const getRandomHoverColor = () => {
-  const colors = ['#EE827C', '#165e83', '#ffae8a', '#F0908D', '#e1e3e6', '#ee836f', '#2e4b71', '#eee8aa']
+  const colors = ['#EE827C', '#165e83', '#ffae8a', '#F0908D', '#e1e3e6', '#ee836f', '#2e4b71', '#eee8aa', '#ede4e1']
   return colors[Math.floor(Math.random() * colors.length)]
 }
 

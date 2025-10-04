@@ -8,63 +8,79 @@
         background-color: #f9f9f9;
     }
 
-    .product-detail-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 140px 2rem 4rem;
+    /* 左上の戻るボタン */
+    .back-button-top {
+        position: fixed;
+        top: 140px;
+        left: 2rem;
+        z-index: 100;
+        display: inline-block;
+        padding: 0.75rem 2rem;
+        background-color: #ffc0cb;
+        color: #000;
+        -webkit-text-stroke: 0.65px #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        backdrop-filter: blur(10px);
     }
 
-    .product-detail-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
+    .back-button-top:hover {
+        background-color: #DB2777;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
-    .product-detail-content {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem;
-        padding: 3rem;
-    }
-
-    .product-image-section {
+    /* 商品画像セクション（画面中央フルスクリーン） */
+    .product-hero-section {
+        width: 100%;
+        height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
         background: #F9F9F9;
-        border-radius: 8px;
-        padding: 2rem;
-        min-height: 400px;
+        position: relative;
     }
 
-    .product-image {
-        max-width: 100%;
-        max-height: 500px;
+    .product-hero-image {
+        max-width: 80%;
+        max-height: 80vh;
         object-fit: contain;
-        border-radius: 8px;
     }
 
-    .product-info-section {
+    .no-image-placeholder {
+        width: 400px;
+        height: 400px;
         display: flex;
-        flex-direction: column;
-        gap: 2rem;
+        align-items: center;
+        justify-content: center;
+        background: #ccc;
+        color: white;
+        font-size: 1.5rem;
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
     }
 
-    .product-title {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #333;
-        margin: 0;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #D5016B;
+    /* 商品詳細セクション */
+    .product-detail-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        background: white;
     }
 
-    .product-price {
+    .product-name {
         font-size: 2.5rem;
         font-weight: bold;
-        color: #DB2777;
-        margin: 0;
+        color: #333;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid #D5016B;
+    }
+
+    .product-price-section {
+        margin-bottom: 3rem;
     }
 
     .product-price-label {
@@ -73,16 +89,24 @@
         margin-bottom: 0.5rem;
     }
 
+    .product-price {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #DB2777;
+        margin: 0;
+    }
+
     .product-description {
         line-height: 1.8;
         color: #333;
         font-size: 1.1rem;
+        margin-bottom: 4rem;
     }
 
     .product-description h1,
     .product-description h2,
     .product-description h3 {
-        margin-top: 1.5rem;
+        margin-top: 2rem;
         margin-bottom: 1rem;
         color: #333;
     }
@@ -91,85 +115,79 @@
         max-width: 100%;
         height: auto;
         border-radius: 8px;
-        margin: 1rem 0;
+        margin: 1.5rem 0;
     }
 
     .product-description p {
         margin-bottom: 1rem;
     }
 
-    .back-button {
-        display: inline-block;
-        padding: 0.75rem 2rem;
-        background-color: #ffc0cb;
-        color: #000;
-        -webkit-text-stroke: 0.75px #fff;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s;
-        margin-bottom: 1.5rem;
-    }
-
-    .back-button:hover {
-        background-color: #DB2777;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .back-button-container {
-        margin-bottom: 1rem;
-    }
-
-    .no-image-placeholder {
-        width: 100%;
-        height: 400px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #e0e0e0;
-        color: #999;
-        font-size: 1.2rem;
-        border-radius: 8px;
-    }
-
     /* レスポンシブ対応 */
     @media (max-width: 1024px) {
-        .product-detail-container {
-            padding: 130px 1.5rem 3rem;
+        .back-button-top {
+            top: 130px;
+            left: 1.5rem;
+            padding: 0.6rem 1.5rem;
+            font-size: 0.9rem;
         }
 
-        .product-detail-content {
-            gap: 2rem;
-            padding: 2rem;
+        .product-name {
+            font-size: 2rem;
         }
 
-        .product-title {
+        .product-price {
+            font-size: 2.5rem;
+        }
+
+        .product-detail-section {
+            padding: 3rem 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .back-button-top {
+            top: 110px;
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .product-hero-image {
+            max-width: 90%;
+            max-height: 70vh;
+        }
+
+        .product-name {
             font-size: 1.75rem;
         }
 
         .product-price {
             font-size: 2rem;
         }
+
+        .product-description {
+            font-size: 1rem;
+        }
+
+        .product-detail-section {
+            padding: 2rem 1rem;
+        }
     }
 
-    @media (max-width: 768px) {
-        .product-detail-container {
-            padding: 110px 1rem 2rem;
+    @media (max-width: 480px) {
+        .back-button-top {
+            top: 90px;
+            left: 0.75rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
         }
 
-        .product-detail-content {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            padding: 1.5rem;
+        .product-hero-image {
+            max-width: 95%;
+            max-height: 60vh;
         }
 
-        .product-image-section {
-            min-height: 300px;
-            padding: 1rem;
-        }
-
-        .product-title {
+        .product-name {
             font-size: 1.5rem;
         }
 
@@ -177,73 +195,92 @@
             font-size: 1.75rem;
         }
 
-        .product-description {
-            font-size: 1rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .product-detail-container {
-            padding: 90px 0.75rem 1.5rem;
-        }
-
-        .product-detail-content {
-            padding: 1rem;
-            gap: 1.5rem;
-        }
-
-        .product-title {
-            font-size: 1.25rem;
-        }
-
-        .product-price {
-            font-size: 1.5rem;
-        }
-
-        .product-image-section {
-            min-height: 250px;
+        .product-detail-section {
+            padding: 1.5rem 0.75rem;
         }
     }
 </style>
 
-<div class="product-detail-container">
-    <div class="back-button-container">
-        <%= link_to "← 一覧に戻る", :back, class: 'back-button' %>
+<!-- 左上の戻るボタン -->
+<%= link_to "← 一覧に戻る", :back, class: 'back-button-top' %>
+
+<!-- 商品画像ヒーローセクション -->
+<div class="product-hero-section" id="hero-section">
+    <% if @product.image.attached? %>
+    <%= image_tag @product.image, alt: @product.name, class: 'product-hero-image' %>
+    <% else %>
+    <div class="no-image-placeholder">
+        画像なし
+    </div>
+    <% end %>
+</div>
+
+<!-- 商品詳細セクション -->
+<div class="product-detail-section" id="detail-section">
+    <h1 class="product-name"><%= @product.name %></h1>
+
+    <div class="product-price-section">
+        <p class="product-price-label">価格（税込）</p>
+        <p class="product-price">¥<%= number_with_delimiter(@product.price) %></p>
     </div>
 
-    <div class="product-detail-card">
-        <div class="product-detail-content">
-            <!-- 商品画像セクション -->
-            <div class="product-image-section">
-                <% if @product.image.attached? %>
-                <%= image_tag @product.image, alt: @product.name, class: 'product-image' %>
-                <% else %>
-                <div class="no-image-placeholder">
-                    画像なし
-                </div>
-                <% end %>
-            </div>
-
-            <!-- 商品情報セクション -->
-            <div class="product-info-section">
-                <h1 class="product-title"><%= @product.name %></h1>
-
-                <div>
-                    <p class="product-price-label">価格（税込）</p>
-                    <p class="product-price">¥<%= number_with_delimiter(@product.price) %></p>
-                </div>
-
-                <div class="product-description">
-                    <%= @product.description %>
-                </div>
-            </div>
-        </div>
+    <div class="product-description">
+        <%= @product.description %>
     </div>
 </div>
 
 <script>
-    // サイドメニューのJavaScript（ヘッダー用）
+    // ページ読み込み時に自動スクロール
     document.addEventListener('DOMContentLoaded', function() {
+        let autoScrollCancelled = false;
+        let autoScrollTimer = null;
+
+        // ユーザーがスクロールしたら自動スクロールをキャンセル
+        function cancelAutoScroll() {
+            autoScrollCancelled = true;
+            if (autoScrollTimer) {
+                clearTimeout(autoScrollTimer);
+            }
+            // イベントリスナーを削除
+            window.removeEventListener('wheel', cancelAutoScroll);
+            window.removeEventListener('touchmove', cancelAutoScroll);
+            window.removeEventListener('keydown', cancelAutoScroll);
+        }
+
+        // スクロール系のイベントをリスン
+        window.addEventListener('wheel', cancelAutoScroll, {
+            passive: true
+        });
+        window.addEventListener('touchmove', cancelAutoScroll, {
+            passive: true
+        });
+        window.addEventListener('keydown', function(e) {
+            // 矢印キー、PageUp/Down、Spaceなどでキャンセル
+            if ([32, 33, 34, 35, 36, 37, 38, 39, 40].includes(e.keyCode)) {
+                cancelAutoScroll();
+            }
+        });
+
+        // 0.5秒後に詳細セクションへスムーズにスクロール
+        autoScrollTimer = setTimeout(function() {
+            if (!autoScrollCancelled) {
+                const detailSection = document.getElementById('detail-section');
+                if (detailSection) {
+                    detailSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                // スクロール後にイベントリスナーを削除
+                window.removeEventListener('wheel', cancelAutoScroll);
+                window.removeEventListener('touchmove', cancelAutoScroll);
+                window.removeEventListener('keydown', cancelAutoScroll);
+            }
+        }, 500); // 0.5秒
+    });
+
+    // サイドメニューのJavaScript（ヘッダー用）
+    document.addEventListener('turbo:load', function() {
         const hamburger = document.getElementById('hamburger-featured');
         const overlay = document.getElementById('overlay-featured');
         const sideMenu = document.getElementById('sideMenu-featured');
