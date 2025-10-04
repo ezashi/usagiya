@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 const getInitialBgColor = () => {
-  const colors = ['#fff', '#000']
+  const colors = ['#fff', '#F9F9F9']
   return colors[Math.floor(Math.random() * colors.length)]
 }
 
@@ -11,16 +11,34 @@ const getRandomHoverColor = () => {
   return colors[Math.floor(Math.random() * colors.length)]
 }
 
+// レスポンシブなカードサイズを計算
+const getCardSize = () => {
+  if (typeof window === 'undefined') return '350px'
+  const width = window.innerWidth
+  if (width >= 1440) return '28.5vw' // 3.5個表示
+  if (width >= 1024) return '33.3vw' // 3個表示
+  if (width >= 768) return '50vw'    // 2個表示
+  return '80vw' // モバイル: 1.2個表示
+}
+
 const FeaturedProducts = ({ products = [] }) => {
   const [layout, setLayout] = useState('animation')
   const [titleHover, setTitleHover] = useState(false)
   const [initialBgColor, setInitialBgColor] = useState('#fff')
   const [currentBgColor, setCurrentBgColor] = useState('#fff')
+  const [cardSize, setCardSize] = useState('350px')
 
   useEffect(() => {
     const color = getInitialBgColor()
     setInitialBgColor(color)
     setCurrentBgColor(color)
+    setCardSize(getCardSize())
+
+    const handleResize = () => {
+      setCardSize(getCardSize())
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const handleProductHoverEnter = () => {
@@ -33,28 +51,54 @@ const FeaturedProducts = ({ products = [] }) => {
 
   if (products.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8 text-center">おすすめ商品</h1>
-        <p className="text-center text-gray-600">現在、おすすめ商品はありません。</p>
+      <div style={{ padding: '2rem' }}>
+        <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '2rem', textAlign: 'center' }}>
+          おすすめ商品
+        </h1>
+        <p style={{ textAlign: 'center', color: '#4B5563' }}>現在、おすすめ商品はありません。</p>
       </div>
     )
   }
 
+  // アニメーション用に商品を十分な回数繰り返す（途切れないように）
+  const repeatedProducts = Array(10).fill(products).flat()
+
   return (
     <div 
-      className="min-h-screen py-8 transition-colors duration-500"
-      style={{ backgroundColor: currentBgColor }}
+      style={{ 
+        minHeight: '100vh', 
+        paddingTop: '2rem',
+        paddingBottom: '2rem',
+        backgroundColor: currentBgColor,
+        transition: 'background-color 0.5s'
+      }}
     >
-      {/* ヘッダー - 背景を透明に */}
-      <div className="container mx-auto px-4 mb-8" style={{ backgroundColor: 'transparent' }}>
-        <div className="flex justify-between items-center" style={{ backgroundColor: 'transparent' }}>
-          {/* タイトル（左寄せ） */}
+      {/* ヘッダー - 完全透明 */}
+      <div style={{ 
+        padding: '0 1rem',
+        marginBottom: '2rem',
+        background: 'none',
+        backgroundColor: 'transparent'
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          maxWidth: '1280px',
+          margin: '0 auto',
+          background: 'none',
+          backgroundColor: 'transparent'
+        }}>
+          {/* タイトル */}
           <h1 
-            className="text-4xl font-bold transition-all"
             style={{
+              fontSize: '2.25rem',
+              fontWeight: 'bold',
               color: titleHover ? '#D5016B' : '#fff',
               WebkitTextStroke: '2px #000',
-              cursor: 'default'
+              cursor: 'default',
+              transition: 'color 0.3s',
+              background: 'none'
             }}
             onMouseEnter={() => setTitleHover(true)}
             onMouseLeave={() => setTitleHover(false)}
@@ -62,27 +106,39 @@ const FeaturedProducts = ({ products = [] }) => {
             おすすめ商品
           </h1>
 
-          {/* レイアウト切り替えボタン（右寄せ） */}
-          <div className="flex gap-4">
+          {/* レイアウト切り替えボタン */}
+          <div style={{ display: 'flex', gap: '1rem' }}>
             <button
               onClick={() => setLayout('animation')}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                layout === 'animation'
-                  ? 'bg-pink-600 text-white shadow-lg'
-                  : 'bg-white text-pink-600 border-2 border-pink-600 hover:bg-pink-50'
-              }`}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.5rem',
+                fontWeight: '600',
+                backgroundColor: layout === 'animation' ? '#ffc0cb' : '#fff',
+                color: layout === 'animation' ? '#fff' : '#D5016B',
+                border: layout === 'animation' ? 'none' : '2px solid #DB2777',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                boxShadow: layout === 'animation' ? '0 4px 6px rgba(0,0,0,0.1)' : 'none'
+              }}
             >
               🎬 Motion
             </button>
             <button
               onClick={() => setLayout('grid')}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                layout === 'grid'
-                  ? 'bg-pink-600 text-white shadow-lg'
-                  : 'bg-white text-pink-600 border-2 border-pink-600 hover:bg-pink-50'
-              }`}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.5rem',
+                fontWeight: '600',
+                backgroundColor: layout === 'grid' ? '#ffc0cb' : '#fff',
+                color: layout === 'grid' ? '#fff' : '#D5016B',
+                border: layout === 'grid' ? 'none' : '2px solid #DB2777',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                boxShadow: layout === 'grid' ? '0 4px 6px rgba(0,0,0,0.1)' : 'none'
+              }}
             >
-              📋 List
+              📋 Grid
             </button>
           </div>
         </div>
@@ -90,60 +146,86 @@ const FeaturedProducts = ({ products = [] }) => {
 
       {/* レイアウト1: アニメーション表示 */}
       {layout === 'animation' && (
-        <div className="overflow-hidden">
+        <div style={{ overflow: 'hidden', paddingBottom: '3rem' }}>
           <motion.div
-            className="flex gap-6"
+            style={{ display: 'flex', gap: '1.5rem' }}
             animate={{
-              x: [0, -(360 * products.length)],
+              x: [0, -(parseFloat(cardSize) + 24) * products.length],
             }}
             transition={{
               x: {
                 repeat: Infinity,
                 repeatType: "loop",
-                duration: products.length * 4,
+                duration: products.length * 1.5,
                 ease: "linear",
               },
             }}
           >
-            {[...products, ...products, ...products].map((product, index) => (
+            {repeatedProducts.map((product, index) => (
               <motion.div
                 key={`${product.id}-${index}`}
-                className="flex-shrink-0"
                 style={{ 
-                  width: 'min(350px, 28vw)',
+                  flexShrink: 0,
+                  width: cardSize,
                 }}
                 onMouseEnter={handleProductHoverEnter}
                 onMouseLeave={handleProductHoverLeave}
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <a href={`/products/${product.id}`} className="block group">
+                <a href={`/products/${product.id}`} style={{ display: 'block', textDecoration: 'none' }}>
                   {/* 商品画像エリア */}
                   <div 
-                    className="bg-white rounded-lg shadow-lg overflow-hidden flex items-center justify-center mb-4"
                     style={{ 
                       width: '100%',
-                      height: 'min(350px, 28vw)',
+                      height: cardSize,
+                      backgroundColor: '#fff',
+                      borderRadius: '0.5rem',
+                      boxShadow: '0 10px 15px rgba(0,0,0,0.1)',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '1rem'
                     }}
                   >
                     {product.image_url ? (
                       <img
                         src={product.image_url}
                         alt={product.name}
-                        className="max-w-full max-h-full object-contain p-4"
+                        style={{
+                          maxWidth: '90%',
+                          maxHeight: '90%',
+                          objectFit: 'contain',
+                          padding: '1rem'
+                        }}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg">
+                      <div style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#9CA3AF',
+                        fontSize: '1.125rem'
+                      }}>
                         画像なし
                       </div>
                     )}
                   </div>
 
-                  {/* 商品名（画像の下に中央揃え） */}
-                  <h3 className="text-xl font-bold text-center text-gray-800 px-2"
-                      style={{
-                        textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)'
-                      }}>
+                  {/* 商品名 */}
+                  <h3 style={{
+                    fontSize: '1.25rem',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    color: '#fff',
+                    WebkitTextStroke: '3px #000',
+                    paintOrder: 'stroke fill',
+                    padding: '0 0.5rem',
+                    lineHeight: '1.5'
+                  }}>
                     {product.name}
                   </h3>
                 </a>
@@ -155,40 +237,73 @@ const FeaturedProducts = ({ products = [] }) => {
 
       {/* レイアウト2: グリッド表示 */}
       {layout === 'grid' && (
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div style={{ padding: '0 1rem', maxWidth: '1280px', margin: '0 auto' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: '1.5rem'
+          }}>
             {products.map((product) => (
               <motion.div
                 key={product.id}
-                className="block group"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
                 onMouseEnter={handleProductHoverEnter}
                 onMouseLeave={handleProductHoverLeave}
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.05 }}
+                style={{ paddingBottom: '1rem' }}
               >
-                <a href={`/products/${product.id}`}>
+                <a href={`/products/${product.id}`} style={{ display: 'block', textDecoration: 'none' }}>
                   {/* 商品画像エリア */}
-                  <div className="aspect-square bg-white rounded-lg shadow-md overflow-hidden flex items-center justify-center p-4 mb-2">
+                  <div style={{
+                    aspectRatio: '1',
+                    backgroundColor: '#fff',
+                    borderRadius: '0.5rem',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '1rem',
+                    marginBottom: '0.5rem'
+                  }}>
                     {product.image_url ? (
                       <img
                         src={product.image_url}
                         alt={product.name}
-                        className="max-w-full max-h-full object-contain"
+                        style={{
+                          maxWidth: '100%',
+                          maxHeight: '100%',
+                          objectFit: 'contain'
+                        }}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        <div className="text-sm">画像なし</div>
+                      <div style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#9CA3AF',
+                        fontSize: '0.875rem'
+                      }}>
+                        画像なし
                       </div>
                     )}
                   </div>
 
-                  {/* 商品名（画像の下に中央揃え） */}
-                  <h3 className="text-sm font-semibold text-center text-gray-800 px-1"
-                      style={{
-                        textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)'
-                      }}>
+                  {/* 商品名 */}
+                  <h3 style={{
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    textAlign: 'center',
+                    color: '#fff',
+                    WebkitTextStroke: '2px #000',
+                    paintOrder: 'stroke fill',
+                    padding: '0 0.25rem',
+                    lineHeight: '1.5'
+                  }}>
                     {product.name}
                   </h3>
                 </a>
