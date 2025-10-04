@@ -67,7 +67,7 @@ const SeasonalProducts = ({ products = [] }) => {
     <div 
       style={{ 
         minHeight: '100vh', 
-        paddingTop: '2rem',
+        paddingTop: '140px',
         paddingBottom: '2rem',
         backgroundColor: currentBgColor,
         transition: 'background-color 0.5s'

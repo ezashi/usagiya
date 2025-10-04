@@ -1,4 +1,4 @@
-class ProductsController < ApplicationController
+class FeaturedProductsController < ApplicationController
   def index
     @products = Product.published.ordered_by_display
   end
