@@ -19,27 +19,30 @@ const mountComponents = () => {
 
   // ホームコンポーネント
   const homeRoot = document.getElementById('home-root')
-  if (homeRoot) {
+  if (homeRoot && !homeRoot._reactRoot) {
     const props = JSON.parse(homeRoot.dataset.props || '{}')
     const root = createRoot(homeRoot)
+    homeRoot._reactRoot = root
     root.render(<Home {...props} />)
     console.log('Home mounted')
   }
 
   // おすすめ商品コンポーネント
   const featuredRoot = document.getElementById('featured-products-root')
-  if (featuredRoot) {
+  if (featuredRoot && !featuredRoot._reactRoot) {
     const props = JSON.parse(featuredRoot.dataset.props || '{}')
     const root = createRoot(featuredRoot)
+    featuredRoot._reactRoot = root
     root.render(<FeaturedProducts {...props} />)
     console.log('FeaturedProducts mounted')
   }
 
   // 季節限定商品コンポーネント
   const seasonalRoot = document.getElementById('seasonal-products-root')
-  if (seasonalRoot) {
+  if (seasonalRoot && !seasonalRoot._reactRoot) {
     const props = JSON.parse(seasonalRoot.dataset.props || '{}')
     const root = createRoot(seasonalRoot)
+    seasonalRoot._reactRoot = root
     root.render(<SeasonalProducts {...props} />)
     console.log('SeasonalProducts mounted')
   }
@@ -51,5 +54,9 @@ if (document.readyState === 'loading') {
 } else {
   mountComponents()
 }
+
+// Turbo対応: ページ遷移時にもマウント
+document.addEventListener('turbo:load', mountComponents)
+document.addEventListener('turbo:render', mountComponents)
 
 console.log('Application.js loaded successfully!')

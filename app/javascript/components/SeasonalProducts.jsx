@@ -108,12 +108,12 @@ const SeasonalProducts = ({ products = [] }) => {
           {/* タイトル */}
           <h1 
             style={{
-              fontSize: '2.25rem',
+              fontSize: titleFontSize,
               fontWeight: 'bold',
               color: titleHover ? '#D5016B' : '#fff',
-              WebkitTextStroke: '2px #000',
+              WebkitTextStroke: '1px #000',
               cursor: 'default',
-              transition: 'color 0.3s',
+              transition: 'color 0.3s, font-size 0.3s',
               background: 'none'
             }}
             onMouseEnter={() => setTitleHover(true)}
