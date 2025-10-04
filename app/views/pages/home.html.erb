@@ -19,7 +19,7 @@
         body {
             font-family: 'Noto Sans JP', sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #EE827C;
             overflow-x: hidden;
         }
 
@@ -76,7 +76,7 @@
         }
 
         nav a:hover {
-            color: #ffb3d9;
+            color: #EE827C;
             transform: translateY(-2px);
         }
 
@@ -102,16 +102,16 @@
         /* ホバー時：上の横棒は下に、下の横棒は上に */
         .hamburger:hover span:first-child {
             transform: translateY(4px);
-            background: #ffb3d9;
+            background: #EE827C;
         }
 
         .hamburger:hover span:last-child {
-            background: #ffb3d9;
+            background: #EE827C;
         }
 
         /* クリック時 */
         .hamburger:active span {
-            background: #ff8ec9;
+            background: #EE827C;
         }
 
         /* オーバーレイとサイドメニュー */
@@ -157,7 +157,7 @@
         }
 
         .side-menu-close:hover {
-            color: #ff1493;
+            color: #EE827C;
         }
 
         .side-menu-links {
@@ -180,7 +180,7 @@
 
         .side-menu-links a:hover {
             background: #f0f0f0;
-            color: #d4006a;
+            color: #EE827C;
             transform: translateX(5px);
         }
 
@@ -250,7 +250,7 @@
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 60px;
-            color: #d4006a;
+            color: #D5016B;
             text-align: center;
         }
 
@@ -267,9 +267,9 @@
             display: flex;
             flex-direction: column;
             gap: 30px;
+            align-items: center;
         }
 
-        /* 中央列を中央寄せ */
         .info-column:nth-child(2) {
             justify-content: center;
         }
@@ -282,11 +282,10 @@
             font-size: 1.4rem;
             font-weight: bold;
             margin-bottom: 15px;
-            color: #d4006a;
+            color: #D5016B;
         }
 
         .info-section p {
-            color: #d4006a;
             line-height: 1.8;
             margin: 5px 0;
         }
@@ -301,7 +300,7 @@
         }
 
         .map-link {
-            color: #d4006a;
+            color: #F0908D;
             text-decoration: none;
             font-weight: 500;
         }
@@ -324,9 +323,8 @@
 
         .note {
             font-size: 0.9rem;
-            color: #666;
             margin-top: 10px;
-            text-align: right !important;
+            text-align: left !important;
             max-width: 280px;
             margin-left: auto;
             margin-right: auto;
@@ -338,7 +336,7 @@
         }
 
         .phone a {
-            color: #d4006a;
+            color: #F0908D;
             text-decoration: none;
         }
 
@@ -386,6 +384,10 @@
                 height: 80vh;
             }
 
+            .slide img {
+                object-fit: contain;
+            }
+
             .info-grid-new {
                 grid-template-columns: 1fr;
                 gap: 40px;
@@ -395,14 +397,11 @@
                 font-size: 2rem;
             }
 
-            .info-section {
-                text-align: center;
-            }
-
             .note {
-                text-align: right !important;
+                text-align: left !important;
                 max-width: 280px;
-                margin: 10px auto 0 auto;
+                margin-left: auto;
+                margin-right: auto;
             }
 
             .logo-image {
@@ -458,7 +457,7 @@
             }
 
             .note {
-                text-align: right !important;
+                text-align: left !important;
                 max-width: 320px;
                 margin: 10px auto 0 auto;
                 font-size: 0.85rem;
