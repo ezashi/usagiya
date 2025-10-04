@@ -27,6 +27,7 @@ const SeasonalProducts = ({ products = [] }) => {
   const [initialBgColor, setInitialBgColor] = useState('#fff')
   const [currentBgColor, setCurrentBgColor] = useState('#fff')
   const [cardSize, setCardSize] = useState('350px')
+  const [titleFontSize, setTitleFontSize] = useState('2.25rem')
 
   useEffect(() => {
     const color = getInitialBgColor()
@@ -34,8 +35,23 @@ const SeasonalProducts = ({ products = [] }) => {
     setCurrentBgColor(color)
     setCardSize(getCardSize())
 
+    // タイトルのフォントサイズを設定
+    const updateFontSize = () => {
+      const width = window.innerWidth
+      if (width >= 768) {
+        setTitleFontSize('2.25rem') // PC/タブレット
+      } else if (width >= 480) {
+        setTitleFontSize('1.5rem') // 小型タブレット/大型モバイル
+      } else {
+        setTitleFontSize('1.25rem') // 小型モバイル
+      }
+    }
+
+    updateFontSize()
+
     const handleResize = () => {
       setCardSize(getCardSize())
+      updateFontSize()
     }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
@@ -156,7 +172,7 @@ const SeasonalProducts = ({ products = [] }) => {
               x: {
                 repeat: Infinity,
                 repeatType: "loop",
-                duration: products.length * 2.5,
+                duration: products.length * 1,
                 ease: "linear",
               },
             }}

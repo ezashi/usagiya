@@ -1,10 +1,46 @@
 <%= render 'shared/header' %>
 
-<div id="featured-products-root" data-props='<%= 
-  {products: @products.map { |p| {
-    id: p.id,
-    name: p.name,
-    price: p.price,
-    image_url: p.image_url
-  }}}.to_json %>' class="w-full" style="margin-top: 100px;">
+<div id="featured-products-root" data-props="<%= 
+  {products: @products.map { |p| 
+    {
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      image_url: p.image.attached? ? url_for(p.image) : nil
+    }
+  }}.to_json %>">
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburger = document.getElementById('hamburger-featured');
+        const overlay = document.getElementById('overlay-featured');
+        const sideMenu = document.getElementById('sideMenu-featured');
+        const closeMenu = document.getElementById('closeMenu-featured');
+
+        if (hamburger && overlay && sideMenu && closeMenu) {
+            hamburger.addEventListener('click', function() {
+                overlay.style.display = 'block';
+                sideMenu.style.right = '0';
+            });
+
+            closeMenu.addEventListener('click', function() {
+                overlay.style.display = 'none';
+                sideMenu.style.right = '-300px';
+            });
+
+            overlay.addEventListener('click', function() {
+                overlay.style.display = 'none';
+                sideMenu.style.right = '-300px';
+            });
+        }
+    });
+</script>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+</style>

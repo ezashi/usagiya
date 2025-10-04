@@ -1,16 +1,17 @@
 <%= render 'shared/header' %>
 
 <div id="seasonal-products-root" data-props="<%= 
-  {products: @products.map { |p| {
-    id: p.id,
-    name: p.name,
-    price: p.price,
-    image_url: p.image.attached? ? url_for(p.image) : nil
-  }}}.to_json %>">
+  {products: @products.map { |p| 
+    {
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        image_url: p.image.attached? ? url_for(p.image) : nil
+    }}
+  }.to_json %>">
 </div>
 
 <script>
-    // サイドメニューのJavaScript（ヘッダー用）
     document.addEventListener('DOMContentLoaded', function() {
         const hamburger = document.getElementById('hamburger-featured');
         const overlay = document.getElementById('overlay-featured');

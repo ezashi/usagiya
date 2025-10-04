@@ -1,45 +1,40 @@
 Rails.application.routes.draw do
-  # ルートパス
+  # ルートページ
   root "pages#home"
 
   # 一般ユーザー向けページ
-  resources :products, only: [:show]
-  resources :inquiries, only: [:new, :create]
+  namespace :pages do
+    get :home
+    get :philosophy  # 御菓子処うさぎやの想い
+  end
 
-  # おすすめ商品
-  get 'featured_products', to: 'featured_products#index'
-
-  # 季節限定商品
-  get 'seasonal_products', to: 'seasonal_products#index'
+  # 商品関連
+  resources :products, only: [ :show ] do
+    collection do
+      get :featured    # おすすめ商品
+      get :seasonal    # 季節限定商品
+    end
+  end
 
   # お知らせ
   resources :notices, only: [ :index, :show ]
 
-  # その他の静的ページ
-  get 'philosophy', to: 'pages#philosophy'
-  get 'calendar', to: 'pages#calendar'
-  get 'delivery', to: 'pages#delivery'
+  # 営業カレンダー
+  resources :calendar_events, only: [ :index ] do
+    collection do
+      get :month  # 月別カレンダー取得用
+    end
+  end
 
-  # 管理者認証
-  # devise_for :admin_users, path: "admin", controllers: {
-  #   sessions: "admin/sessions"
-  # }
+  # お問い合わせ
+  resources :inquiries, only: [ :new, :create ]
 
-  # # 管理者用ページ
-  # namespace :admin do
-  #   root "dashboard#index"
-  #   resources :products
-  #   resources :notices
-  #   resources :calendar_events
-  #   resources :inquiries, only: [:index, :show]
-
-  #   # おすすめ・季節限定商品の管理
-  #   get 'featured_products', to: 'featured_products#index'
-  #   post 'featured_products/update_order', to: 'featured_products#update_order'
-
-  #   get 'seasonal_products', to: 'seasonal_products#index'
-  #   post 'seasonal_products/update_order', to: 'seasonal_products#update_order'
-  # end
+  # 冷凍もちパイ注文
+  resources :orders, only: [ :new, :create ] do
+    member do
+      get :confirmation  # 注文確認画面
+    end
+  end
 
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
