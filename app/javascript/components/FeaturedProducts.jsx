@@ -64,7 +64,7 @@ const FeaturedProducts = ({ products = [] }) => {
           >
             おすすめ商品
           </h1>
-          
+
           {/* レイアウト切り替えボタン（右寄せ） */}
           <div className="flex gap-4">
             <button
@@ -75,7 +75,7 @@ const FeaturedProducts = ({ products = [] }) => {
                   : 'bg-white text-pink-600 border-2 border-pink-600 hover:bg-pink-50'
               }`}
             >
-              アニメーション
+              🎬 Motion
             </button>
             <button
               onClick={() => setLayout('grid')}
@@ -85,7 +85,7 @@ const FeaturedProducts = ({ products = [] }) => {
                   : 'bg-white text-pink-600 border-2 border-pink-600 hover:bg-pink-50'
               }`}
             >
-              一覧
+              📋 List
             </button>
           </div>
         </div>
