@@ -8,23 +8,29 @@ import { createRoot } from 'react-dom/client'
 
 // コンポーネントのインポート
 import Home from './components/Home'
+import FeaturedProducts from './components/FeaturedProducts'
 
 console.log('Application.js loading...')
 
 // Reactコンポーネントをマウントする関数
 const mountComponents = () => {
   console.log('Mounting components...')
-  
+
+  // ホームコンポーネント
   const homeRoot = document.getElementById('home-root')
   if (homeRoot) {
-    console.log('Found home-root, mounting Home component')
     const props = JSON.parse(homeRoot.dataset.props || '{}')
-    console.log('Props:', props)
     const root = createRoot(homeRoot)
     root.render(<Home {...props} />)
-    console.log('Home component mounted successfully')
-  } else {
-    console.log('home-root not found')
+  }
+
+  // おすすめ商品コンポーネント
+  const featuredRoot = document.getElementById('featured-products-root')
+  if (featuredRoot) {
+    const props = JSON.parse(featuredRoot.dataset.props || '{}')
+    const root = createRoot(featuredRoot)
+    root.render(<FeaturedProducts {...props} />)
+    console.log('FeaturedProducts mounted')
   }
 }
 
@@ -34,9 +40,5 @@ if (document.readyState === 'loading') {
 } else {
   mountComponents()
 }
-
-// Turbo対応
-document.addEventListener('turbo:load', mountComponents)
-document.addEventListener('turbo:render', mountComponents)
 
 console.log('Application.js loaded successfully!')

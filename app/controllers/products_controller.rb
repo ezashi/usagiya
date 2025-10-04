@@ -1,4 +1,3 @@
-# app/controllers/products_controller.rb
 class ProductsController < ApplicationController
   def index
     @products = Product.published.ordered_by_display
@@ -10,7 +9,7 @@ class ProductsController < ApplicationController
 
   def featured
     @products = Product.published.featured
-    render :index
+    # featured.html.erbを使用
   end
 
   def seasonal

@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  layout false, only: [:home]
+  layout false, only: [ :home ]
 
   def home
     @featured_products = Product.published.featured.limit(10)

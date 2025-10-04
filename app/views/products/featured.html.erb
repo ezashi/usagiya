@@ -1,0 +1,11 @@
+<%= render 'shared/header' %>
+
+<div id="featured-products-root" data-props='<%= {
+       products: @products.map { |p| {
+         id: p.id,
+         name: p.name,
+         price: p.price,
+         image_url: p.image_url
+       }}
+     }.to_json %>' class="w-full" style="margin-top: 100px;">
+</div>
