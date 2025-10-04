@@ -8,7 +8,6 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
 
     <style>
         * {
@@ -85,7 +84,6 @@
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        /* ホバー時：上の横棒は下に、下の横棒は上に */
         .hamburger:hover span:first-child {
             transform: translateY(4px);
             background: #ffb3d9;
@@ -95,12 +93,10 @@
             background: #ffb3d9;
         }
 
-        /* クリック時 */
         .hamburger:active span {
             background: #ff8ec9;
         }
 
-        /* オーバーレイとサイドメニュー */
         .overlay {
             display: none;
             position: fixed;
@@ -216,41 +212,127 @@
         .shop-info {
             padding: 80px 40px;
             background: #f9f9f9;
-            text-align: center;
         }
 
         .shop-info h2 {
-            font-size: 2rem;
-            margin-bottom: 40px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 60px;
             color: #d4006a;
+            text-align: center;
         }
 
-        .info-grid {
+        .info-grid-new {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
             max-width: 1200px;
             margin: 0 auto;
+            align-items: start;
         }
 
-        .info-item h3 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
+        .info-column {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .info-column:nth-child(2) {
+            justify-content: center;
+        }
+
+        .info-section {
+            text-align: center;
+        }
+
+        .info-section h3 {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 15px;
             color: #d4006a;
         }
 
-        .info-item p {
-            color: #666;
+        .info-section p {
+            color: #d4006a;
+            line-height: 1.8;
+            margin: 5px 0;
         }
 
-        .info-item a {
+        .postal-code {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .address {
+            font-size: 1.1rem;
+        }
+
+        .map-link {
             color: #d4006a;
             text-decoration: none;
             font-weight: 500;
         }
 
-        .info-item a:hover {
+        .map-link:hover {
             text-decoration: underline;
+        }
+
+        .business-hours {
+            font-size: 1.1rem;
+        }
+
+        .closed-day {
+            font-size: 1.1rem;
+        }
+
+        .irregular-holiday {
+            font-size: 1.1rem;
+        }
+
+        .note {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+            text-align: right !important;
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .phone {
+            font-size: 1.1rem;
+        }
+
+        .phone a {
+            color: #d4006a;
+            text-decoration: none;
+        }
+
+        .phone a:hover {
+            text-decoration: underline;
+        }
+
+        .sns-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .sns-icon-img {
+            display: block;
+            transition: opacity 0.3s;
+        }
+
+        .sns-icon-img:hover {
+            opacity: 0.7;
+        }
+
+        .sns-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
         }
 
         /* レスポンシブ */
@@ -269,6 +351,15 @@
 
             .main-visual {
                 height: 80vh;
+            }
+
+            .info-grid-new {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .shop-info h2 {
+                font-size: 2rem;
             }
         }
 
@@ -312,10 +403,11 @@
 
             .shop-info h2 {
                 font-size: 1.75rem;
+                margin-bottom: 40px;
             }
 
-            .info-grid {
-                grid-template-columns: 1fr;
+            .info-section h3 {
+                font-size: 1.2rem;
             }
         }
 
@@ -373,7 +465,7 @@
         <nav>
             <%= link_to "ホーム", root_path %>
             <%= link_to "おすすめ商品", featured_products_path %>
-            <%= link_to "季節限定商品", "#seasonal" %>
+            <%= link_to "季節限定商品", seasonal_products_path %>
             <%= link_to "お知らせ", notices_path %>
             <%= link_to "お問い合わせ", new_inquiry_path %>
             <div class="hamburger" id="hamburger">
@@ -393,30 +485,30 @@
             <li><%= link_to "ホーム", root_path %></li>
             <li><%= link_to "御菓子処うさぎやの想い", "#philosophy" %></li>
             <li><%= link_to "おすすめ商品", featured_products_path %></li>
-            <li><%= link_to "季節限定商品", "#seasonal" %></li>
+            <li><%= link_to "季節限定商品", seasonal_products_path %></li>
             <li><%= link_to "冷凍もちパイの発送", "#delivery" %></li>
-            <li><%= link_to "さとふる", "https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1" %></li>
+            <li><%= link_to "さとふる", "https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1", target: "_blank" %></li>
             <li><%= link_to "お知らせ", notices_path %></li>
             <li><%= link_to "営業カレンダー", "#calendar" %></li>
-            <li><%= link_to "LINE", "#line" %></li>
-            <li><%= link_to "Instagram", "#instagram" %></li>
+            <li><%= link_to "LINE", "https://page.line.me/296kbwry?openQrModal=true", target: "_blank" %></li>
+            <li><%= link_to "Instagram", "https://www.instagram.com/usagiya.fukui/?hl=ja", target: "_blank" %></li>
             <li><%= link_to "お問い合わせ", new_inquiry_path %></li>
         </ul>
     </div>
 
     <!-- メインビジュアル（画面いっぱい） -->
     <section class="main-visual">
-        <div class="slide active">
+        <div class="slide active" data-slide-index="0">
             <%= image_tag 'top/mamedaifuku_kusamoti.jpg', alt: '豆大福と草餅' %>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide-index="1">
             <%= image_tag 'top/usagimanju.jpg', alt: 'うさぎまんじゅう' %>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide-index="2">
             <%= image_tag 'top/motipai.jpg', alt: 'もちパイ' %>
         </div>
-        <div class="slide">
-            <%= link_to image_tag('top/satofuru.jpg', alt: 'さとふる'), 'https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1' %>
+        <div class="slide slide-clickable" data-slide-index="3">
+            <%= image_tag 'top/satofuru.jpg', alt: 'さとふる' %>
         </div>
     </section>
 
@@ -425,84 +517,188 @@
         <!-- 店舗情報セクション -->
         <section class="shop-info" id="shop-info">
             <h2>店舗情報</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <h3>住所</h3>
-                    <p>
-                        〒910-0001<br>
-                        福井県鯖江市持明寺町5-10-1
-                    </p>
+            <div class="info-grid-new">
+                <div class="info-column">
+                    <div class="info-section">
+                        <h3>住所</h3>
+                        <p class="postal-code">〒916-0071</p>
+                        <p class="address">福井県鯖江市持明寺町5-10-1</p>
+                    </div>
+                    <div class="info-section">
+                        <h3>アクセス</h3>
+                        <p>
+                            <%= link_to "Googleマップで見る", "https://maps.google.com/?q=福井県鯖江市持明寺町5-10-1", target: "_blank", class: "map-link" %>
+                        </p>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <h3>営業時間</h3>
-                    <p>
-                        平日・土曜日: 9:00〜18:00<br>
-                        定休日: 日曜日<br>
-                        （月曜日に不定休あり）
-                    </p>
+
+                <div class="info-column">
+                    <div class="info-section">
+                        <h3>営業時間</h3>
+                        <p class="business-hours">平日・土曜日: 9:00〜18:00</p>
+                        <p class="closed-day">定休日: 日曜日</p>
+                        <p class="irregular-holiday">(月曜日に不定休あり)</p>
+                        <p class="note">※不定休は「お知らせ」または<br>「営業カレンダー」より確認してください</p>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <h3>電話番号</h3>
-                    <p>
-                        TEL: 0778-62-0861
-                    </p>
+
+                <div class="info-column">
+                    <div class="info-section">
+                        <h3>電話番号</h3>
+                        <p class="phone">
+                            TEL: <a href="tel:0778-62-0861">0778-62-0861</a>
+                        </p>
+                    </div>
+                    <div class="info-section">
+                        <h3>SNS</h3>
+                        <div class="sns-links">
+                            <%= link_to 'https://page.line.me/296kbwry?openQrModal=true', target: '_blank', class: 'sns-icon-img' do %>
+                            <%= image_tag 'shop/line.png', alt: 'LINE', class: 'sns-image' %>
+                            <% end %>
+                            <%= link_to 'https://www.instagram.com/usagiya.fukui/?hl=ja', target: '_blank', class: 'sns-icon-img' do %>
+                            <%= image_tag 'shop/instagram.png', alt: 'Instagram', class: 'sns-image' %>
+                            <% end %>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <h3>アクセス</h3>
-                    <p>
-                        <%= link_to "Googleマップで見る", "#", target: "_blank" %>
-                    </p>
-                    <h3>SNS</h3>
-                    <p>
-                        <%= link_to image_tag('shop/line.png', alt: 'LINE'), 'https://page.line.me/296kbwry?openQrModal=true' %>
-                        <%= link_to image_tag('shop/instagram.png', alt: 'Instagram'), 'https://www.instagram.com/usagiya.fukui/?hl=ja' %>
-                    </p>
-                </div>
+            </div>
         </section>
     </div>
 
     <!-- JavaScriptでスライドショーとハンバーガーメニューを制御 -->
     <script>
-        // スライドショー
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
+        // グローバル変数で管理
+        window.usagiyaSlideshow = window.usagiyaSlideshow || null;
 
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.remove('active');
-                if (i === index) {
-                    slide.classList.add('active');
+        function initializePage() {
+            console.log('=== ページ初期化開始 ===');
+
+            // 既存のイベントを完全にクリア
+            if (window.usagiyaSlideshow) {
+                console.log('既存のスライドショーをクリア');
+                clearInterval(window.usagiyaSlideshow.timer);
+            }
+
+            // スライドショー
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide');
+            console.log('スライド数:', slides.length);
+
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.remove('active');
+                    if (i === index) {
+                        slide.classList.add('active');
+                    }
+                });
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+
+            // スライドショーの開始
+            const timer = slides.length > 0 ? setInterval(nextSlide, 5000) : null;
+
+            // クリックイベントは親要素で委譲
+            const mainVisual = document.querySelector('.main-visual');
+
+            // 既存のイベントリスナーを削除するため、クローンで置き換え
+            const newMainVisual = mainVisual.cloneNode(true);
+            mainVisual.parentNode.replaceChild(newMainVisual, mainVisual);
+
+            // 新しい要素でスライドを再取得
+            const newSlides = newMainVisual.querySelectorAll('.slide');
+
+            // イベント委譲で処理
+            newMainVisual.addEventListener('click', function(e) {
+                // クリックされた要素がスライドかその子要素か確認
+                let clickedSlide = e.target.closest('.slide');
+
+                if (clickedSlide) {
+                    const slideIndex = Array.from(newSlides).indexOf(clickedSlide);
+                    console.log(`クリックされたスライドのインデックス: ${slideIndex}`);
+
+                    if (clickedSlide.classList.contains('slide-clickable')) {
+                        console.log('*** 4枚目（クリック可能）がクリックされました ***');
+                        e.preventDefault();
+                        window.open('https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1', '_blank');
+                    } else {
+                        console.log(`*** スライド${slideIndex + 1}（クリック不可）がクリックされました ***`);
+                        e.preventDefault();
+                    }
                 }
             });
+
+            // カーソルスタイルを設定
+            newSlides.forEach((slide, index) => {
+                if (slide.classList.contains('slide-clickable')) {
+                    slide.style.cursor = 'pointer';
+                    const img = slide.querySelector('img');
+                    if (img) img.style.cursor = 'pointer';
+                } else {
+                    slide.style.cursor = 'default';
+                    const img = slide.querySelector('img');
+                    if (img) img.style.cursor = 'default';
+                }
+            });
+
+            // グローバルに保存
+            window.usagiyaSlideshow = {
+                timer: timer,
+                currentSlide: currentSlide,
+                showSlide: showSlide
+            };
+
+            // ハンバーガーメニュー
+            const hamburger = document.getElementById('hamburger');
+            const sideMenu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('overlay');
+            const closeMenu = document.getElementById('closeMenu');
+
+            if (hamburger && sideMenu && overlay && closeMenu) {
+                // クローンで既存イベントをクリア
+                const newHamburger = hamburger.cloneNode(true);
+                hamburger.parentNode.replaceChild(newHamburger, hamburger);
+
+                const newCloseMenu = closeMenu.cloneNode(true);
+                closeMenu.parentNode.replaceChild(newCloseMenu, closeMenu);
+
+                const newOverlay = overlay.cloneNode(true);
+                overlay.parentNode.replaceChild(newOverlay, overlay);
+
+                newHamburger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sideMenu.classList.add('active');
+                    newOverlay.classList.add('active');
+                });
+
+                newCloseMenu.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sideMenu.classList.remove('active');
+                    newOverlay.classList.remove('active');
+                });
+
+                newOverlay.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sideMenu.classList.remove('active');
+                    newOverlay.classList.remove('active');
+                });
+            }
+
+            console.log('=== ページ初期化完了 ===');
         }
 
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % slides.length;
-            showSlide(currentSlide);
+        // 初回読み込み
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializePage);
+        } else {
+            initializePage();
         }
 
-        setInterval(nextSlide, 5000); // 5秒ごとにスライド切り替え
-
-        // ハンバーガーメニュー
-        const hamburger = document.getElementById('hamburger');
-        const sideMenu = document.getElementById('sideMenu');
-        const overlay = document.getElementById('overlay');
-        const closeMenu = document.getElementById('closeMenu');
-
-        hamburger.addEventListener('click', () => {
-            sideMenu.classList.add('active');
-            overlay.classList.add('active');
-        });
-
-        closeMenu.addEventListener('click', () => {
-            sideMenu.classList.remove('active');
-            overlay.classList.remove('active');
-        });
-
-        overlay.addEventListener('click', () => {
-            sideMenu.classList.remove('active');
-            overlay.classList.remove('active');
-        });
+        // Turbo対応
+        document.addEventListener('turbo:load', initializePage);
     </script>
 </body>
 
