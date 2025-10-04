@@ -47,6 +47,29 @@
         max-width: 80%;
         max-height: 80vh;
         object-fit: contain;
+        animation: imageBounce 0.8s ease-out;
+    }
+
+    @keyframes imageBounce {
+        0% {
+            transform: translate(0, 0);
+        }
+
+        25% {
+            transform: translate(-30px, -30px);
+        }
+
+        50% {
+            transform: translate(30px, 30px);
+        }
+
+        75% {
+            transform: translate(-15px, 15px);
+        }
+
+        100% {
+            transform: translate(0, 0);
+        }
     }
 
     .no-image-placeholder {
@@ -60,6 +83,7 @@
         font-size: 1.5rem;
         border-radius: 16px;
         backdrop-filter: blur(10px);
+        animation: imageBounce 0.8s ease-out;
     }
 
     /* 商品詳細セクション */
@@ -230,8 +254,8 @@
 </div>
 
 <script>
-    // ページ読み込み時に自動スクロール
-    document.addEventListener('DOMContentLoaded', function() {
+    // 自動スクロール機能
+    function setupAutoScroll() {
         let autoScrollCancelled = false;
         let autoScrollTimer = null;
 
@@ -244,7 +268,14 @@
             // イベントリスナーを削除
             window.removeEventListener('wheel', cancelAutoScroll);
             window.removeEventListener('touchmove', cancelAutoScroll);
-            window.removeEventListener('keydown', cancelAutoScroll);
+            window.removeEventListener('keydown', handleKeydown);
+        }
+
+        function handleKeydown(e) {
+            // 矢印キー、PageUp/Down、Spaceなどでキャンセル
+            if ([32, 33, 34, 35, 36, 37, 38, 39, 40].includes(e.keyCode)) {
+                cancelAutoScroll();
+            }
         }
 
         // スクロール系のイベントをリスン
@@ -254,12 +285,7 @@
         window.addEventListener('touchmove', cancelAutoScroll, {
             passive: true
         });
-        window.addEventListener('keydown', function(e) {
-            // 矢印キー、PageUp/Down、Spaceなどでキャンセル
-            if ([32, 33, 34, 35, 36, 37, 38, 39, 40].includes(e.keyCode)) {
-                cancelAutoScroll();
-            }
-        });
+        window.addEventListener('keydown', handleKeydown);
 
         // 0.5秒後に詳細セクションへスムーズにスクロール
         autoScrollTimer = setTimeout(function() {
@@ -274,10 +300,16 @@
                 // スクロール後にイベントリスナーを削除
                 window.removeEventListener('wheel', cancelAutoScroll);
                 window.removeEventListener('touchmove', cancelAutoScroll);
-                window.removeEventListener('keydown', cancelAutoScroll);
+                window.removeEventListener('keydown', handleKeydown);
             }
         }, 500); // 0.5秒
-    });
+    }
+
+    // 初回読み込み時
+    document.addEventListener('DOMContentLoaded', setupAutoScroll);
+
+    // Turboによるページ遷移時
+    document.addEventListener('turbo:load', setupAutoScroll);
 
     // サイドメニューのJavaScript（ヘッダー用）
     document.addEventListener('turbo:load', function() {
