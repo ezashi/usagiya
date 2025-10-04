@@ -32,7 +32,7 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
-    /* 商品画像セクション（画面中央フルスクリーン） */
+    /* 商品画像セクション(画面中央フルスクリーン) */
     .product-hero-section {
         width: 100%;
         height: 100vh;
@@ -47,28 +47,36 @@
         max-width: 80%;
         max-height: 80vh;
         object-fit: contain;
-        animation: imageBounce 0.8s ease-out;
+        cursor: default;
+        animation: imageZoom 1s ease-in-out;
+        transition: transform 0.3s ease;
     }
 
-    @keyframes imageBounce {
-        0% {
-            transform: translate(0, 0);
-        }
+    /* スクロール後のみホバー有効 */
+    .product-hero-image.hover-enabled {
+        cursor: pointer;
+    }
 
-        25% {
-            transform: translate(-30px, -30px);
+    .product-hero-image.hover-enabled:hover {
+        transform: scale(1.3) !important;
+    }
+
+    /* 画像拡大アニメーション - 1秒で完了 */
+    @keyframes imageZoom {
+        0% {
+            transform: scale(1);
         }
 
         50% {
-            transform: translate(30px, 30px);
+            transform: scale(1.3);
         }
 
-        75% {
-            transform: translate(-15px, 15px);
+        90% {
+            transform: scale(1);
         }
 
         100% {
-            transform: translate(0, 0);
+            transform: scale(1);
         }
     }
 
@@ -83,7 +91,18 @@
         font-size: 1.5rem;
         border-radius: 16px;
         backdrop-filter: blur(10px);
-        animation: imageBounce 0.8s ease-out;
+        cursor: default;
+        animation: imageZoom 1s ease-in-out;
+        transition: transform 0.3s ease;
+    }
+
+    /* スクロール後のみホバー有効 */
+    .no-image-placeholder.hover-enabled {
+        cursor: pointer;
+    }
+
+    .no-image-placeholder.hover-enabled:hover {
+        transform: scale(1.3) !important;
     }
 
     /* 商品詳細セクション */
@@ -244,7 +263,7 @@
     <h1 class="product-name"><%= @product.name %></h1>
 
     <div class="product-price-section">
-        <p class="product-price-label">価格（税込）</p>
+        <p class="product-price-label">価格(税込)</p>
         <p class="product-price">¥<%= number_with_delimiter(@product.price) %></p>
     </div>
 
@@ -254,21 +273,40 @@
 </div>
 
 <script>
+    // ホバー機能を有効化する関数
+    function enableHover() {
+        const productImage = document.querySelector('.product-hero-image');
+        const placeholder = document.querySelector('.no-image-placeholder');
+
+        if (productImage) {
+            productImage.classList.add('hover-enabled');
+        }
+        if (placeholder) {
+            placeholder.classList.add('hover-enabled');
+        }
+    }
+
     // 自動スクロール機能
     function setupAutoScroll() {
         let autoScrollCancelled = false;
         let autoScrollTimer = null;
+        let scrollDetected = false;
 
-        // ユーザーがスクロールしたら自動スクロールをキャンセル
+        // ユーザーがスクロールしたら自動スクロールをキャンセル＆ホバー有効化
         function cancelAutoScroll() {
-            autoScrollCancelled = true;
-            if (autoScrollTimer) {
-                clearTimeout(autoScrollTimer);
+            if (!scrollDetected) {
+                scrollDetected = true;
+                autoScrollCancelled = true;
+                if (autoScrollTimer) {
+                    clearTimeout(autoScrollTimer);
+                }
+                // ホバー機能を有効化
+                enableHover();
+                // イベントリスナーを削除
+                window.removeEventListener('wheel', cancelAutoScroll);
+                window.removeEventListener('touchmove', cancelAutoScroll);
+                window.removeEventListener('keydown', handleKeydown);
             }
-            // イベントリスナーを削除
-            window.removeEventListener('wheel', cancelAutoScroll);
-            window.removeEventListener('touchmove', cancelAutoScroll);
-            window.removeEventListener('keydown', handleKeydown);
         }
 
         function handleKeydown(e) {
@@ -287,7 +325,7 @@
         });
         window.addEventListener('keydown', handleKeydown);
 
-        // 0.5秒後に詳細セクションへスムーズにスクロール
+        // 1.0秒後に詳細セクションへスムーズにスクロール
         autoScrollTimer = setTimeout(function() {
             if (!autoScrollCancelled) {
                 const detailSection = document.getElementById('detail-section');
@@ -296,13 +334,15 @@
                         behavior: 'smooth',
                         block: 'start'
                     });
+                    // 自動スクロール後にホバー機能を有効化
+                    setTimeout(enableHover, 500); // スクロール完了を待つ
                 }
                 // スクロール後にイベントリスナーを削除
                 window.removeEventListener('wheel', cancelAutoScroll);
                 window.removeEventListener('touchmove', cancelAutoScroll);
                 window.removeEventListener('keydown', handleKeydown);
             }
-        }, 500); // 0.5秒
+        }, 1000); // 1.0秒
     }
 
     // 初回読み込み時
@@ -311,7 +351,7 @@
     // Turboによるページ遷移時
     document.addEventListener('turbo:load', setupAutoScroll);
 
-    // サイドメニューのJavaScript（ヘッダー用）
+    // サイドメニューのJavaScript(ヘッダー用)
     document.addEventListener('turbo:load', function() {
         const hamburger = document.getElementById('hamburger-featured');
         const overlay = document.getElementById('overlay-featured');
