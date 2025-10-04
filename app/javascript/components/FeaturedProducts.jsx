@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
-// 初期背景色（白または黒）
 const getInitialBgColor = () => {
   const colors = ['#fff', '#000']
   return colors[Math.floor(Math.random() * colors.length)]
 }
 
-// ホバー時のランダム背景色
 const getRandomHoverColor = () => {
   const colors = ['#EE827C', '#F0908D', '#F9F9F9']
   return colors[Math.floor(Math.random() * colors.length)]
@@ -16,10 +14,9 @@ const getRandomHoverColor = () => {
 const FeaturedProducts = ({ products = [] }) => {
   const [layout, setLayout] = useState('animation')
   const [titleHover, setTitleHover] = useState(false)
-  const [initialBgColor, setInitialBgColor] = useState('#fff') // 初期色を保持
-  const [currentBgColor, setCurrentBgColor] = useState('#fff') // 現在の表示色
+  const [initialBgColor, setInitialBgColor] = useState('#fff')
+  const [currentBgColor, setCurrentBgColor] = useState('#fff')
 
-  // ページ読み込み時に初期色を決定（一度だけ）
   useEffect(() => {
     const color = getInitialBgColor()
     setInitialBgColor(color)
@@ -31,7 +28,7 @@ const FeaturedProducts = ({ products = [] }) => {
   }
 
   const handleProductHoverLeave = () => {
-    setCurrentBgColor(initialBgColor) // 初期色に戻す
+    setCurrentBgColor(initialBgColor)
   }
 
   if (products.length === 0) {
@@ -48,9 +45,9 @@ const FeaturedProducts = ({ products = [] }) => {
       className="min-h-screen py-8 transition-colors duration-500"
       style={{ backgroundColor: currentBgColor }}
     >
-      {/* ヘッダー */}
-      <div className="container mx-auto px-4 mb-8">
-        <div className="flex justify-between items-center">
+      {/* ヘッダー - 背景を透明に */}
+      <div className="container mx-auto px-4 mb-8" style={{ backgroundColor: 'transparent' }}>
+        <div className="flex justify-between items-center" style={{ backgroundColor: 'transparent' }}>
           {/* タイトル（左寄せ） */}
           <h1 
             className="text-4xl font-bold transition-all"
@@ -93,11 +90,11 @@ const FeaturedProducts = ({ products = [] }) => {
 
       {/* レイアウト1: アニメーション表示 */}
       {layout === 'animation' && (
-        <div className="flex justify-center overflow-hidden">
+        <div className="overflow-hidden">
           <motion.div
-            className="flex gap-8 px-4"
+            className="flex gap-8"
             animate={{
-              x: [0, -1 * (products.length * 420)],
+              x: [0, -100 * products.length],
             }}
             transition={{
               x: {
@@ -112,13 +109,14 @@ const FeaturedProducts = ({ products = [] }) => {
               <motion.a
                 key={`${product.id}-${index}`}
                 href={`/products/${product.id}`}
-                className="flex-shrink-0 w-[400px] bg-white rounded-lg shadow-lg overflow-hidden transition-shadow relative"
+                className="flex-shrink-0 block group"
+                style={{ width: '600px', height: '600px' }}
                 onMouseEnter={handleProductHoverEnter}
                 onMouseLeave={handleProductHoverLeave}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
               >
-                <div className="aspect-square relative flex items-center justify-center p-4">
+                <div className="w-full h-full bg-white rounded-lg shadow-lg overflow-hidden relative flex items-center justify-center">
                   {product.image_url ? (
                     <>
                       <img
@@ -175,22 +173,17 @@ const FeaturedProducts = ({ products = [] }) => {
                         src={product.image_url}
                         alt={product.name}
                         className="max-w-full max-h-full object-contain"
-                        style={{ maxWidth: '90%', maxHeight: '90%' }}
                       />
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <h3 className="text-lg font-semibold text-white px-3 py-1 rounded"
-                            style={{ 
-                              backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)'
-                            }}>
+                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
+                        <h3 className="text-sm font-semibold text-center truncate">
                           {product.name}
                         </h3>
                       </div>
                     </>
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
-                      <div>画像なし</div>
-                      <h3 className="text-lg font-semibold text-gray-800 mt-2">
+                      <div className="text-sm">画像なし</div>
+                      <h3 className="text-sm font-bold text-gray-800 mt-2 text-center px-2">
                         {product.name}
                       </h3>
                     </div>
