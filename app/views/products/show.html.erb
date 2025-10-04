@@ -108,13 +108,17 @@
         border-radius: 8px;
         font-weight: 600;
         transition: all 0.3s;
-        margin-top: 2rem;
+        margin-bottom: 1.5rem;
     }
 
     .back-button:hover {
         background-color: #DB2777;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-button-container {
+        margin-bottom: 1rem;
     }
 
     .no-image-placeholder {
@@ -203,6 +207,10 @@
 </style>
 
 <div class="product-detail-container">
+    <div class="back-button-container">
+        <%= link_to "← 一覧に戻る", :back, class: 'back-button' %>
+    </div>
+
     <div class="product-detail-card">
         <div class="product-detail-content">
             <!-- 商品画像セクション -->
@@ -228,8 +236,6 @@
                 <div class="product-description">
                     <%= @product.description %>
                 </div>
-
-                <%= link_to "一覧に戻る", :back, class: 'back-button' %>
             </div>
         </div>
     </div>
