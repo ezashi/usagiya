@@ -38,10 +38,25 @@
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo a {
+            display: block;
+            line-height: 0;
+        }
+
+        .logo-image {
+            height: 100px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+            transition: opacity 0.3s;
+        }
+
+        .logo-image:hover {
+            opacity: 0.8;
         }
 
         /* ナビゲーション - 常に表示 */
@@ -84,6 +99,7 @@
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
+        /* ホバー時：上の横棒は下に、下の横棒は上に */
         .hamburger:hover span:first-child {
             transform: translateY(4px);
             background: #ffb3d9;
@@ -93,10 +109,12 @@
             background: #ffb3d9;
         }
 
+        /* クリック時 */
         .hamburger:active span {
             background: #ff8ec9;
         }
 
+        /* オーバーレイとサイドメニュー */
         .overlay {
             display: none;
             position: fixed;
@@ -187,10 +205,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            pointer-events: none;
+            /* デフォルトでクリック無効 */
         }
 
         .slide.active {
             opacity: 1;
+            pointer-events: auto;
+            /* activeの時のみクリック有効 */
+        }
+
+        /* クリック可能なスライド以外はクリック無効のまま */
+        .slide.active:not(.slide-clickable) {
+            pointer-events: none;
+        }
+
+        /* クリック可能なスライドのみクリック有効 */
+        .slide.active.slide-clickable {
+            pointer-events: auto;
         }
 
         .slide img {
@@ -237,6 +269,7 @@
             gap: 30px;
         }
 
+        /* 中央列を中央寄せ */
         .info-column:nth-child(2) {
             justify-content: center;
         }
@@ -361,6 +394,20 @@
             .shop-info h2 {
                 font-size: 2rem;
             }
+
+            .info-section {
+                text-align: center;
+            }
+
+            .note {
+                text-align: right !important;
+                max-width: 280px;
+                margin: 10px auto 0 auto;
+            }
+
+            .logo-image {
+                height: 80px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -368,8 +415,8 @@
                 padding: 20px;
             }
 
-            .logo {
-                font-size: 1.2rem;
+            .logo-image {
+                height: 55px;
             }
 
             nav {
@@ -409,15 +456,22 @@
             .info-section h3 {
                 font-size: 1.2rem;
             }
+
+            .note {
+                text-align: right !important;
+                max-width: 320px;
+                margin: 10px auto 0 auto;
+                font-size: 0.85rem;
+            }
         }
 
         @media (max-width: 480px) {
             header {
-                padding: 15px;
+                padding: 10px;
             }
 
-            .logo {
-                font-size: 1rem;
+            .logo-image {
+                height: 0px;
             }
 
             nav {
@@ -441,6 +495,11 @@
             .shop-info h2 {
                 font-size: 1.5rem;
             }
+
+            .note {
+                max-width: 100%;
+                padding: 0 10px;
+            }
         }
 
         /* 画像が読み込まれない場合の背景 */
@@ -461,7 +520,11 @@
 <body>
     <!-- ヘッダー（画像の上に重なる） -->
     <header>
-        <div class="logo">御菓子処うさぎや</div>
+        <div class="logo">
+            <%= link_to root_path do %>
+            <%= image_tag 'usagiya.png', alt: '御菓子処うさぎや', class: 'logo-image' %>
+            <% end %>
+        </div>
         <nav>
             <%= link_to "ホーム", root_path %>
             <%= link_to "おすすめ商品", featured_products_path %>
@@ -567,28 +630,26 @@
 
     <!-- JavaScriptでスライドショーとハンバーガーメニューを制御 -->
     <script>
-        // グローバル変数で管理
-        window.usagiyaSlideshow = window.usagiyaSlideshow || null;
+        let slideTimer = null;
 
         function initializePage() {
-            console.log('=== ページ初期化開始 ===');
+            console.log('=== 初期化開始 ===');
 
-            // 既存のイベントを完全にクリア
-            if (window.usagiyaSlideshow) {
-                console.log('既存のスライドショーをクリア');
-                clearInterval(window.usagiyaSlideshow.timer);
+            if (slideTimer) {
+                clearInterval(slideTimer);
             }
 
-            // スライドショー
             let currentSlide = 0;
             const slides = document.querySelectorAll('.slide');
+
             console.log('スライド数:', slides.length);
 
             function showSlide(index) {
                 slides.forEach((slide, i) => {
-                    slide.classList.remove('active');
                     if (i === index) {
                         slide.classList.add('active');
+                    } else {
+                        slide.classList.remove('active');
                     }
                 });
             }
@@ -598,58 +659,19 @@
                 showSlide(currentSlide);
             }
 
-            // スライドショーの開始
-            const timer = slides.length > 0 ? setInterval(nextSlide, 5000) : null;
+            slideTimer = setInterval(nextSlide, 5000);
 
-            // クリックイベントは親要素で委譲
-            const mainVisual = document.querySelector('.main-visual');
+            // 4枚目のスライドにクリックイベント
+            const clickableSlide = document.querySelector('.slide-clickable');
+            if (clickableSlide && !clickableSlide.dataset.hasListener) {
+                clickableSlide.dataset.hasListener = 'true';
+                clickableSlide.style.cursor = 'pointer';
 
-            // 既存のイベントリスナーを削除するため、クローンで置き換え
-            const newMainVisual = mainVisual.cloneNode(true);
-            mainVisual.parentNode.replaceChild(newMainVisual, mainVisual);
-
-            // 新しい要素でスライドを再取得
-            const newSlides = newMainVisual.querySelectorAll('.slide');
-
-            // イベント委譲で処理
-            newMainVisual.addEventListener('click', function(e) {
-                // クリックされた要素がスライドかその子要素か確認
-                let clickedSlide = e.target.closest('.slide');
-
-                if (clickedSlide) {
-                    const slideIndex = Array.from(newSlides).indexOf(clickedSlide);
-                    console.log(`クリックされたスライドのインデックス: ${slideIndex}`);
-
-                    if (clickedSlide.classList.contains('slide-clickable')) {
-                        console.log('*** 4枚目（クリック可能）がクリックされました ***');
-                        e.preventDefault();
-                        window.open('https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1', '_blank');
-                    } else {
-                        console.log(`*** スライド${slideIndex + 1}（クリック不可）がクリックされました ***`);
-                        e.preventDefault();
-                    }
-                }
-            });
-
-            // カーソルスタイルを設定
-            newSlides.forEach((slide, index) => {
-                if (slide.classList.contains('slide-clickable')) {
-                    slide.style.cursor = 'pointer';
-                    const img = slide.querySelector('img');
-                    if (img) img.style.cursor = 'pointer';
-                } else {
-                    slide.style.cursor = 'default';
-                    const img = slide.querySelector('img');
-                    if (img) img.style.cursor = 'default';
-                }
-            });
-
-            // グローバルに保存
-            window.usagiyaSlideshow = {
-                timer: timer,
-                currentSlide: currentSlide,
-                showSlide: showSlide
-            };
+                clickableSlide.addEventListener('click', function(e) {
+                    console.log('4枚目クリック - タブを開きます');
+                    window.open('https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1', '_blank');
+                });
+            }
 
             // ハンバーガーメニュー
             const hamburger = document.getElementById('hamburger');
@@ -657,48 +679,36 @@
             const overlay = document.getElementById('overlay');
             const closeMenu = document.getElementById('closeMenu');
 
-            if (hamburger && sideMenu && overlay && closeMenu) {
-                // クローンで既存イベントをクリア
-                const newHamburger = hamburger.cloneNode(true);
-                hamburger.parentNode.replaceChild(newHamburger, hamburger);
+            if (hamburger && !hamburger.dataset.initialized) {
+                hamburger.dataset.initialized = 'true';
 
-                const newCloseMenu = closeMenu.cloneNode(true);
-                closeMenu.parentNode.replaceChild(newCloseMenu, closeMenu);
-
-                const newOverlay = overlay.cloneNode(true);
-                overlay.parentNode.replaceChild(newOverlay, overlay);
-
-                newHamburger.addEventListener('click', function(e) {
+                hamburger.addEventListener('click', function(e) {
                     e.preventDefault();
                     sideMenu.classList.add('active');
-                    newOverlay.classList.add('active');
+                    overlay.classList.add('active');
                 });
 
-                newCloseMenu.addEventListener('click', function(e) {
+                closeMenu.addEventListener('click', function(e) {
                     e.preventDefault();
                     sideMenu.classList.remove('active');
-                    newOverlay.classList.remove('active');
+                    overlay.classList.remove('active');
                 });
 
-                newOverlay.addEventListener('click', function(e) {
+                overlay.addEventListener('click', function(e) {
                     e.preventDefault();
                     sideMenu.classList.remove('active');
-                    newOverlay.classList.remove('active');
+                    overlay.classList.remove('active');
                 });
             }
 
-            console.log('=== ページ初期化完了 ===');
+            console.log('=== 初期化完了 ===');
         }
 
-        // 初回読み込み
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializePage);
         } else {
             initializePage();
         }
-
-        // Turbo対応
-        document.addEventListener('turbo:load', initializePage);
     </script>
 </body>
 
