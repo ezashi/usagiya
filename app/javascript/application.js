@@ -9,6 +9,7 @@ import { createRoot } from 'react-dom/client'
 // コンポーネントのインポート
 import Home from './components/Home'
 import FeaturedProducts from './components/FeaturedProducts'
+import SeasonalProducts from './components/SeasonalProducts'
 
 console.log('Application.js loading...')
 
@@ -22,6 +23,7 @@ const mountComponents = () => {
     const props = JSON.parse(homeRoot.dataset.props || '{}')
     const root = createRoot(homeRoot)
     root.render(<Home {...props} />)
+    console.log('Home mounted')
   }
 
   // おすすめ商品コンポーネント
@@ -31,6 +33,15 @@ const mountComponents = () => {
     const root = createRoot(featuredRoot)
     root.render(<FeaturedProducts {...props} />)
     console.log('FeaturedProducts mounted')
+  }
+
+  // 季節限定商品コンポーネント
+  const seasonalRoot = document.getElementById('seasonal-products-root')
+  if (seasonalRoot) {
+    const props = JSON.parse(seasonalRoot.dataset.props || '{}')
+    const root = createRoot(seasonalRoot)
+    root.render(<SeasonalProducts {...props} />)
+    console.log('SeasonalProducts mounted')
   }
 }
 

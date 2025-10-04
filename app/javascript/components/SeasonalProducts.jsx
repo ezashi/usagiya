@@ -21,7 +21,7 @@ const getCardSize = () => {
   return '80vw' // モバイル: 1.2個表示
 }
 
-const FeaturedProducts = ({ products = [] }) => {
+const SeasonalProducts = ({ products = [] }) => {
   const [layout, setLayout] = useState('animation')
   const [titleHover, setTitleHover] = useState(false)
   const [initialBgColor, setInitialBgColor] = useState('#fff')
@@ -53,9 +53,9 @@ const FeaturedProducts = ({ products = [] }) => {
     return (
       <div style={{ padding: '2rem' }}>
         <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '2rem', textAlign: 'center' }}>
-          おすすめ商品
+          季節限定商品
         </h1>
-        <p style={{ textAlign: 'center', color: '#4B5563' }}>現在、おすすめ商品はありません。</p>
+        <p style={{ textAlign: 'center', color: '#4B5563' }}>現在、季節限定商品はありません。</p>
       </div>
     )
   }
@@ -103,7 +103,7 @@ const FeaturedProducts = ({ products = [] }) => {
             onMouseEnter={() => setTitleHover(true)}
             onMouseLeave={() => setTitleHover(false)}
           >
-            おすすめ商品
+            季節限定商品
           </h1>
 
           {/* レイアウト切り替えボタン */}
@@ -156,7 +156,7 @@ const FeaturedProducts = ({ products = [] }) => {
               x: {
                 repeat: Infinity,
                 repeatType: "loop",
-                duration: products.length * 1,
+                duration: products.length * 2.5,
                 ease: "linear",
               },
             }}
@@ -316,4 +316,4 @@ const FeaturedProducts = ({ products = [] }) => {
   )
 }
 
-export default FeaturedProducts
+export default SeasonalProducts
