@@ -156,7 +156,7 @@ const FeaturedProducts = ({ products = [] }) => {
               x: {
                 repeat: Infinity,
                 repeatType: "loop",
-                duration: products.length * 1.5,
+                duration: products.length * 1,
                 ease: "linear",
               },
             }}
