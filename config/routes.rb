@@ -5,8 +5,10 @@ Rails.application.routes.draw do
   # 一般ユーザー向けページ
   namespace :pages do
     get :home
-    get :spirit  # 御菓子処うさぎやの想い
   end
+
+  # 御菓子処うさぎやの想い
+  get 'pages/spirit', to: 'pages#spirit', as: 'spirit'
 
   # 商品関連
   resources :products, only: [ :show ] do

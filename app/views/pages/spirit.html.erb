@@ -33,12 +33,10 @@
         padding-top: 100px;
     }
 
-    .main-title {
-        font-size: 4rem;
-        font-weight: bold;
-        color: #1f2937;
-        text-align: center;
-        letter-spacing: 0.1em;
+    .logo-image {
+        max-width: 600px;
+        width: 80%;
+        height: auto;
         animation: fadeInUp 1s ease-out;
     }
 
@@ -92,32 +90,33 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        padding: 3rem;
+        padding: 10rem 3rem 3rem 3rem;
     }
 
     /* ============================================
        サブタイトル
        ============================================ */
     .subtitle {
-        align-self: flex-end;
-        text-align: right;
+        align-self: flex-start;
+        text-align: left;
         max-width: 600px;
-        animation: fadeInRight 1s ease-out;
+        animation: fadeInLeft 1s ease-out;
     }
 
     .subtitle h2 {
         font-size: 2.5rem;
         font-weight: bold;
         color: #ffffff;
+        -webkit-text-stroke: 1.5px #000;
         text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
-        line-height: 1.4;
+        line-height: 3.5;
         margin-bottom: 1rem;
     }
 
-    @keyframes fadeInRight {
+    @keyframes fadeInLeft {
         from {
             opacity: 0;
-            transform: translateX(30px);
+            transform: translateX(-30px);
         }
 
         to {
@@ -131,15 +130,14 @@
        ============================================ */
     .text-content {
         align-self: flex-end;
-        text-align: right;
         max-width: 700px;
         animation: fadeInUp 1s ease-out 0.3s both;
     }
 
     .text-content p {
-        font-size: 1.25rem;
+        font-size: 19.5px;
         color: #ffffff;
-        line-height: 2;
+        line-height: 1.5;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
         white-space: pre-line;
         background: rgba(0, 0, 0, 0.2);
@@ -190,8 +188,8 @@
        レスポンシブ: 1024px
        ============================================ */
     @media (max-width: 1024px) {
-        .main-title {
-            font-size: 3rem;
+        .logo-image {
+            max-width: 500px;
         }
 
         .subtitle h2 {
@@ -204,7 +202,7 @@
         }
 
         .content-wrapper {
-            padding: 2rem;
+            padding: 9rem 2rem 2rem 2rem;
         }
     }
 
@@ -216,8 +214,8 @@
             padding-top: 80px;
         }
 
-        .main-title {
-            font-size: 2.5rem;
+        .logo-image {
+            max-width: 400px;
         }
 
         .subtitle h2 {
@@ -231,7 +229,7 @@
         }
 
         .content-wrapper {
-            padding: 1.5rem;
+            padding: 8rem 1.5rem 1.5rem 1.5rem;
         }
 
         .subtitle,
@@ -248,9 +246,9 @@
             padding-top: 60px;
         }
 
-        .main-title {
-            font-size: 1.75rem;
-            letter-spacing: 0.05em;
+        .logo-image {
+            max-width: 300px;
+            width: 90%;
         }
 
         .subtitle h2 {
@@ -264,7 +262,7 @@
         }
 
         .content-wrapper {
-            padding: 1rem;
+            padding: 6rem 1rem 1rem 1rem;
         }
 
         .scroll-indicator svg {
@@ -275,11 +273,9 @@
 </style>
 
 <div class="spirit-container">
-    <!-- タイトルセクション -->
     <section class="title-section">
-        <h1 class="main-title">御菓子処うさぎやの想い</h1>
+        <%= image_tag 'usagiya_logo.png', class: 'logo-image', alt: '御菓子処うさぎやの想い' %>
 
-        <!-- スクロールインジケーター -->
         <div class="scroll-indicator">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
@@ -287,24 +283,28 @@
         </div>
     </section>
 
-    <!-- 画像1セクション -->
     <section class="image-section">
         <%= image_tag 'shop/motipai_danmen.png', class: 'background-image', alt: 'もちパイ断面' %>
         <div class="overlay"></div>
         <div class="content-wrapper">
             <div></div> <!-- スペーサー -->
             <div class="text-content">
-                <p>福井県鯖江市の御菓子処うさぎやは お客様に新鮮で美味しいものを味わっていただくため、大量生産はせずに、ひとつひとつ心を込めて作っております。</p>
+                <p>
+                    福井県鯖江市の 御菓子処うさぎやは
+                    お客様に新鮮で美味しいものを味わっていただくため、
+                    大量生産はせずに、ひとつひとつ心を込めて作っております。
+                </p>
 
                 <br>
 
-                <p>当店の御菓子を召し上がっていただき、ホッと幸せなひとときを感じていただければと思っております。
-                    そして、"御菓子もお店もスタッフも"全てをお客様に受け入れていただけて、「また来店したい」と思っていただけるよう心掛けております。</p>
+                <p>
+                    当店の御菓子を召し上がっていただき、ホッと幸せなひとときを感じていただければと思っております。
+                    そして、 "御菓子もお店もスタッフも" 全てをお客様に受け入れていただけて、「また来店したい」と思っていただけるよう心掛けております。
+                </p>
             </div>
         </div>
     </section>
 
-    <!-- 画像2セクション -->
     <section class="image-section">
         <%= image_tag 'shop/moti_pai.png', class: 'background-image', alt: 'もちパイ' %>
         <div class="overlay"></div>
@@ -313,16 +313,21 @@
                 <h2>新鮮できたての御菓子</h2>
             </div>
             <div class="text-content">
-                <p>なぜ新鮮なものにこだわるか…それはできたてが一番おいしいからです。
-                    ですから、うさぎやでは1番人気の「もちパイ」を事前連絡いただけると、来店時間に合わせて焼きたてしています！
+                <p>
+                    なぜ新鮮なものにこだわるか…それはできたてが一番おいしいからです。
+                    ですから、うさぎやでは1番人気の「もちパイ」を事前連絡いただけると、来店時間に合わせて焼きたてしています!
+                </p>
 
+                <br>
+
+                <p>
                     また、新鮮できたてにこだわるうさぎやの御菓子は大量生産ができません。ひとつひとつ手作りで丁寧に作ります。
-                    事前に注文いただければ合わせて調製いたしますのでお気軽にお問い合わせくださいませ。</p>
+                    事前に注文いただければ合わせて調製いたしますのでお気軽にお問い合わせくださいませ。
+                </p>
             </div>
         </div>
     </section>
 
-    <!-- 画像3セクション -->
     <section class="image-section">
         <%= image_tag 'shop/dorayaki.png', class: 'background-image', alt: 'どら焼き' %>
         <div class="overlay"></div>
@@ -331,7 +336,9 @@
                 <h2>なるべく添加物を使わない御菓子</h2>
             </div>
             <div class="text-content">
-                <p>御菓子は、添加物を使えば日持ちもしますし柔らかさも持続しますが、うさぎやは「御菓子本来の味」を求めていますのでなるべく添加物は使用しないように心掛けています。お餅は翌日に硬くなるのが自然です。ですからうさぎやのお餅は当日中に召し上がっていただきたいのです。</p>
+                <p>
+                    御菓子は、添加物を使えば日持ちもしますし柔らかさも持続しますが、うさぎやは「御菓子本来の味」を求めていますのでなるべく添加物は使用しないように心掛けています。お餅は翌日に硬くなるのが自然です。ですからうさぎやのお餅は当日中に召し上がっていただきたいのです。
+                </p>
             </div>
         </div>
     </section>
