@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   end
 
   # 御菓子処うさぎやの想い
-  get 'pages/spirit', to: 'pages#spirit', as: 'spirit'
+  get "pages/spirit", to: "pages#spirit", as: "spirit"
 
   # 商品関連
   resources :products, only: [ :show ] do
