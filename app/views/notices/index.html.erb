@@ -3,13 +3,13 @@
 <style>
     .notices-container {
         min-height: 100vh;
-        background: linear-gradient(to bottom, #fce7f3, #ffffff);
+        background: #ede4e1;
         padding-top: 140px;
         padding-bottom: 4rem;
     }
 
     .notices-content {
-        max-width: 100rem;
+        max-width: 80rem;
         margin: 0 auto;
         padding: 0 2rem;
     }
@@ -21,8 +21,9 @@
         z-index: 40;
         display: flex;
         align-items: center;
-        background-color: #db2777;
-        color: white;
+        background-color: #ffc0cb;
+        border: 1px solid #000;
+        color: #000;
         font-weight: bold;
         padding: 0.75rem 1.5rem;
         border-radius: 0.75rem;
@@ -33,7 +34,7 @@
     }
 
     .back-to-top-button:hover {
-        background-color: #be185d;
+        background-color: #ff99a9;
         transform: scale(1.05);
     }
 
@@ -62,7 +63,7 @@
     .notices-title {
         font-size: 3rem;
         font-weight: bold;
-        color: #1f2937;
+        color: #333;
         margin-bottom: 1rem;
     }
 
@@ -113,7 +114,7 @@
     .field-label {
         display: block;
         font-weight: bold;
-        color: #374151;
+        color: #333;
         margin-bottom: 0.5rem;
         font-size: 0.875rem;
     }
@@ -122,7 +123,7 @@
     .field-select {
         width: 100%;
         padding: 0.75rem 1rem;
-        border: 2px solid #e5e7eb;
+        border: 2px solid #ede4e1;
         border-radius: 0.5rem;
         font-size: 1rem;
         transition: border-color 0.3s;
@@ -131,7 +132,7 @@
     .field-input:focus,
     .field-select:focus {
         outline: none;
-        border-color: #ec4899;
+        border-color: #DB2777;
         box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
     }
 
@@ -150,22 +151,24 @@
     }
 
     .search-button {
-        background-color: #db2777;
-        color: white;
+        background-color: #fce7f3;
+        border: 1px solid #000;
+        color: #000;
     }
 
     .search-button:hover {
-        background-color: #be185d;
+        background-color: #f99ed0;
         transform: scale(1.05);
     }
 
     .reset-button {
-        background-color: #f3f4f6;
-        color: #374151;
+        background-color: #F9F9F9;
+        border: 1px solid #000;
+        color: #000;
     }
 
     .reset-button:hover {
-        background-color: #e5e7eb;
+        background-color: #d6d6d6;
     }
 
     .button-icon {
@@ -180,10 +183,10 @@
     .notices-list-wrapper {
         display: flex;
         justify-content: center;
+        width: 100%;
     }
 
     .notices-list {
-        max-width: 80rem;
         width: 100%;
     }
 
@@ -213,27 +216,28 @@
 
     .notice-title-wrapper {
         flex: 1;
-        order: 2;
+        order: 1;
+        text-align: left;
     }
 
     .notice-title {
         font-size: 1.875rem;
         font-weight: bold;
-        color: #1f2937;
+        color: #333;
     }
 
     .notice-meta {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        gap: 0.75rem;
         flex-shrink: 0;
-        order: 1;
+        order: 2;
     }
 
     .notice-date {
         display: flex;
         align-items: center;
-        color: #db2777;
+        color: #D5016B;
         font-weight: bold;
         font-size: 1.125rem;
     }
@@ -246,7 +250,7 @@
 
     .new-badge {
         background-color: #ef4444;
-        color: white;
+        color: #fff;
         font-size: 0.75rem;
         font-weight: bold;
         padding: 0.25rem 0.5rem;
@@ -261,7 +265,7 @@
     }
 
     .notice-content {
-        color: #374151;
+        color: #333;
         line-height: 1.8;
     }
 
@@ -282,18 +286,18 @@
         width: 6rem;
         height: 6rem;
         margin: 0 auto 1.5rem;
-        color: #d1d5db;
+        color: #c8c8c8;
     }
 
     .no-notices-title {
         font-size: 1.25rem;
-        color: #6b7280;
+        color: #625b57;
         margin-bottom: 1rem;
     }
 
     .no-notices-text {
         font-size: 1rem;
-        color: #9ca3af;
+        color: #7d7d7d;
         margin-bottom: 1.5rem;
     }
 
@@ -304,7 +308,7 @@
     }
 
     .no-notices-button:hover {
-        background-color: #be185d;
+        background-color: #DB2777;
     }
 
     /* ============================================
@@ -313,7 +317,7 @@
     .prose h1,
     .prose h2,
     .prose h3 {
-        color: #111827;
+        color: #333;
         font-weight: bold;
         margin-top: 1.5rem;
         margin-bottom: 0.75rem;
@@ -412,12 +416,8 @@
        ============================================ */
     @media (max-width: 1024px) {
         .notices-content {
-            max-width: 80rem;
-            padding: 0 1.5rem;
-        }
-
-        .notices-list {
             max-width: 64rem;
+            padding: 0 1.5rem;
         }
 
         .back-to-top-button {
@@ -574,14 +574,14 @@
         }
 
         .notice-meta {
-            order: 1;
+            order: 2;
             width: 100%;
-            justify-content: flex-start;
+            justify-content: flex-end;
             gap: 0.5rem;
         }
 
         .notice-title-wrapper {
-            order: 2;
+            order: 1;
         }
 
         .notice-title {
@@ -632,132 +632,131 @@
 </style>
 
 <div class="notices-container">
-    <div class="container mx-auto px-4">
-        <%= link_to root_path, class: "back-to-top-button" do %>
-        <svg class="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        <span class="back-text-full">トップへ</span>
-        <span class="back-text-short"></span>
-        <% end %>
+    <%= link_to root_path, class: "back-to-top-button" do %>
+    <svg class="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+    </svg>
+    <span class="back-text-full">トップへ</span>
+    <span class="back-text-short">←</span>
+    <% end %>
 
-        <div class="notices-content">
-            <div class="notices-header">
-                <h1 class="notices-title">お知らせ</h1>
-            </div>
+    <div class="notices-content">
+        <div class="notices-header">
+            <h1 class="notices-title">お知らせ</h1>
+        </div>
 
-            <!-- 検索・フィルター -->
-            <div class="search-filter-container">
-                <%= form_with url: notices_path, method: :get, id: "search-form", class: "search-form" do |f| %>
-                <!-- 検索行 -->
-                <div class="search-row">
-                    <div class="keyword-field">
-                        <label class="field-label">キーワード検索</label>
-                        <%= f.text_field :keyword,
+        <!-- 検索・フィルター -->
+        <div class="search-filter-container">
+            <%= form_with url: notices_path, method: :get, id: "search-form", class: "search-form" do |f| %>
+            <!-- 検索行 -->
+            <div class="search-row">
+                <div class="keyword-field">
+                    <label class="field-label">キーワード検索</label>
+                    <%= f.text_field :keyword,
                             value: params[:keyword],
                             placeholder: "お知らせのタイトルや内容を検索",
                             class: "field-input" %>
-                    </div>
-                    <div class="search-button-wrapper">
-                        <%= f.submit "検索", class: "search-button" do %>
-                        <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        検索
-                        <% end %>
-                    </div>
                 </div>
+                <div class="search-button-wrapper">
+                    <%= f.submit "検索", class: "search-button" do %>
+                    <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    検索
+                    <% end %>
+                </div>
+            </div>
 
-                <!-- フィルター行 -->
-                <div class="filter-row">
-                    <div class="year-field">
-                        <label class="field-label">年で絞り込み</label>
-                        <%= f.select :year,
+            <!-- フィルター行 -->
+            <div class="filter-row">
+                <div class="year-field">
+                    <label class="field-label">年で絞り込み</label>
+                    <%= f.select :year,
                             options_for_select(
                                 [["すべて", ""]] + (2020..Date.current.year).to_a.reverse.map { |y| [y, y] },
                                 params[:year]
                             ),
                             {},
                             class: "field-select auto-submit" %>
-                    </div>
-                    <div class="month-field">
-                        <label class="field-label">月で絞り込み</label>
-                        <%= f.select :month,
+                </div>
+                <div class="month-field">
+                    <label class="field-label">月で絞り込み</label>
+                    <%= f.select :month,
                             options_for_select(
                                 [["すべて", ""]] + (1..12).map { |m| ["#{m}月", m] },
                                 params[:month]
                             ),
                             {},
                             class: "field-select auto-submit" %>
-                    </div>
-                    <div class="search-button-wrapper">
-                        <%= link_to notices_path, class: "reset-button" do %>
-                        <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                        </svg>
-                        リセット
-                        <% end %>
-                    </div>
                 </div>
-                <% end %>
-            </div>
-
-            <% if @notices.any? %>
-            <div class="notices-list-wrapper">
-                <div class="notices-list">
-                    <% @notices.each do |notice| %>
-                    <article class="notice-card">
-                        <div class="notice-card-content">
-                            <div class="notice-header">
-                                <div class="notice-title-wrapper">
-                                    <h2 class="notice-title">
-                                        <%= notice.title %>
-                                    </h2>
-                                </div>
-
-                                <div class="notice-meta">
-                                    <time datetime="<%= notice.published_at.iso8601 %>" class="notice-date">
-                                        <svg class="date-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                        <%= notice.published_at.strftime('%Y年%m月%d日') %>
-                                    </time>
-
-                                    <% if notice.published_at > 7.days.ago %>
-                                    <span class="new-badge">NEW</span>
-                                    <% end %>
-                                </div>
-                            </div>
-
-                            <div class="notice-divider"></div>
-
-                            <div class="notice-content prose">
-                                <%= notice.content %>
-                            </div>
-                        </div>
-                    </article>
+                <div class="search-button-wrapper">
+                    <%= link_to notices_path, class: "reset-button" do %>
+                    <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    リセット
                     <% end %>
                 </div>
             </div>
-
-            <% else %>
-            <!-- お知らせがない場合 -->
-            <div class="no-notices">
-                <svg class="no-notices-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                </svg>
-                <% if params[:keyword].present? || params[:year].present? || params[:month].present? %>
-                <p class="no-notices-title">検索条件に一致するお知らせが見つかりませんでした</p>
-                <p class="no-notices-text">別の条件で検索してください</p>
-                <%= link_to "検索をリセット", notices_path, class: "no-notices-button" %>
-                <% else %>
-                <p class="no-notices-title">現在、お知らせはありません</p>
-                <p class="no-notices-text">新しいお知らせが追加されるまでお待ちください</p>
-                <% end %>
-            </div>
             <% end %>
         </div>
+
+        <% if @notices.any? %>
+        <div class="notices-list-wrapper">
+            <div class="notices-list">
+                <% @notices.each do |notice| %>
+                <article class="notice-card">
+                    <div class="notice-card-content">
+                        <div class="notice-header">
+                            <div class="notice-title-wrapper">
+                                <h2 class="notice-title">
+                                    <%= notice.title %>
+                                </h2>
+                            </div>
+
+                            <div class="notice-meta">
+                                <% if notice.published_at > 7.days.ago %>
+                                <span class="new-badge">NEW</span>
+                                <% end %>
+
+                                <time datetime="<%= notice.published_at.iso8601 %>" class="notice-date">
+                                    <svg class="date-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <%= notice.published_at.strftime('%Y年%m月%d日') %>
+                                </time>
+                            </div>
+                        </div>
+
+                        <div class="notice-divider"></div>
+
+                        <div class="notice-content prose">
+                            <%= notice.content %>
+                        </div>
+                    </div>
+                </article>
+                <% end %>
+            </div>
+        </div>
+
+        <% else %>
+        <!-- お知らせがない場合 -->
+        <div class="no-notices">
+            <svg class="no-notices-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+            </svg>
+            <% if params[:keyword].present? || params[:year].present? || params[:month].present? %>
+            <p class="no-notices-title">検索条件に一致するお知らせが見つかりませんでした</p>
+            <p class="no-notices-text">別の条件で検索してください</p>
+            <%= link_to "検索をリセット", notices_path, class: "no-notices-button" %>
+            <% else %>
+            <p class="no-notices-title">現在、お知らせはありません</p>
+            <p class="no-notices-text">新しいお知らせが追加されるまでお待ちください</p>
+            <% end %>
+        </div>
+        <% end %>
     </div>
+</div>
 </div>
 
 <!-- JavaScriptで自動サブミット -->
