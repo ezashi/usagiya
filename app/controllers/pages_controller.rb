@@ -7,6 +7,6 @@ class PagesController < ApplicationController
     @recent_notices = Notice.published.limit(3)
   end
 
-  def philosophy
+  def spirit
   end
 end

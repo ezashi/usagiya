@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # 一般ユーザー向けページ
   namespace :pages do
     get :home
-    get :philosophy  # 御菓子処うさぎやの想い
+    get :spirit  # 御菓子処うさぎやの想い
   end
 
   # 商品関連

@@ -1,0 +1,369 @@
+<%= render 'shared/header' %>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .spirit-container {
+        width: 100%;
+        min-height: 100vh;
+    }
+
+    /* ============================================
+       タイトルセクション
+       ============================================ */
+    .title-section {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #fce7f3 0%, #ffffff 100%);
+        position: relative;
+        padding-top: 100px;
+    }
+
+    .main-title {
+        font-size: 4rem;
+        font-weight: bold;
+        color: #1f2937;
+        text-align: center;
+        letter-spacing: 0.1em;
+        animation: fadeInUp 1s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ============================================
+       画像セクション
+       ============================================ */
+    .image-section {
+        width: 100%;
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .background-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 2;
+    }
+
+    .content-wrapper {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 3rem;
+    }
+
+    /* ============================================
+       サブタイトル
+       ============================================ */
+    .subtitle {
+        align-self: flex-end;
+        text-align: right;
+        max-width: 600px;
+        animation: fadeInRight 1s ease-out;
+    }
+
+    .subtitle h2 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #ffffff;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+        line-height: 1.4;
+        margin-bottom: 1rem;
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* ============================================
+       テキスト
+       ============================================ */
+    .text-content {
+        align-self: flex-end;
+        text-align: right;
+        max-width: 700px;
+        animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    .text-content p {
+        font-size: 1.25rem;
+        color: #ffffff;
+        line-height: 2;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+        white-space: pre-line;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 2rem;
+        border-radius: 1rem;
+        backdrop-filter: blur(5px);
+    }
+
+    /* ============================================
+       スクロールインジケーター
+       ============================================ */
+    .scroll-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        animation: bounce 2s infinite;
+    }
+
+    .scroll-indicator svg {
+        width: 2rem;
+        height: 2rem;
+        color: #ffffff;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    @keyframes bounce {
+
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        40% {
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        60% {
+            transform: translateX(-50%) translateY(-5px);
+        }
+    }
+
+    /* ============================================
+       レスポンシブ: 1024px
+       ============================================ */
+    @media (max-width: 1024px) {
+        .main-title {
+            font-size: 3rem;
+        }
+
+        .subtitle h2 {
+            font-size: 2rem;
+        }
+
+        .text-content p {
+            font-size: 1.125rem;
+            padding: 1.5rem;
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+        }
+    }
+
+    /* ============================================
+       レスポンシブ: 768px
+       ============================================ */
+    @media (max-width: 768px) {
+        .title-section {
+            padding-top: 80px;
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+        }
+
+        .subtitle h2 {
+            font-size: 1.75rem;
+        }
+
+        .text-content p {
+            font-size: 1rem;
+            padding: 1.25rem;
+            line-height: 1.8;
+        }
+
+        .content-wrapper {
+            padding: 1.5rem;
+        }
+
+        .subtitle,
+        .text-content {
+            max-width: 100%;
+        }
+    }
+
+    /* ============================================
+       レスポンシブ: 480px
+       ============================================ */
+    @media (max-width: 480px) {
+        .title-section {
+            padding-top: 60px;
+        }
+
+        .main-title {
+            font-size: 1.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .subtitle h2 {
+            font-size: 1.25rem;
+        }
+
+        .text-content p {
+            font-size: 0.875rem;
+            padding: 1rem;
+            line-height: 1.7;
+        }
+
+        .content-wrapper {
+            padding: 1rem;
+        }
+
+        .scroll-indicator svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+    }
+</style>
+
+<div class="spirit-container">
+    <!-- タイトルセクション -->
+    <section class="title-section">
+        <h1 class="main-title">御菓子処うさぎやの想い</h1>
+
+        <!-- スクロールインジケーター -->
+        <div class="scroll-indicator">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- 画像1セクション -->
+    <section class="image-section">
+        <%= image_tag 'shop/motipai_danmen.png', class: 'background-image', alt: 'もちパイ断面' %>
+        <div class="overlay"></div>
+        <div class="content-wrapper">
+            <div></div> <!-- スペーサー -->
+            <div class="text-content">
+                <p>福井県鯖江市の御菓子処うさぎやは お客様に新鮮で美味しいものを味わっていただくため、大量生産はせずに、ひとつひとつ心を込めて作っております。</p>
+
+                <br>
+
+                <p>当店の御菓子を召し上がっていただき、ホッと幸せなひとときを感じていただければと思っております。
+                    そして、"御菓子もお店もスタッフも"全てをお客様に受け入れていただけて、「また来店したい」と思っていただけるよう心掛けております。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 画像2セクション -->
+    <section class="image-section">
+        <%= image_tag 'shop/moti_pai.png', class: 'background-image', alt: 'もちパイ' %>
+        <div class="overlay"></div>
+        <div class="content-wrapper">
+            <div class="subtitle">
+                <h2>新鮮できたての御菓子</h2>
+            </div>
+            <div class="text-content">
+                <p>なぜ新鮮なものにこだわるか…それはできたてが一番おいしいからです。
+                    ですから、うさぎやでは1番人気の「もちパイ」を事前連絡いただけると、来店時間に合わせて焼きたてしています！
+
+                    また、新鮮できたてにこだわるうさぎやの御菓子は大量生産ができません。ひとつひとつ手作りで丁寧に作ります。
+                    事前に注文いただければ合わせて調製いたしますのでお気軽にお問い合わせくださいませ。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 画像3セクション -->
+    <section class="image-section">
+        <%= image_tag 'shop/dorayaki.png', class: 'background-image', alt: 'どら焼き' %>
+        <div class="overlay"></div>
+        <div class="content-wrapper">
+            <div class="subtitle">
+                <h2>なるべく添加物を使わない御菓子</h2>
+            </div>
+            <div class="text-content">
+                <p>御菓子は、添加物を使えば日持ちもしますし柔らかさも持続しますが、うさぎやは「御菓子本来の味」を求めていますのでなるべく添加物は使用しないように心掛けています。お餅は翌日に硬くなるのが自然です。ですからうさぎやのお餅は当日中に召し上がっていただきたいのです。</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    // スムーズスクロールの実装
+    document.addEventListener('DOMContentLoaded', function() {
+        // スクロールインジケーターをクリックしたら次のセクションへ
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        if (scrollIndicator) {
+            scrollIndicator.addEventListener('click', function() {
+                const firstImageSection = document.querySelector('.image-section');
+                if (firstImageSection) {
+                    firstImageSection.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+
+        // パララックス効果（オプション）
+        window.addEventListener('scroll', function() {
+            const imageSections = document.querySelectorAll('.image-section');
+            imageSections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const scrollPercent = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+                const backgroundImage = section.querySelector('.background-image');
+                if (backgroundImage && scrollPercent >= 0 && scrollPercent <= 1) {
+                    backgroundImage.style.transform = `translateY(${(scrollPercent - 0.5) * 20}%)`;
+                }
+            });
+        });
+    });
+</script>
