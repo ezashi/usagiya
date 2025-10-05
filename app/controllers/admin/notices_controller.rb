@@ -1,5 +1,5 @@
 class Admin::NoticesController < Admin::BaseController
-  before_action :set_notice, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_notice, only: [ :show, :edit, :update, :destroy, :publish ]
 
   def index
     @notices = Notice.all.recent
@@ -12,8 +12,17 @@ class Admin::NoticesController < Admin::BaseController
   def create
     @notice = Notice.new(notice_params)
 
+    # params[:commit]で押されたボタンを判定
+    if params[:commit] == "公開"
+      @notice.published_at = Time.current
+    end
+
     if @notice.save
-      redirect_to admin_notices_path, notice: "お知らせを追加しました"
+      if params[:commit] == "公開"
+        redirect_to admin_notices_path, notice: "お知らせを公開しました"
+      else
+        redirect_to edit_admin_notice_path(@notice), notice: "お知らせを下書き保存しました"
+      end
     else
       render :new, status: :unprocessable_entity
     end
@@ -23,8 +32,17 @@ class Admin::NoticesController < Admin::BaseController
   end
 
   def update
+    # params[:commit]で押されたボタンを判定
+    if params[:commit] == "公開"
+      @notice.published_at = Time.current
+    end
+
     if @notice.update(notice_params)
-      redirect_to admin_notices_path, notice: "お知らせを更新しました"
+      if params[:commit] == "公開"
+        redirect_to admin_notices_path, notice: "お知らせを公開しました"
+      else
+        redirect_to edit_admin_notice_path(@notice), notice: "お知らせを保存しました"
+      end
     else
       render :edit, status: :unprocessable_entity
     end
@@ -35,6 +53,17 @@ class Admin::NoticesController < Admin::BaseController
     redirect_to admin_notices_path, notice: "お知らせを削除しました"
   end
 
+  # 公開/非公開の切り替え
+  def publish
+    if @notice.published?
+      @notice.unpublish!
+      redirect_to admin_notices_path, notice: "お知らせを非公開にしました"
+    else
+      @notice.publish!
+      redirect_to admin_notices_path, notice: "お知らせを公開しました"
+    end
+  end
+
   private
 
   def set_notice
@@ -42,6 +71,6 @@ class Admin::NoticesController < Admin::BaseController
   end
 
   def notice_params
-    params.require(:notice).permit(:title, :content, :published_at)
+    params.require(:notice).permit(:title, :content)
   end
 end

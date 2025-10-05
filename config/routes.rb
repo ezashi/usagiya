@@ -36,6 +36,36 @@ Rails.application.routes.draw do
     end
   end
 
+  # 管理者向けルート
+  namespace :admin do
+    # 商品管理
+    resources :products do
+      member do
+        patch :toggle_visibility
+      end
+      collection do
+        get :featured
+        get :seasonal
+      end
+    end
+
+    # お知らせ管理
+    resources :notices do
+      member do
+        patch :publish  # 公開/非公開切り替え
+      end
+    end
+
+    # 営業カレンダー管理
+    resources :calendar_events
+
+    # 注文管理
+    resources :orders, only: [ :index, :show ]
+
+    # お問い合わせ管理
+    resources :inquiries, only: [ :index, :show ]
+  end
+
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 end
