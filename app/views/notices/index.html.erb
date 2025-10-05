@@ -66,11 +66,6 @@
         margin-bottom: 1rem;
     }
 
-    .notices-subtitle {
-        font-size: 1rem;
-        color: #4b5563;
-    }
-
     /* ============================================
        検索・フィルター
        ============================================ */
@@ -519,7 +514,6 @@
         }
 
         .back-to-top-button {
-            left: 0.5rem;
             top: 80px;
             padding: 0.5rem;
             font-size: 0.75rem;
@@ -544,10 +538,6 @@
         .notices-title {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
-        }
-
-        .notices-subtitle {
-            font-size: 0.75rem;
         }
 
         .search-filter-container {
@@ -648,13 +638,12 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
         <span class="back-text-full">トップへ</span>
-        <span class="back-text-short">←</span>
+        <span class="back-text-short"></span>
         <% end %>
 
         <div class="notices-content">
             <div class="notices-header">
                 <h1 class="notices-title">お知らせ</h1>
-                <p class="notices-subtitle">うさぎやからの最新情報をお届けします</p>
             </div>
 
             <!-- 検索・フィルター -->
@@ -719,16 +708,13 @@
                     <% @notices.each do |notice| %>
                     <article class="notice-card">
                         <div class="notice-card-content">
-                            <!-- 上部: タイトル（左）と日付（右） -->
                             <div class="notice-header">
-                                <!-- タイトル（左上） -->
                                 <div class="notice-title-wrapper">
                                     <h2 class="notice-title">
                                         <%= notice.title %>
                                     </h2>
                                 </div>
 
-                                <!-- 日付とNEWバッジ（右上） -->
                                 <div class="notice-meta">
                                     <time datetime="<%= notice.published_at.iso8601 %>" class="notice-date">
                                         <svg class="date-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
