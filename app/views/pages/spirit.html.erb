@@ -28,7 +28,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #fce7f3 0%, #ffffff 100%);
+        background: #eee;
         position: relative;
         padding-top: 100px;
     }
@@ -37,7 +37,6 @@
         max-width: 600px;
         width: 80%;
         height: auto;
-        animation: fadeInUp 1s ease-out;
     }
 
     @keyframes fadeInUp {
@@ -93,6 +92,10 @@
         padding: 10rem 3rem 3rem 3rem;
     }
 
+    .image-section:last-of-type .content-wrapper {
+        padding-top: 14rem;
+    }
+
     /* ============================================
        サブタイトル
        ============================================ */
@@ -100,7 +103,14 @@
         align-self: flex-start;
         text-align: left;
         max-width: 600px;
-        animation: fadeInLeft 1s ease-out;
+        opacity: 0;
+        transform: translateX(-30px);
+        transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+
+    .subtitle.visible {
+        opacity: 1;
+        transform: translateX(0);
     }
 
     .subtitle h2 {
@@ -131,7 +141,14 @@
     .text-content {
         align-self: flex-end;
         max-width: 700px;
-        animation: fadeInUp 1s ease-out 0.3s both;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 1s ease-out 0.3s, transform 1s ease-out 0.3s;
+    }
+
+    .text-content.visible {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .text-content p {
@@ -155,7 +172,16 @@
         left: 50%;
         transform: translateX(-50%);
         z-index: 10;
+        cursor: pointer;
+    }
+
+    .scroll-indicator.with-arrow {
         animation: bounce 2s infinite;
+    }
+
+    .image-section:last-of-type .scroll-indicator {
+        top: 8rem;
+        bottom: auto;
     }
 
     .scroll-indicator svg {
@@ -163,6 +189,26 @@
         height: 2rem;
         color: #ffffff;
         filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        transition: all 0.3s ease;
+    }
+
+    .scroll-indicator.with-arrow:hover svg {
+        transform: translateY(5px);
+    }
+
+    .scroll-progress {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+        border: 3px solid #F9F9F9;
+        transition: all 0.3s ease;
+    }
+
+    .scroll-progress:hover {
+        background: rgba(255, 255, 255, 0.5);
+        transform: scale(1.1);
     }
 
     @keyframes bounce {
@@ -204,6 +250,19 @@
         .content-wrapper {
             padding: 9rem 2rem 2rem 2rem;
         }
+
+        .image-section:last-of-type .content-wrapper {
+            padding-top: 13rem;
+        }
+
+        .scroll-progress {
+            width: 38px;
+            height: 38px;
+        }
+
+        .image-section:last-of-type .scroll-indicator {
+            top: 7rem;
+        }
     }
 
     /* ============================================
@@ -232,9 +291,22 @@
             padding: 8rem 1.5rem 1.5rem 1.5rem;
         }
 
+        .image-section:last-of-type .content-wrapper {
+            padding-top: 12rem;
+        }
+
         .subtitle,
         .text-content {
             max-width: 100%;
+        }
+
+        .scroll-progress {
+            width: 35px;
+            height: 35px;
+        }
+
+        .image-section:last-of-type .scroll-indicator {
+            top: 6rem;
         }
     }
 
@@ -265,9 +337,23 @@
             padding: 6rem 1rem 1rem 1rem;
         }
 
+        .image-section:last-of-type .content-wrapper {
+            padding-top: 10rem;
+        }
+
         .scroll-indicator svg {
             width: 1.5rem;
             height: 1.5rem;
+        }
+
+        .scroll-progress {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #F9F9F9;
+        }
+
+        .image-section:last-of-type .scroll-indicator {
+            top: 5rem;
         }
     }
 </style>
@@ -276,14 +362,14 @@
     <section class="title-section">
         <%= image_tag 'usagiya_logo.png', class: 'logo-image', alt: '御菓子処うさぎやの想い' %>
 
-        <div class="scroll-indicator">
+        <div class="scroll-indicator with-arrow">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
             </svg>
         </div>
     </section>
 
-    <section class="image-section">
+    <section class="image-section" data-section="1">
         <%= image_tag 'shop/motipai_danmen.png', class: 'background-image', alt: 'もちパイ断面' %>
         <div class="overlay"></div>
         <div class="content-wrapper">
@@ -303,9 +389,13 @@
                 </p>
             </div>
         </div>
+
+        <div class="scroll-indicator">
+            <div class="scroll-progress"></div>
+        </div>
     </section>
 
-    <section class="image-section">
+    <section class="image-section" data-section="2">
         <%= image_tag 'shop/moti_pai.png', class: 'background-image', alt: 'もちパイ' %>
         <div class="overlay"></div>
         <div class="content-wrapper">
@@ -326,9 +416,13 @@
                 </p>
             </div>
         </div>
+
+        <div class="scroll-indicator">
+            <div class="scroll-progress"></div>
+        </div>
     </section>
 
-    <section class="image-section">
+    <section class="image-section" data-section="3">
         <%= image_tag 'shop/dorayaki.png', class: 'background-image', alt: 'どら焼き' %>
         <div class="overlay"></div>
         <div class="content-wrapper">
@@ -341,26 +435,81 @@
                 </p>
             </div>
         </div>
+
+        <div class="scroll-indicator">
+            <div class="scroll-progress"></div>
+        </div>
     </section>
 </div>
 
 <script>
-    // スムーズスクロールの実装
+    // スムーズスクロールとアニメーションの実装
     document.addEventListener('DOMContentLoaded', function() {
-        // スクロールインジケーターをクリックしたら次のセクションへ
-        const scrollIndicator = document.querySelector('.scroll-indicator');
-        if (scrollIndicator) {
-            scrollIndicator.addEventListener('click', function() {
-                const firstImageSection = document.querySelector('.image-section');
-                if (firstImageSection) {
-                    firstImageSection.scrollIntoView({
-                        behavior: 'smooth'
-                    });
+        // Intersection Observer でスクロールアニメーション
+        const observerOptions = {
+            root: null,
+            rootMargin: '-10% 0px -10% 0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // サブタイトルとテキストにvisibleクラスを追加
+                    const subtitle = entry.target.querySelector('.subtitle');
+                    const textContent = entry.target.querySelector('.text-content');
+
+                    if (subtitle) {
+                        setTimeout(() => {
+                            subtitle.classList.add('visible');
+                        }, 100);
+                    }
+
+                    if (textContent) {
+                        setTimeout(() => {
+                            textContent.classList.add('visible');
+                        }, subtitle ? 300 : 100);
+                    }
                 }
             });
-        }
+        }, observerOptions);
 
-        // パララックス効果（オプション）
+        const imageSections = document.querySelectorAll('.image-section');
+        imageSections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // スクロールインジケーターのクリック処理
+        const scrollIndicators = document.querySelectorAll('.scroll-indicator');
+        const allSections = document.querySelectorAll('.title-section, .image-section');
+
+        scrollIndicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', function() {
+                // 最後のセクション（画像セクション3）の場合は画像セクション2へ
+                const currentSection = indicator.closest('.image-section');
+                const isLastSection = currentSection && currentSection.dataset.section === '3';
+
+                if (isLastSection) {
+                    // 画像セクション2へスクロール
+                    const targetSection = allSections[2]; // 0: title, 1: image1, 2: image2
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                } else {
+                    // 次のセクションへ
+                    const nextSection = allSections[index + 1];
+                    if (nextSection) {
+                        nextSection.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+
+        // パララックス効果
         window.addEventListener('scroll', function() {
             const imageSections = document.querySelectorAll('.image-section');
             imageSections.forEach(section => {
