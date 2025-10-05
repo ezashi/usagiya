@@ -260,30 +260,40 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    function initializeHamburgerMenu() {
         const hamburger = document.getElementById('hamburger-featured');
         const sideMenu = document.getElementById('sideMenu-featured');
         const overlay = document.getElementById('overlay-featured');
         const closeMenu = document.getElementById('closeMenu-featured');
 
         if (hamburger && sideMenu && overlay && closeMenu) {
-            hamburger.addEventListener('click', function(e) {
+            // 既存のイベントリスナーを削除して重複を防ぐ
+            hamburger.replaceWith(hamburger.cloneNode(true));
+            const newHamburger = document.getElementById('hamburger-featured');
+            const newOverlay = document.getElementById('overlay-featured');
+            const newCloseMenu = document.getElementById('closeMenu-featured');
+
+            newHamburger.addEventListener('click', function(e) {
                 e.preventDefault();
                 sideMenu.style.right = '0';
-                overlay.style.display = 'block';
+                newOverlay.style.display = 'block';
             });
 
-            closeMenu.addEventListener('click', function(e) {
+            newCloseMenu.addEventListener('click', function(e) {
                 e.preventDefault();
                 sideMenu.style.right = '-300px';
-                overlay.style.display = 'none';
+                newOverlay.style.display = 'none';
             });
 
-            overlay.addEventListener('click', function(e) {
+            newOverlay.addEventListener('click', function(e) {
                 e.preventDefault();
                 sideMenu.style.right = '-300px';
-                overlay.style.display = 'none';
+                newOverlay.style.display = 'none';
             });
         }
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', initializeHamburgerMenu);
+
+    document.addEventListener('turbo:load', initializeHamburgerMenu);
 </script>
