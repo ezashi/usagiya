@@ -1,9 +1,6 @@
 <%= render 'shared/header' %>
 
 <style>
-    /* ============================================
-       コンテナとレイアウト
-       ============================================ */
     .notices-container {
         min-height: 100vh;
         background: linear-gradient(to bottom, #fce7f3, #ffffff);
@@ -12,29 +9,27 @@
     }
 
     .notices-content {
-        max-width: 80rem;
+        max-width: 100rem;
         margin: 0 auto;
+        padding: 0 2rem;
     }
 
-    /* ============================================
-       トップへ戻るボタン
-       ============================================ */
     .back-to-top-button {
         position: fixed;
-        left: 1rem;
-        top: 80px;
+        left: 2rem;
+        top: 150px;
         z-index: 40;
         display: flex;
         align-items: center;
         background-color: #db2777;
         color: white;
         font-weight: bold;
-        padding: 0.5rem 1rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 0.75rem;
         transition: all 0.3s;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         text-decoration: none;
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
 
     .back-to-top-button:hover {
@@ -43,17 +38,17 @@
     }
 
     .back-icon {
-        width: 1rem;
-        height: 1rem;
-        margin-right: 0.25rem;
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.5rem;
     }
 
     .back-text-full {
-        display: none;
+        display: inline;
     }
 
     .back-text-short {
-        display: inline;
+        display: none;
     }
 
     /* ============================================
@@ -61,18 +56,18 @@
        ============================================ */
     .notices-header {
         text-align: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
     }
 
     .notices-title {
-        font-size: 1.875rem;
+        font-size: 3rem;
         font-weight: bold;
         color: #1f2937;
-        margin-bottom: 0.75rem;
+        margin-bottom: 1rem;
     }
 
     .notices-subtitle {
-        font-size: 0.875rem;
+        font-size: 1rem;
         color: #4b5563;
     }
 
@@ -83,8 +78,8 @@
         background: white;
         border-radius: 0.75rem;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        padding: 1rem;
-        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
     }
 
     .search-form {
@@ -110,65 +105,53 @@
 
     .filter-row {
         display: flex;
-        gap: 0.5rem;
+        gap: 1rem;
+        flex-wrap: wrap;
     }
 
-    .filter-fields {
+    .year-field,
+    .month-field {
         flex: 1;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-
-    .filter-field {
-        min-width: 0;
-    }
-
-    .reset-button-wrapper {
-        flex-shrink: 0;
-        display: flex;
-        align-items: flex-end;
+        min-width: 150px;
     }
 
     .field-label {
         display: block;
-        font-size: 0.75rem;
         font-weight: bold;
         color: #374151;
         margin-bottom: 0.5rem;
+        font-size: 0.875rem;
     }
 
-    .text-input,
-    .select-input {
+    .field-input,
+    .field-select {
         width: 100%;
-        padding: 0.5rem 0.75rem;
+        padding: 0.75rem 1rem;
         border: 2px solid #e5e7eb;
         border-radius: 0.5rem;
-        font-size: 0.875rem;
-        transition: all 0.3s;
-        outline: none;
+        font-size: 1rem;
+        transition: border-color 0.3s;
     }
 
-    .text-input:focus,
-    .select-input:focus {
+    .field-input:focus,
+    .field-select:focus {
+        outline: none;
         border-color: #ec4899;
         box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
     }
 
     .search-button,
-    .reset-button,
-    .no-notices-button {
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
+    .reset-button {
+        padding: 0.75rem 1.5rem;
         font-weight: bold;
-        font-size: 0.875rem;
+        border-radius: 0.5rem;
         transition: all 0.3s;
         cursor: pointer;
         border: none;
-        white-space: nowrap;
-        text-decoration: none;
-        display: inline-block;
-        text-align: center;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .search-button {
@@ -178,15 +161,22 @@
 
     .search-button:hover {
         background-color: #be185d;
+        transform: scale(1.05);
     }
 
     .reset-button {
-        background-color: #e5e7eb;
+        background-color: #f3f4f6;
         color: #374151;
     }
 
     .reset-button:hover {
-        background-color: #d1d5db;
+        background-color: #e5e7eb;
+    }
+
+    .button-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.5rem;
     }
 
     /* ============================================
@@ -198,33 +188,31 @@
     }
 
     .notices-list {
+        max-width: 80rem;
         width: 100%;
-        max-width: 64rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
     }
 
     .notice-card {
         background: white;
-        border-radius: 0.75rem;
+        border-radius: 1rem;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s;
-        overflow: hidden;
+        margin-bottom: 2rem;
+        transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .notice-card:hover {
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
     }
 
     .notice-card-content {
-        padding: 1rem;
+        padding: 2rem;
     }
 
     .notice-header {
         display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
+        justify-content: space-between;
+        align-items: flex-start;
         margin-bottom: 1rem;
     }
 
@@ -234,7 +222,7 @@
     }
 
     .notice-title {
-        font-size: 1.25rem;
+        font-size: 1.875rem;
         font-weight: bold;
         color: #1f2937;
     }
@@ -252,7 +240,7 @@
         align-items: center;
         color: #db2777;
         font-weight: bold;
-        font-size: 0.875rem;
+        font-size: 1.125rem;
     }
 
     .date-icon {
@@ -289,35 +277,35 @@
         background: white;
         border-radius: 1rem;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        padding: 2rem;
+        padding: 3rem;
         text-align: center;
         max-width: 42rem;
         margin: 0 auto;
     }
 
     .no-notices-icon {
-        width: 4rem;
-        height: 4rem;
-        margin: 0 auto 1rem;
+        width: 6rem;
+        height: 6rem;
+        margin: 0 auto 1.5rem;
         color: #d1d5db;
     }
 
     .no-notices-title {
-        font-size: 1.125rem;
+        font-size: 1.25rem;
         color: #6b7280;
-        margin-bottom: 0.75rem;
+        margin-bottom: 1rem;
     }
 
     .no-notices-text {
-        font-size: 0.875rem;
+        font-size: 1rem;
         color: #9ca3af;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
     }
 
     .no-notices-button {
         background-color: #db2777;
         color: white;
-        padding: 0.5rem 1.5rem;
+        padding: 0.75rem 1.5rem;
     }
 
     .no-notices-button:hover {
@@ -425,261 +413,236 @@
     }
 
     /* ============================================
-       レスポンシブ: 640px以上
+       レスポンシブ: 1024px
        ============================================ */
-    @media (min-width: 640px) {
-        .back-to-top-button {
-            left: 1.5rem;
-            top: 150px;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-        }
-
-        .back-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-            margin-right: 0.5rem;
-        }
-
-        .back-text-full {
-            display: inline;
-        }
-
-        .back-text-short {
-            display: none;
-        }
-
-        .notices-header {
-            margin-bottom: 2rem;
-        }
-
-        .notices-title {
-            font-size: 2.25rem;
-            margin-bottom: 1rem;
-        }
-
-        .notices-subtitle {
-            font-size: 1rem;
-        }
-
-        .search-filter-container {
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .search-row,
-        .filter-row {
-            gap: 0.75rem;
-        }
-
-        .filter-fields {
-            gap: 0.75rem;
-        }
-
-        .field-label {
-            font-size: 0.875rem;
-        }
-
-        .text-input,
-        .select-input {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-        }
-
-        .search-button,
-        .reset-button {
-            padding: 0.5rem 1.5rem;
-            font-size: 1rem;
+    @media (max-width: 1024px) {
+        .notices-content {
+            max-width: 80rem;
+            padding: 0 1.5rem;
         }
 
         .notices-list {
-            gap: 1.5rem;
+            max-width: 64rem;
+        }
+
+        .back-to-top-button {
+            left: 1.5rem;
+        }
+
+        .notices-title {
+            font-size: 2.5rem;
+        }
+
+        .notice-title {
+            font-size: 1.5rem;
+        }
+
+        .search-filter-container {
+            padding: 1.25rem;
+        }
+    }
+
+    /* ============================================
+       レスポンシブ: 768px
+       ============================================ */
+    @media (max-width: 768px) {
+        .notices-container {
+            padding-top: 120px;
+        }
+
+        .notices-content {
+            padding: 0 1rem;
+        }
+
+        .back-to-top-button {
+            left: 1rem;
+            top: 100px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .back-icon {
+            width: 1rem;
+            height: 1rem;
+            margin-right: 0.25rem;
+        }
+
+        .notices-title {
+            font-size: 2rem;
+        }
+
+        .notice-title {
+            font-size: 1.25rem;
+        }
+
+        .notice-date {
+            font-size: 1rem;
         }
 
         .notice-card-content {
             padding: 1.5rem;
         }
 
-        .notice-header {
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: start;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .notice-title-wrapper {
-            order: 1;
-        }
-
-        .notice-title {
-            font-size: 1.5rem;
-        }
-
-        .notice-meta {
-            flex-direction: column;
-            align-items: flex-end;
-            order: 2;
-        }
-
-        .notice-date {
-            font-size: 1rem;
-        }
-
-        .date-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-            margin-right: 0.5rem;
-        }
-
-        .new-badge {
-            padding: 0.25rem 0.75rem;
-        }
-
-        .notice-divider {
-            height: 0.25rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .prose h1 {
-            font-size: 2rem;
-        }
-
-        .prose h2 {
-            font-size: 1.5rem;
-        }
-
-        .prose h3 {
-            font-size: 1.25rem;
-        }
-
-        .prose p {
-            margin-bottom: 1.5rem;
-        }
-
-        .prose img {
-            border-radius: 0.75rem;
-            margin: 2rem auto;
-        }
-
-        .prose ul,
-        .prose ol {
-            margin-left: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .prose li {
-            margin-bottom: 0.5rem;
-        }
-
-        .prose blockquote {
-            padding-left: 1.5rem;
-        }
-
-        .prose code {
-            padding: 0.2rem 0.4rem;
-            font-size: 0.9em;
-        }
-
-        .prose pre {
+        .search-filter-container {
             padding: 1rem;
-            margin-bottom: 1.5rem;
         }
 
-        .prose hr {
-            margin: 2rem 0;
+        .filter-row {
+            flex-direction: column;
+        }
+
+        .year-field,
+        .month-field {
+            min-width: 100%;
         }
 
         .no-notices {
-            padding: 3rem;
+            padding: 2rem;
         }
 
         .no-notices-icon {
-            width: 6rem;
-            height: 6rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .no-notices-title {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-
-        .no-notices-text {
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .no-notices-button {
-            padding: 0.75rem 1.5rem;
+            width: 4rem;
+            height: 4rem;
         }
     }
 
     /* ============================================
-       レスポンシブ: 768px以上
+       レスポンシブ: 480px
        ============================================ */
-    @media (min-width: 768px) {
+    @media (max-width: 480px) {
+        .notices-container {
+            padding-top: 100px;
+        }
+
+        .notices-content {
+            padding: 0 0.75rem;
+        }
+
         .back-to-top-button {
-            left: 2rem;
-            top: 150px;
+            left: 0.5rem;
+            top: 80px;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .back-icon {
+            margin-right: 0;
+        }
+
+        .back-text-full {
+            display: none;
+        }
+
+        .back-text-short {
+            display: inline;
+        }
+
+        .notices-header {
+            margin-bottom: 1.5rem;
         }
 
         .notices-title {
-            font-size: 3rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .notices-subtitle {
+            font-size: 0.75rem;
+        }
+
+        .search-filter-container {
+            padding: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-row {
+            flex-direction: column;
+        }
+
+        .search-button-wrapper {
+            width: 100%;
+        }
+
+        .search-button,
+        .reset-button {
+            width: 100%;
+            padding: 0.625rem;
+            font-size: 0.875rem;
+        }
+
+        .notice-card {
+            margin-bottom: 1.5rem;
+        }
+
+        .notice-card-content {
+            padding: 1rem;
+        }
+
+        .notice-header {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .notice-meta {
+            order: 1;
+            width: 100%;
+            justify-content: flex-start;
+            gap: 0.5rem;
+        }
+
+        .notice-title-wrapper {
+            order: 2;
         }
 
         .notice-title {
-            font-size: 1.875rem;
+            font-size: 1.125rem;
         }
 
         .notice-date {
+            font-size: 0.875rem;
+        }
+
+        .no-notices {
+            padding: 1.5rem;
+        }
+
+        .no-notices-icon {
+            width: 3rem;
+            height: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .no-notices-title {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .no-notices-text {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .no-notices-button {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .prose h1 {
+            font-size: 1.25rem;
+        }
+
+        .prose h2 {
             font-size: 1.125rem;
         }
-    }
 
-    /* ============================================
-       レスポンシブ: 1024px以上
-       ============================================ */
-    @media (min-width: 1024px) {
-        .notices-content {
-            max-width: 80rem;
-        }
-
-        .notices-list {
-            max-width: 64rem;
-        }
-    }
-
-    /* ============================================
-       レスポンシブ: 1280px以上
-       ============================================ */
-    @media (min-width: 1280px) {
-        .notices-content {
-            max-width: 90rem;
-        }
-
-        .notices-list {
-            max-width: 72rem;
-        }
-    }
-
-    /* ============================================
-       レスポンシブ: 1440px以上
-       ============================================ */
-    @media (min-width: 1440px) {
-        .notices-content {
-            max-width: 100rem;
-        }
-
-        .notices-list {
-            max-width: 80rem;
+        .prose h3 {
+            font-size: 1rem;
         }
     }
 </style>
 
 <div class="notices-container">
     <div class="container mx-auto px-4">
-        <!-- 左上固定:トップページに戻るボタン -->
         <%= link_to root_path, class: "back-to-top-button" do %>
         <svg class="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -689,68 +652,68 @@
         <% end %>
 
         <div class="notices-content">
-            <!-- タイトル（中央配置） -->
             <div class="notices-header">
                 <h1 class="notices-title">お知らせ</h1>
                 <p class="notices-subtitle">うさぎやからの最新情報をお届けします</p>
             </div>
 
-            <!-- 検索・フィルター機能 -->
+            <!-- 検索・フィルター -->
             <div class="search-filter-container">
-                <%= form_with url: notices_path, method: :get, local: true, id: "search-form", class: "search-form" do |f| %>
-
-                <!-- キーワード検索 + 検索ボタン -->
+                <%= form_with url: notices_path, method: :get, id: "search-form", class: "search-form" do |f| %>
+                <!-- 検索行 -->
                 <div class="search-row">
                     <div class="keyword-field">
                         <label class="field-label">キーワード検索</label>
-                        <%= f.text_field :keyword, 
-                          value: params[:keyword],
-                          placeholder: "タイトルや本文で検索", 
-                          class: "text-input" %>
+                        <%= f.text_field :keyword,
+                            value: params[:keyword],
+                            placeholder: "お知らせのタイトルや内容を検索",
+                            class: "field-input" %>
                     </div>
                     <div class="search-button-wrapper">
-                        <%= f.submit "検索", class: "search-button" %>
+                        <%= f.submit "検索", class: "search-button" do %>
+                        <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        検索
+                        <% end %>
                     </div>
                 </div>
 
-                <!-- フィルター + リセットボタン -->
+                <!-- フィルター行 -->
                 <div class="filter-row">
-                    <div class="filter-fields">
-                        <!-- 年フィルター -->
-                        <div class="filter-field">
-                            <label class="field-label">年</label>
-                            <%= f.select :year, 
-                              options_for_select(
-                                [['すべて', '']] + (2020..Date.current.year).to_a.reverse.map { |y| [y, y] },
+                    <div class="year-field">
+                        <label class="field-label">年で絞り込み</label>
+                        <%= f.select :year,
+                            options_for_select(
+                                [["すべて", ""]] + (2020..Date.current.year).to_a.reverse.map { |y| [y, y] },
                                 params[:year]
-                              ),
-                              {},
-                              class: "select-input auto-submit" %>
-                        </div>
-
-                        <!-- 月フィルター -->
-                        <div class="filter-field">
-                            <label class="field-label">月</label>
-                            <%= f.select :month, 
-                              options_for_select(
-                                [['すべて', '']] + (1..12).map { |m| ["#{m}月", m] },
-                                params[:month]
-                              ),
-                              {},
-                              class: "select-input auto-submit" %>
-                        </div>
+                            ),
+                            {},
+                            class: "field-select auto-submit" %>
                     </div>
-
-                    <div class="reset-button-wrapper">
-                        <%= link_to "リセット", notices_path, class: "reset-button" %>
+                    <div class="month-field">
+                        <label class="field-label">月で絞り込み</label>
+                        <%= f.select :month,
+                            options_for_select(
+                                [["すべて", ""]] + (1..12).map { |m| ["#{m}月", m] },
+                                params[:month]
+                            ),
+                            {},
+                            class: "field-select auto-submit" %>
+                    </div>
+                    <div class="search-button-wrapper">
+                        <%= link_to notices_path, class: "reset-button" do %>
+                        <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        リセット
+                        <% end %>
                     </div>
                 </div>
-
                 <% end %>
             </div>
 
             <% if @notices.any? %>
-            <!-- お知らせカード（中央配置） -->
             <div class="notices-list-wrapper">
                 <div class="notices-list">
                     <% @notices.each do |notice| %>
@@ -780,10 +743,8 @@
                                 </div>
                             </div>
 
-                            <!-- 区切り線 -->
                             <div class="notice-divider"></div>
 
-                            <!-- 本文（全文表示） -->
                             <div class="notice-content prose">
                                 <%= notice.content %>
                             </div>
