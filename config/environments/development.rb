@@ -37,16 +37,24 @@ Rails.application.configure do
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
 
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address: "smtp.gmail.com",
-    port: 587,
-    domain: "usagiya-fukui.jp",
-    user_name: ENV["SMTP_USERNAME"],
-    password: ENV["SMTP_PASSWORD"],
-    authentication: "plain",
-    enable_starttls_auto: true
-  }
+
+  # 開発環境用テストメール(ログに出力、実際には送信しない）
+  config.action_mailer.delivery_method = :test
+  config.action_mailer.perform_deliveries = true
+
+  # 実際のメール送信をテストする場合は、以下をコメント解除
+  # config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.smtp_settings = {
+  #   address: "smtp.gmail.com",
+  #   port: 587,
+  #   domain: "usagiya-fukui.jp",
+  #   user_name: ENV["SMTP_USERNAME"],
+  #   password: ENV["SMTP_PASSWORD"],
+  #   authentication: "plain",
+  #   enable_starttls_auto: true
+  # }
+
+
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 

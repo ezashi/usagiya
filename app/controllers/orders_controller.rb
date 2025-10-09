@@ -1,11 +1,19 @@
 class OrdersController < ApplicationController
   def new
     @order = Order.new
-    @order.order_items.build
+    # もちパイの各種類の商品を事前に構築
+    Order::PRODUCT_PRICES.each_key do |product_type|
+      @order.order_items.build(product_type: product_type, quantity: 0)
+    end
   end
 
   def confirm
     @order = Order.new(order_params)
+
+    # order_itemsの不要なレコード(quantity=0)を削除
+    @order.order_items.each do |item|
+      item.mark_for_destruction if item.quantity.to_i <= 0
+    end
 
     if @order.valid?
       render :confirm
@@ -18,10 +26,14 @@ class OrdersController < ApplicationController
     @order = Order.new(order_params)
 
     if @order.save
-      redirect_to root_path, notice: "ご注文ありがとうございました。確認メールをお送りしました。"
+      redirect_to complete_orders_path, notice: "ご注文ありがとうございました。"
     else
-      render :new, status: :unprocessable_entity
+      render :confirm, status: :unprocessable_entity
     end
+  end
+
+  def complete
+    # 完了画面を表示
   end
 
   private

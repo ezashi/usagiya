@@ -33,8 +33,9 @@ Rails.application.routes.draw do
 
   # 冷凍もちパイ注文
   resources :orders, only: [ :new, :create ] do
-    member do
-      get :confirmation  # 注文確認画面
+    collection do
+      post :confirm  # 確認画面へのPOST
+      get :complete  # 完了画面
     end
   end
 

@@ -5,7 +5,7 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
             line-height: 1.6;
             color: #333;
         }
@@ -17,45 +17,54 @@
         }
 
         .header {
-            background-color: #dc2626;
-            color: white;
+            background-color: #f8f9fa;
             padding: 20px;
             text-align: center;
+            border-bottom: 3px solid #ec4899;
         }
 
         .content {
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-
-        .order-details {
-            background-color: white;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 5px;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 12px;
+            padding: 30px 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            margin: 20px 0;
         }
 
         th,
         td {
-            padding: 8px;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .total-row {
+            font-weight: bold;
+            font-size: 1.1em;
+            background-color: #fff3e0;
+        }
+
+        .info-section {
+            margin: 30px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
         }
     </style>
 </head>
@@ -63,95 +72,120 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ご注文ありがとうございます</h1>
+            <h1 style="color: #ec4899; margin: 0;">御菓子処うさぎや</h1>
+            <p style="margin: 10px 0 0 0;">ご注文ありがとうございます</p>
         </div>
 
         <div class="content">
             <p><%= @order.customer_name %> 様</p>
 
-            <p>この度は、うさぎやをご利用いただき誠にありがとうございます。<br>
-                以下の内容でご注文を承りました。</p>
+            <p>
+                この度は、御菓子処うさぎやをご利用いただき、誠にありがとうございます。<br>
+                以下の内容でご注文を承りました。
+            </p>
 
-            <div class="order-details">
-                <h3>ご注文内容</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>商品名</th>
-                            <th>数量</th>
-                            <th>小計</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% @order.order_items.each do |item| %>
-                        <tr>
-                            <td><%= item.product_name %></td>
-                            <td><%= item.quantity %>個</td>
-                            <td>¥<%= number_with_delimiter(item.subtotal || 0) %></td>
-                        </tr>
-                        <% end %>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="2">合計</th>
-                            <th>¥<%= number_with_delimiter(@order.total_amount || 0) %></th>
-                        </tr>
-                    </tfoot>
-                </table>
+            <!-- 注文内容 -->
+            <h2 style="color: #ec4899; border-bottom: 2px solid #ec4899; padding-bottom: 5px;">ご注文内容</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>商品名</th>
+                        <th style="text-align: right;">数量</th>
+                        <th style="text-align: right;">単価</th>
+                        <th style="text-align: right;">小計</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @order.order_items.each do |item| %>
+                    <tr>
+                        <td><%= item.product_name %></td>
+                        <td style="text-align: right;"><%= item.quantity %>個</td>
+                        <td style="text-align: right;">¥<%= number_with_delimiter(item.unit_price) %></td>
+                        <td style="text-align: right;">¥<%= number_with_delimiter(item.subtotal) %></td>
+                    </tr>
+                    <% end %>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3" style="text-align: right;">合計金額</td>
+                        <td style="text-align: right;">¥<%= number_with_delimiter(@order.total_amount) %></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <!-- 注文者情報 -->
+            <div class="info-section">
+                <h3 style="margin-top: 0; color: #ec4899;">ご注文者様情報</h3>
+                <p>
+                    お名前: <%= @order.customer_name %><br>
+                    郵便番号: <%= @order.postal_code %><br>
+                    ご住所: <%= @order.address %><br>
+                    電話番号: <%= @order.phone %><br>
+                    メールアドレス: <%= @order.email %>
+                </p>
             </div>
 
-            <div class="order-details">
-                <h3>配送先情報</h3>
+            <!-- 配送先情報 -->
+            <div class="info-section">
+                <h3 style="margin-top: 0; color: #ec4899;">お届け先情報</h3>
                 <% if @order.same_address? %>
-                <p>
-                    <%= @order.customer_name %><br>
-                    〒<%= @order.postal_code %><br>
-                    <%= @order.address %><br>
-                    TEL: <%= @order.phone %>
-                </p>
+                <p>ご注文者様と同じ</p>
                 <% else %>
                 <p>
-                    <%= @order.delivery_name %><br>
-                    〒<%= @order.delivery_postal_code %><br>
-                    <%= @order.delivery_address %><br>
-                    TEL: <%= @order.delivery_phone %>
+                    お名前: <%= @order.delivery_name %><br>
+                    郵便番号: <%= @order.delivery_postal_code %><br>
+                    ご住所: <%= @order.delivery_address %><br>
+                    電話番号: <%= @order.delivery_phone %>
                 </p>
                 <% end %>
 
                 <% if @order.delivery_date.present? %>
-                <p><strong>到着希望日:</strong> <%= @order.delivery_date.strftime("%Y年%m月%d日") %></p>
+                <p>到着希望日: <%= @order.delivery_date.strftime('%Y年%m月%d日') %></p>
                 <% end %>
 
                 <% if @order.delivery_time.present? %>
-                <p><strong>希望到着時間:</strong> <%= @order.delivery_time %></p>
+                <p>希望到着時間: <%= @order.delivery_time %></p>
                 <% end %>
             </div>
 
-            <div class="order-details">
-                <h3>お支払い方法</h3>
-                <p><%= @order.payment_method.humanize %></p>
+            <!-- 支払い・包装情報 -->
+            <div class="info-section">
+                <h3 style="margin-top: 0; color: #ec4899;">お支払い・包装</h3>
+                <p>
+                    お支払い方法: <%= @order.payment_method_label %><br>
+                    包装: <%= @order.wrapping_type_label %>
+                </p>
 
-                <% if @order.wrapping_type.present? %>
-                <p><strong>包装:</strong> <%= @order.wrapping_type %></p>
+                <% if @order.notes.present? %>
+                <h4>ご希望内容</h4>
+                <p style="white-space: pre-line;"><%= @order.notes %></p>
                 <% end %>
             </div>
 
-            <% if @order.notes.present? %>
-            <div class="order-details">
-                <h3>ご希望内容</h3>
-                <p><%= simple_format(@order.notes) %></p>
+            <div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0;">
+                <p style="margin: 0;">
+                    <strong>※ご注意</strong><br>
+                    2~3日以内に当店よりご連絡させていただきます。<br>
+                    万が一、3日を過ぎてもご連絡がない場合は、お手数ですがお電話にてお問い合わせください。
+                </p>
             </div>
-            <% end %>
 
-            <p>ご不明な点がございましたら、お気軽にお問い合わせください。</p>
+            <p>
+                ご不明な点がございましたら、下記までお問い合わせください。<br>
+                今後ともどうぞよろしくお願いいたします。
+            </p>
         </div>
 
         <div class="footer">
             <p>
-                うさぎや<br>
-                〒910-0006 福井県福井市中央1-21-23<br>
-                TEL: 0776-22-4152<br>
-                営業時間: 9:00～19:00（日曜定休）
+                <strong>御菓子処うさぎや</strong><br>
+                〒916-0071 福井県鯖江市持明寺町5-10-1<br>
+                TEL: 0778-62-0861<br>
+                営業時間: 平日・土曜日 9:00~18:00<br>
+                定休日: 日曜日(月曜日に不定休あり)
+            </p>
+            <p style="margin-top: 15px; font-size: 0.8em; color: #999;">
+                このメールに心当たりのない方は、お手数ですが削除していただきますようお願いいたします。
             </p>
         </div>
     </div>

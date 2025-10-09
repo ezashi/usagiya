@@ -71,6 +71,8 @@ puts "商品数: #{Product.count}"
 puts "お知らせ数: #{Notice.count}"
 
 
+# ... 前の部分は同じ ...
+
 puts "\n営業カレンダーのダミーデータを作成中..."
 
 # 既存のカレンダーイベントを削除
@@ -111,44 +113,46 @@ irregular_dates.each do |date|
   )
 end
 
-# 販売開始日（今月の15日）
+# 販売開始日（今月の15日） - titleを使わないバージョン
 if current_month_start.month == today.month
-  CalendarEvent.create!(
+  event = CalendarEvent.create!(
     event_type: :sales_start,
     event_date: Date.new(today.year, today.month, 15),
-    title: "栗まんじゅう販売開始",
-    description: "秋の新商品「栗まんじゅう」の販売を開始します",
+    description: "栗まんじゅう販売開始\n秋の新商品「栗まんじゅう」の販売を開始します",
     auto_notice: false
   )
+  # titleカラムが存在する場合のみ設定
+  event.update(title: "栗まんじゅう販売開始") if event.respond_to?(:title=)
 end
 
 # 販売終了日（来月の20日）
-CalendarEvent.create!(
+event = CalendarEvent.create!(
   event_type: :sales_end,
   event_date: Date.new(next_month_start.year, next_month_start.month, 20),
-  title: "桜餅販売終了",
-  description: "春限定の桜餅の販売を終了します",
+  description: "桜餅販売終了\n春限定の桜餅の販売を終了します",
   auto_notice: false
 )
+event.update(title: "桜餅販売終了") if event.respond_to?(:title=)
 
 # その他イベント（カスタムカラー）
-CalendarEvent.create!(
+event = CalendarEvent.create!(
   event_type: :other,
   event_date: Date.new(today.year, today.month, 5),
-  title: "もちパイフェア",
-  description: "もちパイが特別価格でお買い求めいただけます",
-  color: "#ec4899",  # ピンク
+  description: "もちパイフェア\nもちパイが特別価格でお買い求めいただけます",
   auto_notice: false
 )
+# colorとtitleカラムが存在する場合のみ設定
+event.update(color: "#ec4899") if event.respond_to?(:color=)
+event.update(title: "もちパイフェア") if event.respond_to?(:title=)
 
-CalendarEvent.create!(
+event = CalendarEvent.create!(
   event_type: :other,
   event_date: Date.new(today.year, today.month, 25),
-  title: "和菓子教室",
-  description: "和菓子作り体験教室を開催します",
-  color: "#8b5cf6",  # 紫
+  description: "和菓子教室\n和菓子作り体験教室を開催します",
   auto_notice: false
 )
+event.update(color: "#8b5cf6") if event.respond_to?(:color=)
+event.update(title: "和菓子教室") if event.respond_to?(:title=)
 
 puts "✓ カレンダーイベントを #{CalendarEvent.count}件 作成しました"
 
