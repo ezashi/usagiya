@@ -21,18 +21,35 @@
         border: 2px solid #e5e7eb;
     }
 
-    .product-info-image {
-        width: 100%;
-        max-width: 400px;
-        height: auto;
+    /* スムーススクロール */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* 注文フォームへのボタン */
+    .scroll-to-form-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+        color: white;
+        font-weight: bold;
         border-radius: 8px;
-        margin: 1rem auto;
-        display: block;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(236, 72, 153, 0.3);
+    }
+
+    .scroll-to-form-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(236, 72, 153, 0.4);
     }
 </style>
 
 <div class="order-page-container">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- 中央配置のコンテナ - 左右に余白を作成 -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <!-- ページヘッダー -->
         <div class="mb-10 text-center">
@@ -41,65 +58,128 @@
         </div>
 
         <!-- 冷凍もちパイ発送についての説明 -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8 border-l-4 border-pink-500">
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8 border-l-4 border-pink-500 relative">
+            <!-- 右上に注文フォームへのボタン -->
+            <div class="absolute top-4 right-4">
+                <a href="#order-form" class="scroll-to-form-btn">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                    注文フォームへ
+                </a>
+            </div>
+
             <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
                 <svg class="w-6 h-6 mr-2 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                冷凍もちパイ発送について
+                「もちパイ」冷凍発送について
             </h2>
 
-            <div class="text-gray-700 space-y-4 leading-relaxed">
-                <p>いつもうさぎやをご利用いただき、ありがとうございます。</p>
+            <!-- 説明文と画像を横並びに配置 -->
+            <div class="grid md:grid-cols-[1.5fr,1fr] gap-6 items-start">
+                <!-- 左側: 説明文 -->
+                <div class="text-gray-700 space-y-4 leading-relaxed">
+                    <p>「もちパイの焼きたてを召し上がっていただきたい」そんな思いで作っています。</p>
 
-                <!-- 商品画像1 -->
-                <% begin %>
-                <%= image_tag 'orders/reitoumotipai.png', 
-                      alt: '冷凍もちパイ', 
-                      class: 'product-info-image' %>
-                <% rescue => e %>
-                <!-- 画像未配置: orders/reitoumotipai.png -->
-                <% end %>
+                    <p>「遠くの方にも召し上がっていただきたい」そんな気持ちも持っています。</p>
 
-                <div class="bg-pink-50 p-4 rounded-lg">
-                    <p class="font-bold text-pink-800 mb-2">「もちパイ」商品の流れ:</p>
-                    <ol class="list-decimal list-inside space-y-1 text-sm">
-                        <li>うさぎや店頭にてパイ生地から焼き上げます</li>
-                        <li>急速凍結します</li>
-                        <li>梱包にて発送します</li>
-                        <li>お客様宅へお届け</li>
-                        <li>冷凍庫にしまい、召し上がる前に自然解凍→食べる直前まで冷凍保存してください</li>
-                    </ol>
+                    <p>もちパイを作りたて、焼きたてのまま、おいしくお届けできないだろうか...</p>
+
+                    <p>...いろいろ考え試行錯誤の末、作りたてを急速に冷凍発送してお送りできるようになりました。</p>
+
+                    <div class="bg-pink-50 p-4 rounded-lg mt-6">
+                        <p class="font-bold text-pink-800 mb-3">「もちパイ」発送の流れ:</p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start">
+                                <span class="font-bold mr-2">①</span>
+                                <span>うさぎや店舗にてパイで包み焼きあげます。</span>
+                            </div>
+                            <div class="text-center text-gray-500">↓</div>
+                            <div class="flex items-start">
+                                <span class="font-bold mr-2">②</span>
+                                <span>急速冷凍します</span>
+                            </div>
+                            <div class="text-center text-gray-500">↓</div>
+                            <div class="flex items-start">
+                                <span class="font-bold mr-2">③</span>
+                                <span>梱包して発送します</span>
+                            </div>
+                            <div class="text-center text-gray-500">↓</div>
+                            <div class="flex items-start">
+                                <span class="font-bold mr-2">④</span>
+                                <span>お客様にお届け</span>
+                            </div>
+                            <div class="text-center text-gray-500">↓</div>
+                            <div class="flex items-start">
+                                <span class="font-bold mr-2">⑤</span>
+                                <span>お召し上がりの約2時間前に自然解凍 → <span class="font-bold">⑥</span>そのままお召し上がりください</span>
+                            </div>
+                            <div class="text-center text-gray-500">↓</div>
+                            <div class="flex items-start">
+                                <span class="font-bold mr-2">⑥</span>
+                                <span>トースターで約2~3分焼いてお召し上がりいただくと一層おいしくなります♪</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-4 border-t border-pink-200">
+                            <p class="text-sm">☆消費期限は解凍前...約20日間</p>
+                            <p class="text-sm ml-12">解凍後...翌日中</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
+                        <p class="text-red-800 font-bold text-sm">
+                            ⚠️ 2〜3日前を新規受け付けできません。年末年始、連休前は1週間の余裕がございますので、お急ぎの方はお電話にてご相談ください。
+                        </p>
+                        <p class="text-red-700 text-sm mt-2">TEL: 0778-62-0861</p>
+                    </div>
                 </div>
 
-                <!-- 冷凍画像 -->
-                <% begin %>
-                <%= image_tag 'orders/reitou.png', 
-                      alt: '冷凍保存', 
-                      class: 'product-info-image' %>
-                <% rescue => e %>
-                <!-- 画像未配置: orders/reitou.png -->
-                <% end %>
+                <!-- 右側: 画像 -->
+                <div class="space-y-4">
+                    <!-- 商品画像1: reitoumotipai.png -->
+                    <% begin %>
+                    <%= image_tag 'orders/reitoumotipai.png', 
+                          alt: '冷凍もちパイ', 
+                          class: 'w-full rounded-lg shadow-md' %>
+                    <% rescue => e %>
+                    <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <p class="text-gray-500 text-xs">画像未配置: orders/reitoumotipai.png</p>
+                    </div>
+                    <% end %>
 
-                <p class="text-sm">※トースターで2〜3分焼いて召し上がりいただくともっと美味しいです！</p>
-                <p class="text-sm">※消費期限は解凍後：約90日間　無添加・無着色</p>
+                    <!-- 商品画像2: reitou.png -->
+                    <% begin %>
+                    <%= image_tag 'orders/reitou.png', 
+                          alt: '冷凍保存', 
+                          class: 'w-full rounded-lg shadow-md' %>
+                    <% rescue => e %>
+                    <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <p class="text-gray-500 text-xs">画像未配置: orders/reitou.png</p>
+                    </div>
+                    <% end %>
 
-                <!-- 包装なしもちパイの箱画像 -->
-                <% begin %>
-                <%= image_tag 'orders/housounashi_motipai.jpg', 
-                      alt: 'もちパイ専用箱', 
-                      class: 'product-info-image' %>
-                <p class="text-sm text-center text-gray-600 -mt-2">※もちパイ専用の箱は、6個入り・8個入り・10個入り・12個入り・15個入り・20個入りがございます。</p>
-                <% rescue => e %>
-                <!-- 画像未配置: orders/housounashi_motipai.jpg -->
-                <% end %>
-
-                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
-                    <p class="text-red-800 font-bold text-sm">
-                        ⚠️ 2〜3日前を新規受け付けできません。年末年始、連休前は1週間の余裕がございますので、お急ぎの方はお電話にてご相談ください。
-                    </p>
-                    <p class="text-red-700 text-sm mt-2">TEL: 0778-62-0861</p>
+                    <!-- 商品画像3: housounashi_motipai.jpg（少し大きめ） -->
+                    <div class="mt-4">
+                        <% begin %>
+                        <%= image_tag 'orders/housounashi_motipai.jpg', 
+                              alt: 'もちパイ専用箱', 
+                              class: 'w-full rounded-lg shadow-md' %>
+                        <% rescue => e %>
+                        <div class="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+                            <p class="text-gray-500 text-xs">画像未配置: orders/housounashi_motipai.jpg</p>
+                        </div>
+                        <% end %>
+                    </div>
                 </div>
+            </div>
+
+            <!-- 専用箱の説明をhousounashi_motipai.jpgの下に配置 -->
+            <div class="mt-4 text-center">
+                <p class="text-sm text-gray-700">
+                    ※もちパイ専用の箱は、6個入り・8個入り・10個入り・12個入り・15個入り・20個入りがございます。
+                </p>
             </div>
         </div>
 
@@ -131,417 +211,287 @@
 
         <!-- エラーメッセージ -->
         <% if @order.errors.any? %>
-        <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-4">
-            <div class="flex items-start">
-                <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded mb-6">
+            <div class="flex items-center mb-2">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                 </svg>
-                <div class="ml-3">
-                    <h3 class="text-sm font-bold text-red-800">入力内容にエラーがあります</h3>
-                    <ul class="mt-2 text-sm text-red-700 space-y-1">
-                        <% @order.errors.full_messages.each do |message| %>
-                        <li>• <%= message %></li>
-                        <% end %>
-                    </ul>
-                </div>
+                <strong class="font-bold">入力内容に誤りがあります:</strong>
             </div>
+            <ul class="list-disc list-inside text-sm">
+                <% @order.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+                <% end %>
+            </ul>
         </div>
         <% end %>
 
-        <!-- 商品選択セクション -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="bg-gradient-to-r from-pink-600 to-pink-500 px-6 py-4">
-                <h2 class="text-xl font-bold text-white flex items-center">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                    </svg>
-                    商品を選ぶ
-                </h2>
-            </div>
+        <!-- ご注文者様情報 -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-pink-500">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                ご注文者様情報
+            </h2>
 
-            <div class="p-6">
-                <p class="text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6 flex items-start">
-                    <svg class="w-5 h-5 flex-shrink-0 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span>もちパイは種類の組み合わせが可能です。ご希望の場合は「ご希望欄」にご記入ください。</span>
-                </p>
-
-                <!-- 商品リスト - 2カラムレイアウト -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <%= f.fields_for :order_items do |item_form| %>
-                    <% product_info = Order::PRODUCT_PRICES[item_form.object.product_type] %>
-                    <% next unless product_info %>
-
-                    <%= item_form.hidden_field :product_type %>
-
-                    <div class="product-card border-2 border-gray-200 rounded-lg p-4 hover:border-pink-300 transition-all">
-                        <div class="flex items-center justify-between mb-3">
-                            <div>
-                                <h3 class="font-bold text-gray-800 text-lg"><%= product_info[:name] %></h3>
-                                <p class="text-xl font-bold text-pink-600">¥<%= number_with_delimiter(product_info[:price]) %></p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                            <span class="text-gray-700 font-medium">数量</span>
-                            <div class="quantity-controls flex items-center gap-2">
-                                <button type="button" class="quantity-decrease w-9 h-9 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors flex items-center justify-center font-bold text-gray-700" onclick="decrementQuantity(this)">
-                                    −
-                                </button>
-                                <%= item_form.number_field :quantity, 
-                                    min: 0,
-                                    class: "quantity-input w-16 text-center px-2 py-2 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none font-bold",
-                                    oninput: "updateTotal()" %>
-                                <button type="button" class="quantity-increase w-9 h-9 rounded-lg bg-pink-600 hover:bg-pink-700 transition-colors flex items-center justify-center font-bold text-white" onclick="incrementQuantity(this)">
-                                    +
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <% end %>
-                </div>
-
-                <!-- 合計金額 -->
-                <div class="mt-6 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg border-2 border-pink-200">
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-bold text-gray-800">合計金額</span>
-                        <span class="text-2xl font-bold text-pink-600" id="total-amount-display">¥0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- お客様情報セクション -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-4">
-                <h2 class="text-xl font-bold text-white flex items-center">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
-                    ご注文者様の情報
-                </h2>
-            </div>
-
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div class="md:col-span-2">
-                    <%= f.label :customer_name, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
-                    お名前 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_field :customer_name, 
-                        class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none",
-                        placeholder: "山田 太郎" %>
-                </div>
-
+            <div class="space-y-4">
                 <div>
-                    <%= f.label :postal_code, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
-                    郵便番号 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_field :postal_code, 
-                        class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none",
-                        placeholder: "916-0071" %>
-                </div>
-
-                <div>
-                    <%= f.label :phone, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
-                    電話番号 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.telephone_field :phone, 
-                        class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none",
-                        placeholder: "0778620861" %>
-                </div>
-
-                <div class="md:col-span-2">
-                    <%= f.label :address, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
-                    ご住所 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_field :address, 
-                        class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none",
-                        placeholder: "福井県鯖江市持明寺町5-10-1" %>
-                </div>
-
-                <div class="md:col-span-2">
-                    <%= f.label :email, "メールアドレス", class: "block text-gray-700 font-bold mb-2 text-sm" do %>
-                    メールアドレス <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.email_field :email, 
-                        class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none",
-                        placeholder: "example@example.com" %>
-                </div>
-            </div>
-        </div>
-
-        <!-- お届け先セクション -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="bg-gradient-to-r from-green-600 to-green-500 px-6 py-4">
-                <h2 class="text-xl font-bold text-white flex items-center">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    お届け先
-                </h2>
-            </div>
-
-            <div class="p-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-                    <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all border-green-500 bg-green-50">
-                        <%= f.radio_button :same_address, true, 
-                            checked: true,
-                            class: "w-5 h-5 text-green-600", 
-                            onclick: "toggleDeliveryAddress(true)" %>
-                        <span class="ml-3 font-medium text-gray-700">注文者と同じ</span>
-                    </label>
-                    <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all border-gray-300 hover:border-gray-400">
-                        <%= f.radio_button :same_address, false, 
-                            class: "w-5 h-5 text-green-600",
-                            onclick: "toggleDeliveryAddress(false)" %>
-                        <span class="ml-3 font-medium text-gray-700">別の住所</span>
-                    </label>
-                </div>
-
-                <!-- 別住所入力欄（初期状態で非表示） -->
-                <div id="delivery-address-fields" class="hidden grid grid-cols-1 md:grid-cols-2 gap-5 pt-5 border-t-2 border-gray-100">
-                    <div class="md:col-span-2">
-                        <%= f.label :delivery_name, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
                         お名前 <span class="text-red-600">*</span>
-                        <% end %>
-                        <%= f.text_field :delivery_name, 
-                            class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none" %>
+                    </label>
+                    <%= f.text_field :customer_name, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "山田 太郎" %>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            郵便番号 <span class="text-red-600">*</span>
+                        </label>
+                        <%= f.text_field :postal_code, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "123-4567" %>
+                        <p class="text-xs text-gray-500 mt-1">ハイフンあり・なし両対応</p>
                     </div>
 
                     <div>
-                        <%= f.label :delivery_postal_code, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
-                        郵便番号 <span class="text-red-600">*</span>
-                        <% end %>
-                        <%= f.text_field :delivery_postal_code, 
-                            class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none" %>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            電話番号 <span class="text-red-600">*</span>
+                        </label>
+                        <%= f.text_field :phone, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "09012345678" %>
+                        <p class="text-xs text-gray-500 mt-1">ハイフンなし10桁または11桁</p>
                     </div>
+                </div>
 
-                    <div>
-                        <%= f.label :delivery_phone, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
-                        電話番号 <span class="text-red-600">*</span>
-                        <% end %>
-                        <%= f.telephone_field :delivery_phone, 
-                            class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none" %>
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <%= f.label :delivery_address, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
                         ご住所 <span class="text-red-600">*</span>
-                        <% end %>
-                        <%= f.text_field :delivery_address, 
-                            class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none" %>
+                    </label>
+                    <%= f.text_area :address, rows: 2, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "福井県鯖江市持明寺町5-10-1" %>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        メールアドレス <span class="text-red-600">*</span>
+                    </label>
+                    <%= f.email_field :email, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "example@email.com" %>
+                </div>
+            </div>
+        </div>
+
+        <!-- お送り先情報 -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                お送り先
+            </h2>
+
+            <div class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <label class="flex items-center">
+                        <%= f.radio_button :same_address, true, checked: true, id: "same_address_true", class: "mr-2" %>
+                        <span class="text-gray-700">ご注文者様と同じ住所に送る</span>
+                    </label>
+                    <label class="flex items-center">
+                        <%= f.radio_button :same_address, false, id: "same_address_false", class: "mr-2" %>
+                        <span class="text-gray-700">別の住所に送る</span>
+                    </label>
+                </div>
+
+                <div id="delivery-address-fields" style="display: none;" class="space-y-4 pt-4 border-t border-gray-200">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            お送り先のお名前 <span class="text-red-600">*</span>
+                        </label>
+                        <%= f.text_field :delivery_name, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "鈴木 花子" %>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                郵便番号 <span class="text-red-600">*</span>
+                            </label>
+                            <%= f.text_field :delivery_postal_code, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "123-4567" %>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                電話番号 <span class="text-red-600">*</span>
+                            </label>
+                            <%= f.text_field :delivery_phone, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "09012345678" %>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            住所 <span class="text-red-600">*</span>
+                        </label>
+                        <%= f.text_area :delivery_address, rows: 2, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "東京都渋谷区..." %>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 配送・支払いセクション -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="bg-gradient-to-r from-purple-600 to-purple-500 px-6 py-4">
-                <h2 class="text-xl font-bold text-white flex items-center">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
-                    </svg>
-                    配送・お支払い情報
-                </h2>
-            </div>
+        <!-- 注文商品 -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                </svg>
+                注文商品
+            </h2>
 
-            <div class="p-6 space-y-6">
-                <!-- 支払い方法（プルダウン） -->
-                <div>
-                    <%= f.label :payment_method, class: "block text-gray-700 font-bold mb-3 text-sm" do %>
-                    支払い方法 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.select :payment_method, 
-                        Order::PAYMENT_METHODS.map { |k, v| [v, k] },
-                        { include_blank: "選択してください" },
-                        class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all outline-none" %>
-                </div>
-
-                <!-- 配送日時 -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <%= f.label :delivery_date, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
-                        到着希望日
-                        <% end %>
-                        <%= f.date_field :delivery_date, 
-                            min: Date.today + 5.days,
-                            class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none" %>
-                        <p class="mt-2 text-xs text-gray-600 bg-gray-50 p-2 rounded">
-                            ※お申込みより5日以降の日にちをご記入ください。<br>
-                            ご記入がない場合は調整後、最短でのお届けとさせていただきます。
+            <div class="space-y-3">
+                <%= f.fields_for :order_items do |item_form| %>
+                <%= item_form.hidden_field :product_type %>
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-800">
+                            <%= Order::PRODUCT_PRICES[item_form.object.product_type][:name] %>
+                        </p>
+                        <p class="text-sm text-gray-600">
+                            ¥<%= number_with_delimiter(Order::PRODUCT_PRICES[item_form.object.product_type][:price]) %>
                         </p>
                     </div>
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">数量:</label>
+                        <%= item_form.number_field :quantity, min: 0, class: "w-20 px-3 py-2 border border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-green-500 focus:border-transparent" %>
+                    </div>
+                </div>
+                <% end %>
+            </div>
 
-                    <div>
-                        <%= f.label :delivery_time, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
-                        希望時間帯
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                <p class="text-sm text-blue-800">
+                    <strong>💡 ヒント:</strong> もちパイは組み合わせができます。種類と個数のご希望は下の「ご希望欄」にご記入ください。
+                </p>
+            </div>
+        </div>
+
+        <!-- お支払い・配送情報 -->
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                </svg>
+                お支払い・配送情報
+            </h2>
+
+            <div class="space-y-6">
+                <!-- お支払い方法 -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-3">
+                        お支払い方法 <span class="text-red-600">*</span>
+                    </label>
+                    <div class="space-y-2">
+                        <% Order::PAYMENT_METHODS.each do |key, label| %>
+                        <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <%= f.radio_button :payment_method, key, class: "mr-3" %>
+                            <span class="text-gray-700"><%= label %></span>
+                        </label>
                         <% end %>
-                        <%= f.select :delivery_time, 
-                            Order::DELIVERY_TIMES,
-                            { include_blank: "指定なし" },
-                            class: "w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none" %>
                     </div>
                 </div>
 
-                <!-- 包装 -->
+                <!-- 到着希望日 -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            到着希望日
+                        </label>
+                        <%= f.date_field :delivery_date, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent", min: Date.today + 4 %>
+                        <p class="text-xs text-gray-500 mt-1">4日後以降で選択してください</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            希望到着時間
+                        </label>
+                        <%= f.select :delivery_time, Order::DELIVERY_TIMES, { include_blank: "選択してください" }, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" %>
+                    </div>
+                </div>
+
+                <!-- 包装の有無 -->
                 <div>
-                    <%= f.label :wrapping_type, class: "block text-gray-700 font-bold mb-3 text-sm" do %>
-                    包装 <span class="text-red-600">*</span>
-                    <% end %>
-
-                    <!-- 包装サンプル画像 -->
-                    <div class="wrapping-samples-container grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-gray-50 p-4 rounded-lg">
-                        <% begin %>
-                        <div class="wrapping-sample-item text-center">
-                            <%= image_tag 'orders/housounashi.jpg', 
-                                alt: '帯のみ（包装なし）', 
-                                class: 'wrapping-sample-image mx-auto mb-2' %>
-                            <p class="text-sm font-medium text-gray-700">帯のみ（包装なし）の場合</p>
-                        </div>
-                        <% rescue => e %>
-                        <!-- 画像未配置: orders/housounashi.jpg -->
-                        <% end %>
-
-                        <% begin %>
-                        <div class="wrapping-sample-item text-center">
-                            <%= image_tag 'orders/housou.jpg', 
-                                alt: '包装あり', 
-                                class: 'wrapping-sample-image mx-auto mb-2' %>
-                            <p class="text-sm font-medium text-gray-700">左から、うさぎ柄ピンク・うさぎやロゴデザイン赤・うさぎやロゴデザイン青</p>
-                        </div>
-                        <% rescue => e %>
-                        <!-- 画像未配置: orders/housou.jpg -->
+                    <label class="block text-sm font-bold text-gray-700 mb-3">
+                        包装の有無 <span class="text-red-600">*</span>
+                    </label>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <% Order::WRAPPING_OPTIONS.each do |key, label| %>
+                        <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <%= f.radio_button :wrapping_type, key, class: "mr-3" %>
+                            <span class="text-gray-700"><%= label %></span>
+                        </label>
                         <% end %>
                     </div>
 
-                    <!-- 包装選択 -->
-                    <div class="wrapping-options grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <% Order::WRAPPING_OPTIONS.each do |value, label| %>
-                        <label class="wrapping-option-label flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all text-sm border-gray-300 hover:border-gray-400">
-                            <%= f.radio_button :wrapping_type, value, class: "w-4 h-4 text-purple-600" %>
-                            <span class="ml-2 text-gray-700"><%= label %></span>
-                        </label>
+                    <!-- 包装サンプル画像 -->
+                    <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <% begin %>
+                        <%= image_tag 'orders/housounashi.jpg', alt: '包装なし', class: 'wrapping-sample-image' %>
+                        <% rescue %>
+                        <div class="wrapping-sample-image bg-gray-200 flex items-center justify-center text-xs text-gray-500">包装なし</div>
+                        <% end %>
+
+                        <% begin %>
+                        <%= image_tag 'orders/logo_red.jpg', alt: 'ロゴ赤', class: 'wrapping-sample-image' %>
+                        <% rescue %>
+                        <div class="wrapping-sample-image bg-gray-200 flex items-center justify-center text-xs text-gray-500">ロゴ赤</div>
+                        <% end %>
+
+                        <% begin %>
+                        <%= image_tag 'orders/logo_blue.jpg', alt: 'ロゴ青', class: 'wrapping-sample-image' %>
+                        <% rescue %>
+                        <div class="wrapping-sample-image bg-gray-200 flex items-center justify-center text-xs text-gray-500">ロゴ青</div>
+                        <% end %>
+
+                        <% begin %>
+                        <%= image_tag 'orders/rabbit_pink.jpg', alt: 'うさぎ柄', class: 'wrapping-sample-image' %>
+                        <% rescue %>
+                        <div class="wrapping-sample-image bg-gray-200 flex items-center justify-center text-xs text-gray-500">うさぎ柄</div>
                         <% end %>
                     </div>
                 </div>
 
                 <!-- ご希望欄 -->
                 <div>
-                    <%= f.label :notes, class: "block text-gray-700 font-bold mb-2 text-sm" do %>
-                    ご希望欄
-                    <% end %>
-                    <%= f.text_area :notes, 
-                        rows: 4, 
-                        class: "w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none resize-y text-sm", 
-                        placeholder: "※もちパイの組み合わせ、熨斗の有無、手提げ袋の必要など、ご希望がありましたらご記入ください。" %>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        ご希望欄
+                    </label>
+                    <%= f.text_area :notes, rows: 4, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent", placeholder: "※もちパイは組み合わせができますので、種類と個数をご記入ください。(ご記入がない場合はおまかせとなります)\n※包装の場合、熨斗の有無(お名前の記入)もあればご記入ください。\n※手提げ袋が必要な方はご記入ください。" %>
                 </div>
             </div>
         </div>
 
-        <!-- 注意事項 -->
-        <div class="notice-box bg-amber-50 border-l-4 border-amber-400 rounded-lg p-4">
-            <div class="flex items-start">
-                <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                </svg>
-                <div class="text-sm text-amber-800">
-                    <p class="font-bold mb-1">ご注意</p>
-                    <ul class="space-y-1">
-                        <li>• 2〜3日以内に当店よりご連絡いたします</li>
-                        <li>• 3日を過ぎても連絡がない場合はお電話ください（0778-62-0861）</li>
-                    </ul>
-                </div>
-            </div>
+        <!-- 確認ボタン -->
+        <div class="flex justify-center">
+            <%= f.submit "入力内容を確認する", class: "px-8 py-4 bg-pink-600 text-white text-lg font-bold rounded-lg hover:bg-pink-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 cursor-pointer" %>
         </div>
 
-        <!-- 送信ボタン -->
-        <div class="submit-buttons flex gap-3">
-            <%= link_to "キャンセル", root_path, class: "cancel-button flex-1 text-center bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-3 px-6 rounded-lg transition-colors" %>
-            <%= f.submit "確認画面へ進む", 
-                class: "submit-button flex-1 bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-700 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-xl",
-                data: { disable_with: "処理中..." } %>
-        </div>
         <% end %>
     </div>
 </div>
 
-<!-- ハンバーガーメニューのJavaScript -->
 <script>
+    // 別住所への配送フィールドの表示/非表示
     document.addEventListener('DOMContentLoaded', function() {
-        const hamburger = document.getElementById('hamburger-featured');
-        const overlay = document.getElementById('overlay-featured');
-        const sideMenu = document.getElementById('sideMenu-featured');
-        const closeMenu = document.getElementById('closeMenu-featured');
+        const sameAddressTrue = document.getElementById('same_address_true');
+        const sameAddressFalse = document.getElementById('same_address_false');
+        const deliveryFields = document.getElementById('delivery-address-fields');
 
-        if (hamburger && overlay && sideMenu && closeMenu) {
-            hamburger.addEventListener('click', function() {
-                overlay.style.display = 'block';
-                sideMenu.style.right = '0';
-            });
-
-            closeMenu.addEventListener('click', function() {
-                overlay.style.display = 'none';
-                sideMenu.style.right = '-300px';
-            });
-
-            overlay.addEventListener('click', function() {
-                overlay.style.display = 'none';
-                sideMenu.style.right = '-300px';
-            });
-        }
-    });
-
-    // 数量の増減
-    function incrementQuantity(button) {
-        const input = button.previousElementSibling;
-        input.value = parseInt(input.value) + 1;
-        updateTotal();
-    }
-
-    function decrementQuantity(button) {
-        const input = button.nextElementSibling;
-        if (parseInt(input.value) > 0) {
-            input.value = parseInt(input.value) - 1;
-            updateTotal();
-        }
-    }
-
-    // 合計金額の計算
-    function updateTotal() {
-        const prices = < %= Order::PRODUCT_PRICES.to_json.html_safe % > ;
-        let total = 0;
-
-        document.querySelectorAll('.quantity-input').forEach(input => {
-            const productCard = input.closest('.product-card');
-            const hiddenInput = productCard.querySelector('[id$="_product_type"]');
-            if (hiddenInput) {
-                const type = hiddenInput.value;
-                const quantity = parseInt(input.value) || 0;
-                if (prices[type]) {
-                    total += quantity * prices[type].price;
-                }
+        function toggleDeliveryFields() {
+            if (sameAddressFalse && sameAddressFalse.checked) {
+                deliveryFields.style.display = 'block';
+            } else {
+                deliveryFields.style.display = 'none';
             }
-        });
-
-        document.getElementById('total-amount-display').textContent = '¥' + total.toLocaleString();
-    }
-
-    // 配送先住所の表示切替
-    function toggleDeliveryAddress(isSame) {
-        const fields = document.getElementById('delivery-address-fields');
-        if (isSame) {
-            fields.classList.add('hidden');
-        } else {
-            fields.classList.remove('hidden');
         }
-    }
 
-    // ページ読み込み時に合計を計算
-    document.addEventListener('DOMContentLoaded', function() {
-        updateTotal();
+        if (sameAddressTrue) sameAddressTrue.addEventListener('change', toggleDeliveryFields);
+        if (sameAddressFalse) sameAddressFalse.addEventListener('change', toggleDeliveryFields);
+
+        // 初期表示
+        toggleDeliveryFields();
     });
 </script>
