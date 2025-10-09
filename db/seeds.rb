@@ -38,6 +38,7 @@ products_data.each_with_index do |data, index|
   puts "✓ #{product.name} を作成しました"
 end
 
+
 puts "\nダミーお知らせを作成中..."
 
 notices_data = [
@@ -68,6 +69,89 @@ end
 puts "\n✨ シード完了!"
 puts "商品数: #{Product.count}"
 puts "お知らせ数: #{Notice.count}"
+
+
+puts "\n営業カレンダーのダミーデータを作成中..."
+
+# 既存のカレンダーイベントを削除
+CalendarEvent.destroy_all
+
+# 今月と来月のデータを作成
+today = Date.today
+current_month_start = today.beginning_of_month
+next_month_start = today.next_month.beginning_of_month
+
+# 定休日（毎週日曜日）
+[ current_month_start, next_month_start ].each do |month_start|
+  month_end = month_start.end_of_month
+  (month_start..month_end).each do |date|
+    if date.sunday?
+      CalendarEvent.create!(
+        event_type: :regular_holiday,
+        event_date: date,
+        description: "定休日です",
+        auto_notice: false
+      )
+    end
+  end
+end
+
+# 不定休（今月の第2・第4月曜日）
+irregular_dates = [
+  current_month_start + 7.days + (1 - current_month_start.wday) % 7,  # 第2月曜
+  current_month_start + 21.days + (1 - current_month_start.wday) % 7  # 第4月曜
+].select { |d| d.month == current_month_start.month }
+
+irregular_dates.each do |date|
+  CalendarEvent.create!(
+    event_type: :irregular_holiday,
+    event_date: date,
+    description: "不定休です",
+    auto_notice: false
+  )
+end
+
+# 販売開始日（今月の15日）
+if current_month_start.month == today.month
+  CalendarEvent.create!(
+    event_type: :sales_start,
+    event_date: Date.new(today.year, today.month, 15),
+    title: "栗まんじゅう販売開始",
+    description: "秋の新商品「栗まんじゅう」の販売を開始します",
+    auto_notice: false
+  )
+end
+
+# 販売終了日（来月の20日）
+CalendarEvent.create!(
+  event_type: :sales_end,
+  event_date: Date.new(next_month_start.year, next_month_start.month, 20),
+  title: "桜餅販売終了",
+  description: "春限定の桜餅の販売を終了します",
+  auto_notice: false
+)
+
+# その他イベント（カスタムカラー）
+CalendarEvent.create!(
+  event_type: :other,
+  event_date: Date.new(today.year, today.month, 5),
+  title: "もちパイフェア",
+  description: "もちパイが特別価格でお買い求めいただけます",
+  color: "#ec4899",  # ピンク
+  auto_notice: false
+)
+
+CalendarEvent.create!(
+  event_type: :other,
+  event_date: Date.new(today.year, today.month, 25),
+  title: "和菓子教室",
+  description: "和菓子作り体験教室を開催します",
+  color: "#8b5cf6",  # 紫
+  auto_notice: false
+)
+
+puts "✓ カレンダーイベントを #{CalendarEvent.count}件 作成しました"
+
 
 # 管理者ユーザーの作成は後で実装
 # puts "管理者数: #{AdminUser.count}"
