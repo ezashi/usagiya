@@ -122,10 +122,10 @@
                     </div>
                 </div>
 
-                <!-- 右側: 画像3つを縦に配置 -->
-                <div class="space-y-4">
-                    <!-- 画像1: reitoumotipai.png -->
-                    <div>
+                <!-- 右側: 画像3つを個別配置 -->
+                <div class="relative">
+                    <!-- 画像1: reitoumotipai.png - 右上 -->
+                    <div class="mb-4 ml-auto" style="width: 85%;">
                         <% begin %>
                         <%= image_tag 'orders/reitoumotipai.png', 
                               alt: '冷凍もちパイ', 
@@ -137,8 +137,8 @@
                         <% end %>
                     </div>
 
-                    <!-- 画像2: reitou.png -->
-                    <div>
+                    <!-- 画像2: reitou.png - 左寄り -->
+                    <div class="mb-4 mr-auto" style="width: 80%;">
                         <% begin %>
                         <%= image_tag 'orders/reitou.png', 
                               alt: '冷凍保存', 
@@ -150,8 +150,8 @@
                         <% end %>
                     </div>
 
-                    <!-- 画像3: housounashi_motipai.jpg -->
-                    <div>
+                    <!-- 画像3: housounashi_motipai.jpg - 中央寄り -->
+                    <div class="mx-auto" style="width: 90%;">
                         <% begin %>
                         <%= image_tag 'orders/housounashi_motipai.jpg', 
                               alt: 'もちパイ専用箱', 
