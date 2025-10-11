@@ -1,106 +1,11 @@
 <%= render 'shared/header' %>
 
-<div class="pt-24 pb-12">
-    <div class="container mx-auto px-4 max-w-4xl">
-        <!-- ステップインジケーター -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 flex items-center">
-                    <div class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <p class="font-bold text-gray-800">入力</p>
-                        <p class="text-xs text-gray-500">情報を入力</p>
-                    </div>
-                </div>
-                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-                <div class="flex-1 flex items-center justify-center">
-                    <div class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <p class="font-bold text-gray-800">確認</p>
-                        <p class="text-xs text-gray-500">内容を確認</p>
-                    </div>
-                </div>
-                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-                <div class="flex-1 flex items-center justify-end">
-                    <div class="w-10 h-10 bg-pink-600 text-white rounded-full flex items-center justify-center font-bold">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <p class="font-bold text-gray-800">完了</p>
-                        <p class="text-xs text-gray-500">注文完了</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 完了メッセージ -->
-        <div class="bg-white rounded-2xl shadow-lg p-12 text-center">
-            <!-- 成功アイコン -->
-            <div class="mb-8 flex justify-center">
-                <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-                    <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </div>
-            </div>
-
-            <!-- メッセージ -->
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">ご注文ありがとうございました</h1>
-            <p class="text-xl text-gray-600 mb-8">ご注文を承りました</p>
-
-            <div class="bg-pink-50 border-2 border-pink-200 rounded-lg p-6 mb-8 text-left max-w-2xl mx-auto">
-                <h2 class="text-lg font-bold text-pink-800 mb-4">ご注文完了のご案内</h2>
-                <div class="space-y-2 text-gray-700">
-                    <p>✓ ご登録いただいたメールアドレスに確認メールをお送りしました。</p>
-                    <p>✓ 当店にも注文内容が届いております。</p>
-                    <p>✓ 発送の準備が整い次第、商品をお送りいたします。</p>
-                </div>
-            </div>
-
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 text-left max-w-2xl mx-auto">
-                <h3 class="font-bold text-blue-800 mb-2">📧 メールが届かない場合</h3>
-                <p class="text-sm text-blue-700">
-                    迷惑メールフォルダに振り分けられている可能性があります。<br>
-                    メールが見つからない場合は、お手数ですがお電話にてご連絡ください。
-                </p>
-                <p class="text-sm text-blue-800 font-bold mt-2">
-                    TEL: 0778-62-0861
-                </p>
-            </div>
-
-            <!-- ボタン -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                <%= link_to root_path, class: "inline-block px-8 py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors" do %>
-                トップページへ戻る
-                <% end %>
-                <%= link_to featured_products_path, class: "inline-block px-8 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors" do %>
-                おすすめ商品を見る
-                <% end %>
-            </div>
-        </div>
-
-        <!-- お問い合わせ先 -->
-        <div class="mt-8 text-center text-gray-600">
-            <p class="text-sm">ご不明な点がございましたら、お気軽にお問い合わせください。</p>
-            <p class="text-sm font-bold mt-2">
-                御菓子処うさぎや<br>
-                TEL: 0778-62-0861<br>
-                営業時間: 8:00〜18:00（日曜定休）
-            </p>
-        </div>
-    </div>
+<div style="text-align: center; padding: 100px 20px;">
+    <h1 style="font-size: 32px; margin-bottom: 30px;">ご注文ありがとうございます</h1>
+    <p style="font-size: 18px; line-height: 2;">
+        ご注文を承りました。<br>
+        確認メールをお送りしましたので、ご確認ください。<br><br>
+        ご不明な点がございましたら、お気軽にお問い合わせください。
+    </p>
+    <%= link_to 'トップページに戻る', root_path, style: 'display: inline-block; margin-top: 40px; padding: 15px 40px; background-color: #333; color: #fff; text-decoration: none; border-radius: 4px;' %>
 </div>

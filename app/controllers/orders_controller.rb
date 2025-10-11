@@ -1,64 +1,55 @@
 class OrdersController < ApplicationController
   def new
     @order = Order.new
-    # もちパイの各種類の商品を事前に構築
-    Order::PRODUCT_PRICES.each_key do |product_type|
-      @order.order_items.build(product_type: product_type, quantity: 0)
-    end
-  end
-
-  def confirm
-    @order = Order.new(order_params)
-
-    # order_itemsの不要なレコード(quantity=0)を削除
-    @order.order_items.each do |item|
-      item.mark_for_destruction if item.quantity.to_i <= 0
-    end
-
-    if @order.valid?
-      render :confirm
-    else
-      # エラーがある場合は入力画面に戻る
-      # order_itemsを再構築
-      Order::PRODUCT_PRICES.each_key do |product_type|
-        unless @order.order_items.find { |item| item.product_type == product_type }
-          @order.order_items.build(product_type: product_type, quantity: 0)
-        end
-      end
-      render :new, status: :unprocessable_entity
-    end
   end
 
   def create
     @order = Order.new(order_params)
 
-    # order_itemsの不要なレコード(quantity=0)を削除
-    @order.order_items.each do |item|
-      item.mark_for_destruction if item.quantity.to_i <= 0
-    end
-
     if @order.save
-      redirect_to complete_orders_path, notice: "ご注文ありがとうございました。"
+      # 注文者への確認メール送信
+      # OrderMailer.customer_confirmation(@order).deliver_later
+
+      # 店舗への通知メール送信
+      # OrderMailer.shop_notification(@order).deliver_later
+
+      redirect_to complete_orders_path, notice: "ご注文ありがとうございます。確認メールをお送りしました。"
     else
-      # エラーがある場合は確認画面に戻る
-      render :confirm, status: :unprocessable_entity
+      render :new, status: :unprocessable_entity
     end
   end
 
   def complete
-    # 完了画面を表示
-    # セッションから注文情報をクリア（必要に応じて）
+    # 注文完了ページ
   end
 
   private
 
   def order_params
     params.require(:order).permit(
-      :customer_name, :postal_code, :address, :phone, :email,
-      :delivery_name, :delivery_postal_code, :delivery_address, :delivery_phone,
-      :same_address, :payment_method, :delivery_date, :delivery_time,
-      :wrapping_type, :notes,
-      order_items_attributes: [ :id, :product_type, :quantity, :_destroy ]
+      :customer_name,
+      :customer_postal_code,
+      :customer_address,
+      :customer_phone,
+      :customer_email,
+      :shipping_type,
+      :shipping_name,
+      :shipping_postal_code,
+      :shipping_address,
+      :shipping_phone,
+      :payment_method,
+      :delivery_date,
+      :delivery_time,
+      :wrapping,
+      :notes,
+      products: [
+        :'6pieces',
+        :'8pieces',
+        :'10pieces',
+        :'12pieces',
+        :'15pieces',
+        :'20pieces'
+      ]
     )
   end
 end
