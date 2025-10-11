@@ -32,7 +32,7 @@ Rails.application.routes.draw do
   resources :inquiries, only: [ :new, :create ]
 
   # 冷凍もちパイ注文
-  resources :orders, only: [ :new, :create ] do
+  resources :orders, only: [:new, :create] do
     collection do
       post :confirm  # 確認画面へのPOST
       get :complete  # 完了画面

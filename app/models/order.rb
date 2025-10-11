@@ -72,6 +72,10 @@ class Order < ApplicationRecord
     !same_address
   end
 
+  def same_address?
+    same_address == true || same_address == "1"
+  end
+
   def payment_method_label
     PAYMENT_METHODS[payment_method]
   end
@@ -90,18 +94,16 @@ class Order < ApplicationRecord
 
   def calculate_total
     self.total_amount = order_items.reject(&:marked_for_destruction?).sum do |item|
-      product_info = PRODUCT_PRICES[item.product_type]
-      next 0 unless product_info
-
-      item.unit_price = product_info[:price]
-      item.product_name = product_info[:name]
-      item.subtotal = item.quantity.to_i * item.unit_price
-      item.subtotal
+      next 0 if item.quantity.to_i <= 0
+      PRODUCT_PRICES[item.product_type][:price] * item.quantity.to_i
     end
   end
 
   def send_confirmation_emails
+    # 顧客への確認メール
     OrderMailer.customer_confirmation(self).deliver_later
+
+    # 管理者への通知メール
     OrderMailer.admin_notification(self).deliver_later
   end
 end

@@ -3,82 +3,255 @@
 
 <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #dc2626;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .alert {
+            background-color: #fef2f2;
+            border-left: 4px solid #dc2626;
+            padding: 15px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .content {
+            background-color: #fff;
+            padding: 30px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #dc2626;
+            border-bottom: 2px solid #dc2626;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background-color: #f9fafb;
+            font-weight: bold;
+            width: 30%;
+        }
+
+        .product-table th {
+            width: auto;
+        }
+
+        .total {
+            font-size: 20px;
+            font-weight: bold;
+            color: #dc2626;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .footer {
+            background-color: #f9fafb;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #dc2626;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 
 <body>
-    <h2>新規注文が入りました</h2>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin: 0;">🔔 新規注文通知</h1>
+            <p style="margin: 10px 0 0 0;">御菓子処うさぎや 管理者様</p>
+        </div>
 
-    <h3>注文者情報</h3>
-    <ul>
-        <li>お名前: <%= @order.customer_name %></li>
-        <li>メールアドレス: <%= @order.email %></li>
-        <li>電話番号: <%= @order.phone %></li>
-        <li>郵便番号: <%= @order.postal_code %></li>
-        <li>住所: <%= @order.address %></li>
-    </ul>
+        <div class="content">
+            <div class="alert">
+                ⚠️ 新しい注文が入りました。内容をご確認ください。
+            </div>
 
-    <h3>注文内容</h3>
-    <table border="1" cellpadding="5">
-        <thead>
-            <tr>
-                <th>商品名</th>
-                <th>数量</th>
-                <th>小計</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% @order.order_items.each do |item| %>
-            <tr>
-                <td><%= item.product_name %></td>
-                <td><%= item.quantity %>個</td>
-                <td>¥<%= number_with_delimiter(item.subtotal || 0) %></td>
-            </tr>
+            <p style="margin-bottom: 20px;">
+                注文日時: <%= @order.created_at.strftime("%Y年%m月%d日 %H:%M") %><br>
+                注文番号: #<%= @order.id %>
+            </p>
+
+            <!-- ご注文者様情報 -->
+            <div class="section">
+                <div class="section-title">ご注文者様情報</div>
+                <table>
+                    <tr>
+                        <th>お名前</th>
+                        <td><%= @order.customer_name %></td>
+                    </tr>
+                    <tr>
+                        <th>郵便番号</th>
+                        <td><%= @order.postal_code %></td>
+                    </tr>
+                    <tr>
+                        <th>ご住所</th>
+                        <td><%= @order.address %></td>
+                    </tr>
+                    <tr>
+                        <th>電話番号</th>
+                        <td><%= @order.phone %></td>
+                    </tr>
+                    <tr>
+                        <th>メールアドレス</th>
+                        <td><%= @order.email %></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 配送先情報 -->
+            <div class="section">
+                <div class="section-title">配送先情報</div>
+                <% if @order.same_address? %>
+                <p>※ご注文者様と同じ住所</p>
+                <% else %>
+                <table>
+                    <tr>
+                        <th>お名前</th>
+                        <td><%= @order.delivery_name %></td>
+                    </tr>
+                    <tr>
+                        <th>郵便番号</th>
+                        <td><%= @order.delivery_postal_code %></td>
+                    </tr>
+                    <tr>
+                        <th>ご住所</th>
+                        <td><%= @order.delivery_address %></td>
+                    </tr>
+                    <tr>
+                        <th>電話番号</th>
+                        <td><%= @order.delivery_phone %></td>
+                    </tr>
+                </table>
+                <% end %>
+            </div>
+
+            <!-- ご注文内容 -->
+            <div class="section">
+                <div class="section-title">ご注文内容</div>
+                <table class="product-table">
+                    <thead>
+                        <tr style="background-color: #f9fafb;">
+                            <th>商品名</th>
+                            <th style="text-align: center;">数量</th>
+                            <th style="text-align: right;">単価</th>
+                            <th style="text-align: right;">小計</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @order.order_items.reject(&:marked_for_destruction?).each do |item| %>
+                        <% next if item.quantity.to_i <= 0 %>
+                        <tr>
+                            <td><%= Order::PRODUCT_PRICES[item.product_type][:name] %></td>
+                            <td style="text-align: center;"><%= item.quantity %>個</td>
+                            <td style="text-align: right;">¥<%= number_with_delimiter(Order::PRODUCT_PRICES[item.product_type][:price]) %></td>
+                            <td style="text-align: right;">¥<%= number_with_delimiter(Order::PRODUCT_PRICES[item.product_type][:price] * item.quantity) %></td>
+                        </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+                <div class="total">
+                    合計: ¥<%= number_with_delimiter(@order.total_amount) %>
+                </div>
+            </div>
+
+            <!-- お支払い・配送情報 -->
+            <div class="section">
+                <div class="section-title">お支払い・配送情報</div>
+                <table>
+                    <tr>
+                        <th>お支払い方法</th>
+                        <td><%= Order::PAYMENT_METHODS[@order.payment_method] %></td>
+                    </tr>
+                    <% if @order.delivery_date.present? %>
+                    <tr>
+                        <th>到着希望日</th>
+                        <td><%= @order.delivery_date.strftime("%Y年%m月%d日") %></td>
+                    </tr>
+                    <% end %>
+                    <% if @order.delivery_time.present? %>
+                    <tr>
+                        <th>希望到着時間</th>
+                        <td><%= @order.delivery_time %></td>
+                    </tr>
+                    <% end %>
+                    <tr>
+                        <th>包装</th>
+                        <td><%= Order::WRAPPING_OPTIONS[@order.wrapping_type] %></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- ご希望欄 -->
+            <% if @order.notes.present? %>
+            <div class="section">
+                <div class="section-title">ご希望欄</div>
+                <div style="background-color: #fffbeb; padding: 15px; border-radius: 6px;">
+                    <p style="white-space: pre-wrap; margin: 0;"><%= @order.notes %></p>
+                </div>
+            </div>
             <% end %>
-        </tbody>
-        <tfoot>
-            <tr>
-                <th colspan="2">合計</th>
-                <th>¥<%= number_with_delimiter(@order.total_amount || 0) %></th>
-            </tr>
-        </tfoot>
-    </table>
 
-    <h3>配送先情報</h3>
-    <% if @order.same_address? %>
-    <p>注文者と同じ</p>
-    <% else %>
-    <ul>
-        <li>お名前: <%= @order.delivery_name %></li>
-        <li>郵便番号: <%= @order.delivery_postal_code %></li>
-        <li>住所: <%= @order.delivery_address %></li>
-        <li>電話番号: <%= @order.delivery_phone %></li>
-    </ul>
-    <% end %>
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="<%= Rails.env.production? ? "https://usagiya-fukui.jp" : "http://localhost:3000" %>/admin/orders/<%= @order.id %>" class="button">
+                    管理画面で詳細を確認
+                </a>
+            </div>
+        </div>
 
-    <% if @order.delivery_date.present? %>
-    <p>到着希望日: <%= @order.delivery_date.strftime("%Y年%m月%d日") %></p>
-    <% end %>
-
-    <% if @order.delivery_time.present? %>
-    <p>希望到着時間: <%= @order.delivery_time %></p>
-    <% end %>
-
-    <h3>お支払い方法</h3>
-    <p><%= @order.payment_method.humanize %></p>
-
-    <% if @order.wrapping_type.present? %>
-    <p>包装: <%= @order.wrapping_type %></p>
-    <% end %>
-
-    <% if @order.notes.present? %>
-    <h3>ご希望内容</h3>
-    <p><%= simple_format(@order.notes) %></p>
-    <% end %>
-
-    <p>
-        管理画面で確認:
-        <%= link_to "注文詳細を見る", admin_order_url(@order) %>
-    </p>
+        <div class="footer">
+            <p style="margin: 0;">このメールは自動送信されています。</p>
+            <p style="margin: 5px 0;">御菓子処うさぎや 注文管理システム</p>
+        </div>
+    </div>
 </body>
 
 </html>
