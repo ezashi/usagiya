@@ -182,6 +182,7 @@
 
     .form-group {
         margin-bottom: 30px;
+        scroll-margin-top: 120px;
     }
 
     .form-label {
@@ -866,7 +867,7 @@
         event.preventDefault();
         const field = document.getElementById(fieldId);
         if (field) {
-            const headerOffset = 120; // ヘッダーの高さ + 余白
+            const headerOffset = 140; // ヘッダーの高さ + 余白を増やす
             const elementPosition = field.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
