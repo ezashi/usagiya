@@ -7,6 +7,10 @@
         box-sizing: border-box;
     }
 
+    html {
+        scroll-behavior: smooth;
+    }
+
     body {
         font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', 'メイリオ', Meiryo, sans-serif;
         line-height: 1.8;
@@ -136,7 +140,6 @@
     }
 
     .flow-arrow {
-        text-align: center;
         margin: 5px 0;
         margin-left: 12px;
         font-size: 18px;
@@ -157,6 +160,199 @@
         margin-top: 30px;
         font-size: 14px;
         line-height: 1.8;
+    }
+
+    /* 注文フォームスタイル */
+    .order-form-section {
+        margin-top: 80px;
+        padding: 50px 40px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        scroll-margin-top: 120px;
+    }
+
+    .order-form-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 40px;
+        text-align: center;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 30px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .required {
+        color: #d32f2f;
+        font-size: 14px;
+        margin-left: 5px;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #fff;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+        outline: none;
+        border-color: #333;
+    }
+
+    .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .postal-code-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .postal-code-input {
+        flex: 1;
+    }
+
+    .radio-group,
+    .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .radio-item,
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .radio-item input[type="radio"],
+    .checkbox-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .radio-item label,
+    .checkbox-item label {
+        font-size: 15px;
+        cursor: pointer;
+        color: #333;
+    }
+
+    .shipping-address-fields {
+        display: none;
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .shipping-address-fields.active {
+        display: block;
+    }
+
+    .product-order-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .product-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .product-name {
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .product-quantity {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .quantity-input {
+        width: 80px;
+        padding: 8px;
+        text-align: center;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .total-section {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border: 2px solid #333;
+        border-radius: 4px;
+        text-align: right;
+    }
+
+    .total-label {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .total-amount {
+        font-size: 28px;
+        font-weight: bold;
+        color: #d32f2f;
+        margin-left: 20px;
+    }
+
+    .form-note {
+        font-size: 13px;
+        color: #666;
+        margin-top: 5px;
+        line-height: 1.6;
+    }
+
+    .submit-button {
+        width: 100%;
+        padding: 18px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #333;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 40px;
+    }
+
+    .submit-button:hover {
+        background-color: #555;
     }
 
     /* レスポンシブ対応 */
@@ -213,6 +409,22 @@
         .flow-content {
             gap: 30px;
         }
+
+        .order-form-section {
+            padding: 30px 20px;
+        }
+
+        .order-form-title {
+            font-size: 24px;
+        }
+
+        .product-order-section {
+            grid-template-columns: 1fr;
+        }
+
+        .postal-code-group {
+            flex-direction: column;
+        }
     }
 
     @media screen and (max-width: 480px) {
@@ -243,6 +455,8 @@
     <div class="content-wrapper">
         <div class="text-content">
             <div class="description-text">
+                <p>当店一番人気の「もちパイ」、作りたてを急速に冷凍し冷凍便でお送りします。</p>
+
                 <p>「もちパイの焼きたてを召し上がっていただきたい」そんな思いで作っています。</p>
 
                 <p>「遠くの方にも召し上がっていただきたい」そんな気持ちも持っています。</p>
@@ -310,4 +524,294 @@
             </div>
         </div>
     </div>
+
+    <!-- 注文フォーム -->
+    <div id="order-form" class="order-form-section">
+        <h2 class="order-form-title">ご注文フォーム</h2>
+
+        <%= form_with url: orders_path, method: :post, local: true do |f| %>
+        <!-- ご注文者様情報 -->
+        <div class="form-group">
+            <label class="form-label">
+                ご注文者様のお名前<span class="required">*必須</span>
+            </label>
+            <%= f.text_field :customer_name, class: 'form-input', required: true, placeholder: '山田 太郎' %>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                ご注文者様の郵便番号<span class="required">*必須</span>
+            </label>
+            <div class="postal-code-group">
+                <%= f.text_field :customer_postal_code, class: 'form-input postal-code-input', required: true, placeholder: '916-0071', pattern: '\d{3}-?\d{4}' %>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                ご注文者様のご住所<span class="required">*必須</span>
+            </label>
+            <%= f.text_field :customer_address, class: 'form-input', required: true, placeholder: '福井県鯖江市持明寺町5-10-1' %>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                ご注文者様の電話番号<span class="required">*必須</span>
+            </label>
+            <%= f.text_field :customer_phone, class: 'form-input', required: true, placeholder: '0778-62-0861', type: 'tel' %>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                E-MAIL<span class="required">*必須</span>
+            </label>
+            <%= f.email_field :customer_email, class: 'form-input', required: true, placeholder: 'usagiya-oishi@gmail.com' %>
+        </div>
+
+        <!-- 送り先選択 -->
+        <div class="form-group">
+            <label class="form-label">
+                送り先<span class="required">*必須</span>
+            </label>
+            <div class="radio-group">
+                <div class="radio-item">
+                    <%= f.radio_button :shipping_type, 'same', id: 'shipping_same', checked: true %>
+                    <label for="shipping_same">ご注文者様と同じ住所に送る</label>
+                </div>
+                <div class="radio-item">
+                    <%= f.radio_button :shipping_type, 'different', id: 'shipping_different' %>
+                    <label for="shipping_different">別の住所に送る</label>
+                </div>
+            </div>
+
+            <!-- 別の住所への送り先情報 -->
+            <div id="shipping-address-fields" class="shipping-address-fields">
+                <div style="margin-bottom: 30px;">
+                    <label class="form-label">
+                        お送り先のお名前<span class="required">*必須</span>
+                    </label>
+                    <%= f.text_field :shipping_name, class: 'form-input', placeholder: '佐藤 花子' %>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <label class="form-label">
+                        お送り先の郵便番号<span class="required">*必須</span>
+                    </label>
+                    <%= f.text_field :shipping_postal_code, class: 'form-input', placeholder: '100-8111', pattern: '\d{3}-?\d{4}' %>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <label class="form-label">
+                        お送り先の住所<span class="required">*必須</span>
+                    </label>
+                    <%= f.text_field :shipping_address, class: 'form-input', placeholder: '東京都千代田区○○1-1' %>
+                </div>
+
+                <div>
+                    <label class="form-label">
+                        お送り先の電話<span class="required">*必須</span>
+                    </label>
+                    <%= f.text_field :shipping_phone, class: 'form-input', placeholder: '03-3213-1111', type: 'tel' %>
+                </div>
+            </div>
+        </div>
+
+        <!-- 注文商品 -->
+        <div class="form-group">
+            <label class="form-label">注文商品</label>
+            <div class="product-order-section">
+                <div class="product-item">
+                    <span class="product-name">もちパイ6個入り</span>
+                    <div class="product-quantity">
+                        <label>数:</label>
+                        <%= f.number_field 'products[6pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 1200 } %>
+                    </div>
+                </div>
+
+                <div class="product-item">
+                    <span class="product-name">もちパイ8個入り</span>
+                    <div class="product-quantity">
+                        <label>数:</label>
+                        <%= f.number_field 'products[8pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 1600 } %>
+                    </div>
+                </div>
+
+                <div class="product-item">
+                    <span class="product-name">もちパイ10個入り</span>
+                    <div class="product-quantity">
+                        <label>数:</label>
+                        <%= f.number_field 'products[10pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 2000 } %>
+                    </div>
+                </div>
+
+                <div class="product-item">
+                    <span class="product-name">もちパイ12個入り</span>
+                    <div class="product-quantity">
+                        <label>数:</label>
+                        <%= f.number_field 'products[12pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 2400 } %>
+                    </div>
+                </div>
+
+                <div class="product-item">
+                    <span class="product-name">もちパイ15個入り</span>
+                    <div class="product-quantity">
+                        <label>数:</label>
+                        <%= f.number_field 'products[15pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 3000 } %>
+                    </div>
+                </div>
+
+                <div class="product-item">
+                    <span class="product-name">もちパイ20個入り</span>
+                    <div class="product-quantity">
+                        <label>数:</label>
+                        <%= f.number_field 'products[20pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 4000 } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 合計金額 -->
+            <div class="total-section">
+                <span class="total-label">合計:</span>
+                <span id="total-amount" class="total-amount">¥0</span>
+            </div>
+        </div>
+
+        <!-- 支払い方法 -->
+        <div class="form-group">
+            <label class="form-label">
+                支払い方法<span class="required">*必須</span>
+            </label>
+            <%= f.select :payment_method, 
+            [['クレジットカード払い(VISA / Master / JCB / American Express / ダイナースクラブ)', 'credit_card'], 
+             ['代引き(手数料がかかります)', 'cash_on_delivery'], 
+             ['福井信用金庫 事前振込(手数料はご負担ください)', 'fukui_bank_transfer'], 
+             ['ゆうちょ銀行 事前振込(手数料はご負担ください)', 'yucho_bank_transfer']], 
+            { include_blank: '選択してください' }, 
+            { class: 'form-select', required: true } %>
+        </div>
+
+        <!-- 到着希望日 -->
+        <div class="form-group">
+            <label class="form-label">到着希望日</label>
+            <%= f.date_field :delivery_date, class: 'form-input', min: Date.today + 3 %>
+        </div>
+
+        <!-- 希望到着時間 -->
+        <div class="form-group">
+            <label class="form-label">希望到着時間</label>
+            <%= f.select :delivery_time, 
+            [['午前中', 'morning'], 
+             ['14~16時', '14-16'], 
+             ['16~18時', '16-18'], 
+             ['18~20時', '18-20'], 
+             ['19~21時', '19-21'], 
+             ['時間指定なし', 'no_preference']], 
+            { include_blank: '選択してください' }, 
+            { class: 'form-select' } %>
+        </div>
+
+        <!-- 包装の有無 -->
+        <div class="form-group">
+            <label class="form-label">
+                包装の有無<span class="required">*必須</span>
+            </label>
+            <%= f.select :wrapping, 
+            [['「うさぎや」ロゴデザイン・赤', 'logo_red'], 
+             ['「うさぎや」ロゴデザイン・青', 'logo_blue'], 
+             ['うさぎ柄・ピンク', 'rabbit_pink']], 
+            { include_blank: 'もちパイ・帯のみ(包装なし)' }, 
+            { class: 'form-select', required: true } %>
+        </div>
+
+        <!-- ご希望欄 -->
+        <div class="form-group">
+            <label class="form-label">ご希望欄</label>
+            <%= f.text_area :notes, class: 'form-textarea', placeholder: '・つぶあん、チョコ、メープルを2個ずつ
+・熨斗あり、名前は山田太郎でお願いします
+・手提げ袋必要です' %>
+            <p class="form-note">
+                ※もちパイは組み合わせができますので、種類と個数をご記入ください。（ご記入がない場合はおまかせとなります）<br>
+                ※種類は、「つぶあん」、「刻み栗あん」、「ごまあん」、「チョコ」、「メープル」、「コーヒー」、「かぼちゃ」、「さつまいも」となります。<br>
+                ※包装の場合、熨斗の有無（お名前の記入）もあればご記入ください。<br>
+                ※手提げ袋が必要な方はご記入ください。
+            </p>
+        </div>
+
+        <%= f.submit '注文を確定する', class: 'submit-button' %>
+        <% end %>
+    </div>
 </div>
+
+<script>
+    // 送り先選択の切り替え
+    document.addEventListener('DOMContentLoaded', function() {
+        // 注文フォームへのスムーススクロール
+        const orderButton = document.querySelector('.order-button');
+        if (orderButton) {
+            orderButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const orderForm = document.getElementById('order-form');
+                if (orderForm) {
+                    // ヘッダーの高さを考慮してスクロール位置を調整
+                    const headerOffset = 100; // ヘッダーの高さ + 余白
+                    const elementPosition = orderForm.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+
+        const shippingSame = document.getElementById('shipping_same');
+        const shippingDifferent = document.getElementById('shipping_different');
+        const shippingFields = document.getElementById('shipping-address-fields');
+
+        function toggleShippingFields() {
+            if (shippingDifferent && shippingDifferent.checked) {
+                shippingFields.classList.add('active');
+                // 必須項目を有効化
+                shippingFields.querySelectorAll('input').forEach(input => {
+                    input.required = true;
+                });
+            } else {
+                shippingFields.classList.remove('active');
+                // 必須項目を無効化
+                shippingFields.querySelectorAll('input').forEach(input => {
+                    input.required = false;
+                    input.value = ''; // フィールドをクリア
+                });
+            }
+        }
+
+        // 初期状態を設定
+        toggleShippingFields();
+
+        if (shippingSame) {
+            shippingSame.addEventListener('change', toggleShippingFields);
+        }
+        if (shippingDifferent) {
+            shippingDifferent.addEventListener('change', toggleShippingFields);
+        }
+
+        // 合計金額の計算
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        const totalAmount = document.getElementById('total-amount');
+
+        function calculateTotal() {
+            let total = 0;
+            quantityInputs.forEach(input => {
+                const quantity = parseInt(input.value) || 0;
+                const price = parseInt(input.dataset.price) || 0;
+                total += quantity * price;
+            });
+            totalAmount.textContent = '¥' + total.toLocaleString();
+        }
+
+        quantityInputs.forEach(input => {
+            input.addEventListener('input', calculateTotal);
+        });
+    });
+</script>
