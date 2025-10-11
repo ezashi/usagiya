@@ -8,8 +8,9 @@ class Order < ApplicationRecord
   alias_attribute :shipping_postal_code, :delivery_postal_code
   alias_attribute :shipping_address, :delivery_address
   alias_attribute :shipping_phone, :delivery_phone
-  alias_attribute :shipping_type, :same_address
-  alias_attribute :wrapping, :wrapping_type
+
+  # 仮想属性を追加
+  attr_accessor :shipping_type
 
   # ご注文者様情報のバリデーション
   validates :customer_name, presence: true, length: { maximum: 50 }
@@ -30,11 +31,20 @@ class Order < ApplicationRecord
   # カスタムバリデーション: 少なくとも1つの商品が注文されているか
   validate :at_least_one_product_ordered
 
+  # 仮想属性を追加
+  attr_accessor :shipping_type
+
   private
 
   # 別の住所に送るかどうかを判定
   def different_shipping_address?
-    same_address == "different"
+    # shipping_typeが設定されている場合はそれを使用
+    if shipping_type.present?
+      shipping_type == "different"
+    else
+      # same_addressがfalseの場合は別の住所
+      same_address == false
+    end
   end
 
   # 少なくとも1つの商品が注文されているかチェック

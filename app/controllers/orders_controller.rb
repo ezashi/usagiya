@@ -1,12 +1,19 @@
 class OrdersController < ApplicationController
   def new
     @order = Order.new
-    @order.shipping_type = 'same'
+    @order.same_address = true
+    @order.shipping_type = "same"
+    @order.wrapping_type = "no_wrapping"
   end
 
   def create
     @order = Order.new(order_params)
-    @order.shipping_type ||= 'same'
+
+    if params[:order][:shipping_type] == "different"
+      @order.same_address = false
+    else
+      @order.same_address = true
+    end
 
     if @order.save
       # 注文者への確認メール送信
@@ -17,6 +24,12 @@ class OrdersController < ApplicationController
 
       redirect_to complete_orders_path, notice: "ご注文ありがとうございます。確認メールをお送りしました。"
     else
+      # エラー時に選択状態を保持するため、same_addressから逆変換
+      if @order.same_address == false
+        @order.shipping_type = "different"
+      else
+        @order.shipping_type = "same"
+      end
       render :new, status: :unprocessable_entity
     end
   end

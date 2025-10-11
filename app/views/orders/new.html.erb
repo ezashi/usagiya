@@ -669,13 +669,19 @@
             <label class="form-label">
                 送り先<span class="required">*必須</span>
             </label>
+            <% 
+          current_type = @order.shipping_type
+          if current_type.blank?
+            current_type = @order.same_address == false ? 'different' : 'same'
+          end
+        %>
             <div class="radio-group">
                 <div class="radio-item">
-                    <%= f.radio_button :shipping_type, 'same', id: 'shipping_same', checked: (@order.shipping_type.blank? || @order.shipping_type == 'same') %>
+                    <%= radio_button_tag 'order[shipping_type]', 'same', (current_type == 'same'), id: 'shipping_same' %>
                     <label for="shipping_same">ご注文者様と同じ住所に送る</label>
                 </div>
                 <div class="radio-item">
-                    <%= f.radio_button :shipping_type, 'different', id: 'shipping_different', checked: (@order.shipping_type == 'different') %>
+                    <%= radio_button_tag 'order[shipping_type]', 'different', (current_type == 'different'), id: 'shipping_different' %>
                     <label for="shipping_different">別の住所に送る</label>
                 </div>
             </div>
@@ -832,10 +838,11 @@
                 包装の有無<span class="required">*必須</span>
             </label>
             <%= f.select :wrapping, 
-            [['「うさぎや」ロゴデザイン・赤', 'logo_red'], 
+            [['もちパイ・帯のみ(包装なし)', 'no_wrapping'], 
+             ['「うさぎや」ロゴデザイン・赤', 'logo_red'], 
              ['「うさぎや」ロゴデザイン・青', 'logo_blue'], 
              ['うさぎ柄・ピンク', 'rabbit_pink']], 
-            { include_blank: 'もちパイ・帯のみ(包装なし)' }, 
+            { selected: @order.wrapping }, 
             { id: 'order_wrapping_type', class: 'form-select' } %>
             <% if @order.errors[:wrapping_type].any? || @order.errors[:wrapping].any? %>
             <span class="error-message"><%= @order.errors[:wrapping_type].first || @order.errors[:wrapping].first %></span>
@@ -917,24 +924,9 @@
             }
         }
 
-        // ページロード時に状態を確認
-        // まずラジオボタンの状態をチェック
-        if (shippingDifferent && shippingDifferent.checked) {
-            shippingFields.classList.add('active');
-        }
-        // 送り先フィールドのいずれかに値がある、またはエラーがある場合
-        else if (shippingFields) {
-            const hasValue = Array.from(shippingFields.querySelectorAll('input[type="text"]')).some(input => input.value.trim() !== '');
-            const hasError = shippingFields.querySelector('.error-message') !== null;
-
-            if (hasValue || hasError) {
-                // 値やエラーがある場合は「別の住所」を選択して表示
-                if (shippingDifferent) {
-                    shippingDifferent.checked = true;
-                    shippingFields.classList.add('active');
-                }
-            }
-        }
+        // ページロード時に状態を確認して表示
+        // ラジオボタンの状態に基づいて表示を切り替え
+        toggleShippingFields();
 
         if (shippingSame) {
             shippingSame.addEventListener('change', toggleShippingFields);
