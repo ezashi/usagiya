@@ -671,11 +671,11 @@
             </label>
             <div class="radio-group">
                 <div class="radio-item">
-                    <%= f.radio_button :shipping_type, 'same', id: 'shipping_same', checked: (@order.shipping_type != 'different') %>
+                    <%= f.radio_button :shipping_type, 'same', id: 'shipping_same' %>
                     <label for="shipping_same">ご注文者様と同じ住所に送る</label>
                 </div>
                 <div class="radio-item">
-                    <%= f.radio_button :shipping_type, 'different', id: 'shipping_different', checked: (@order.shipping_type == 'different') %>
+                    <%= f.radio_button :shipping_type, 'different', id: 'shipping_different' %>
                     <label for="shipping_different">別の住所に送る</label>
                 </div>
             </div>
@@ -687,8 +687,8 @@
                         お送り先のお名前<span class="required">*必須</span>
                     </label>
                     <%= f.text_field :shipping_name, id: 'order_delivery_name', class: 'form-input', placeholder: '佐藤 花子' %>
-                    <% if @order.errors[:delivery_name].any? %>
-                    <span class="error-message"><%= @order.errors[:delivery_name].first %></span>
+                    <% if @order.errors[:shipping_name].any? || @order.errors[:delivery_name].any? %>
+                    <span class="error-message"><%= @order.errors[:shipping_name].first || @order.errors[:delivery_name].first %></span>
                     <% end %>
                 </div>
 
@@ -697,8 +697,8 @@
                         お送り先の郵便番号<span class="required">*必須</span>
                     </label>
                     <%= f.text_field :shipping_postal_code, id: 'order_delivery_postal_code', class: 'form-input', placeholder: '100-8111' %>
-                    <% if @order.errors[:delivery_postal_code].any? %>
-                    <span class="error-message"><%= @order.errors[:delivery_postal_code].first %></span>
+                    <% if @order.errors[:shipping_postal_code].any? || @order.errors[:delivery_postal_code].any? %>
+                    <span class="error-message"><%= @order.errors[:shipping_postal_code].first || @order.errors[:delivery_postal_code].first %></span>
                     <% end %>
                 </div>
 
@@ -707,8 +707,8 @@
                         お送り先の住所<span class="required">*必須</span>
                     </label>
                     <%= f.text_field :shipping_address, id: 'order_delivery_address', class: 'form-input', placeholder: '東京都千代田区○○1-1' %>
-                    <% if @order.errors[:delivery_address].any? %>
-                    <span class="error-message"><%= @order.errors[:delivery_address].first %></span>
+                    <% if @order.errors[:shipping_address].any? || @order.errors[:delivery_address].any? %>
+                    <span class="error-message"><%= @order.errors[:shipping_address].first || @order.errors[:delivery_address].first %></span>
                     <% end %>
                 </div>
 
@@ -717,8 +717,8 @@
                         お送り先の電話<span class="required">*必須</span>
                     </label>
                     <%= f.text_field :shipping_phone, id: 'order_delivery_phone', class: 'form-input', placeholder: '03-3213-1111', type: 'tel' %>
-                    <% if @order.errors[:delivery_phone].any? %>
-                    <span class="error-message"><%= @order.errors[:delivery_phone].first %></span>
+                    <% if @order.errors[:shipping_phone].any? || @order.errors[:delivery_phone].any? %>
+                    <span class="error-message"><%= @order.errors[:shipping_phone].first || @order.errors[:delivery_phone].first %></span>
                     <% end %>
                 </div>
             </div>
@@ -917,18 +917,18 @@
             }
         }
 
-        // 初期状態を設定（エラーがある場合も考慮）
+        // ページロード時に現在の選択状態を確認して表示を切り替え
         if (shippingDifferent && shippingDifferent.checked) {
-            // 「別の住所」が選択されている場合は表示
             shippingFields.classList.add('active');
-        } else if (shippingFields && shippingFields.querySelector('.error-message')) {
-            // エラーがある場合は「別の住所」を選択状態にして表示
+        } else if (shippingSame && shippingSame.checked) {
+            shippingFields.classList.remove('active');
+        } else if (shippingFields && shippingFields.querySelector('input[type="text"]').value) {
+            // 送り先フィールドに値がある場合は「別の住所」を選択して表示
             if (shippingDifferent) {
                 shippingDifferent.checked = true;
                 shippingFields.classList.add('active');
             }
         }
-        toggleShippingFields();
 
         if (shippingSame) {
             shippingSame.addEventListener('change', toggleShippingFields);
