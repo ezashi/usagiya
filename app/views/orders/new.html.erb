@@ -360,14 +360,24 @@
     }
 
     .error-messages li {
-        color: #d32f2f;
-        font-size: 14px;
         margin-bottom: 8px;
-        padding-left: 20px;
-        position: relative;
     }
 
-    .error-messages li:before {
+    .error-messages a {
+        color: #d32f2f;
+        text-decoration: none;
+        font-size: 14px;
+        padding-left: 20px;
+        position: relative;
+        display: block;
+        cursor: pointer;
+    }
+
+    .error-messages a:hover {
+        text-decoration: underline;
+    }
+
+    .error-messages a:before {
         content: "•";
         position: absolute;
         left: 5px;
@@ -587,10 +597,14 @@
         <!-- エラーメッセージ表示 -->
         <% if @order.errors.any? %>
         <div class="error-messages">
-            <h3><%= @order.errors.count %>個のエラーが発生しました</h3>
+            <h3><%= @order.errors.count %>個のエラーがあります。内容を確認してください。</h3>
             <ul>
-                <% @order.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
+                <% @order.errors.each do |error| %>
+                <li>
+                    <a href="#order_<%= error.attribute %>" onclick="scrollToField(event, 'order_<%= error.attribute %>')">
+                        <%= error.full_message %>
+                    </a>
+                </li>
                 <% end %>
             </ul>
         </div>
@@ -601,7 +615,7 @@
             <label class="form-label">
                 ご注文者様のお名前<span class="required">*必須</span>
             </label>
-            <%= f.text_field :customer_name, class: 'form-input', placeholder: '山田 太郎' %>
+            <%= f.text_field :customer_name, id: 'order_customer_name', class: 'form-input', placeholder: '山田 太郎' %>
             <% if @order.errors[:customer_name].any? %>
             <span class="error-message"><%= @order.errors[:customer_name].first %></span>
             <% end %>
@@ -612,10 +626,10 @@
                 ご注文者様の郵便番号<span class="required">*必須</span>
             </label>
             <div class="postal-code-group">
-                <%= f.text_field :customer_postal_code, class: 'form-input postal-code-input', placeholder: '916-0071' %>
+                <%= f.text_field :customer_postal_code, id: 'order_postal_code', class: 'form-input postal-code-input', placeholder: '916-0071' %>
             </div>
-            <% if @order.errors[:customer_postal_code].any? %>
-            <span class="error-message"><%= @order.errors[:customer_postal_code].first %></span>
+            <% if @order.errors[:postal_code].any? %>
+            <span class="error-message"><%= @order.errors[:postal_code].first %></span>
             <% end %>
         </div>
 
@@ -623,9 +637,9 @@
             <label class="form-label">
                 ご注文者様のご住所<span class="required">*必須</span>
             </label>
-            <%= f.text_field :customer_address, class: 'form-input', placeholder: '福井県鯖江市持明寺町5-10-1' %>
-            <% if @order.errors[:customer_address].any? %>
-            <span class="error-message"><%= @order.errors[:customer_address].first %></span>
+            <%= f.text_field :customer_address, id: 'order_address', class: 'form-input', placeholder: '福井県鯖江市持明寺町5-10-1' %>
+            <% if @order.errors[:address].any? %>
+            <span class="error-message"><%= @order.errors[:address].first %></span>
             <% end %>
         </div>
 
@@ -633,9 +647,9 @@
             <label class="form-label">
                 ご注文者様の電話番号<span class="required">*必須</span>
             </label>
-            <%= f.text_field :customer_phone, class: 'form-input', placeholder: '0778-62-0861', type: 'tel' %>
-            <% if @order.errors[:customer_phone].any? %>
-            <span class="error-message"><%= @order.errors[:customer_phone].first %></span>
+            <%= f.text_field :customer_phone, id: 'order_phone', class: 'form-input', placeholder: '0778-62-0861', type: 'tel' %>
+            <% if @order.errors[:phone].any? %>
+            <span class="error-message"><%= @order.errors[:phone].first %></span>
             <% end %>
         </div>
 
@@ -643,9 +657,9 @@
             <label class="form-label">
                 E-MAIL<span class="required">*必須</span>
             </label>
-            <%= f.email_field :customer_email, class: 'form-input', placeholder: 'usagiya-oishi@gmail.com' %>
-            <% if @order.errors[:customer_email].any? %>
-            <span class="error-message"><%= @order.errors[:customer_email].first %></span>
+            <%= f.email_field :customer_email, id: 'order_email', class: 'form-input', placeholder: 'usagiya-oishi@gmail.com' %>
+            <% if @order.errors[:email].any? %>
+            <span class="error-message"><%= @order.errors[:email].first %></span>
             <% end %>
         </div>
 
@@ -671,9 +685,9 @@
                     <label class="form-label">
                         お送り先のお名前<span class="required">*必須</span>
                     </label>
-                    <%= f.text_field :shipping_name, class: 'form-input', placeholder: '佐藤 花子' %>
-                    <% if @order.errors[:shipping_name].any? %>
-                    <span class="error-message"><%= @order.errors[:shipping_name].first %></span>
+                    <%= f.text_field :shipping_name, id: 'order_delivery_name', class: 'form-input', placeholder: '佐藤 花子' %>
+                    <% if @order.errors[:delivery_name].any? %>
+                    <span class="error-message"><%= @order.errors[:delivery_name].first %></span>
                     <% end %>
                 </div>
 
@@ -681,9 +695,9 @@
                     <label class="form-label">
                         お送り先の郵便番号<span class="required">*必須</span>
                     </label>
-                    <%= f.text_field :shipping_postal_code, class: 'form-input', placeholder: '100-8111' %>
-                    <% if @order.errors[:shipping_postal_code].any? %>
-                    <span class="error-message"><%= @order.errors[:shipping_postal_code].first %></span>
+                    <%= f.text_field :shipping_postal_code, id: 'order_delivery_postal_code', class: 'form-input', placeholder: '100-8111' %>
+                    <% if @order.errors[:delivery_postal_code].any? %>
+                    <span class="error-message"><%= @order.errors[:delivery_postal_code].first %></span>
                     <% end %>
                 </div>
 
@@ -691,9 +705,9 @@
                     <label class="form-label">
                         お送り先の住所<span class="required">*必須</span>
                     </label>
-                    <%= f.text_field :shipping_address, class: 'form-input', placeholder: '東京都千代田区○○1-1' %>
-                    <% if @order.errors[:shipping_address].any? %>
-                    <span class="error-message"><%= @order.errors[:shipping_address].first %></span>
+                    <%= f.text_field :shipping_address, id: 'order_delivery_address', class: 'form-input', placeholder: '東京都千代田区○○1-1' %>
+                    <% if @order.errors[:delivery_address].any? %>
+                    <span class="error-message"><%= @order.errors[:delivery_address].first %></span>
                     <% end %>
                 </div>
 
@@ -701,16 +715,16 @@
                     <label class="form-label">
                         お送り先の電話<span class="required">*必須</span>
                     </label>
-                    <%= f.text_field :shipping_phone, class: 'form-input', placeholder: '03-3213-1111', type: 'tel' %>
-                    <% if @order.errors[:shipping_phone].any? %>
-                    <span class="error-message"><%= @order.errors[:shipping_phone].first %></span>
+                    <%= f.text_field :shipping_phone, id: 'order_delivery_phone', class: 'form-input', placeholder: '03-3213-1111', type: 'tel' %>
+                    <% if @order.errors[:delivery_phone].any? %>
+                    <span class="error-message"><%= @order.errors[:delivery_phone].first %></span>
                     <% end %>
                 </div>
             </div>
         </div>
 
         <!-- 注文商品 -->
-        <div class="form-group">
+        <div class="form-group" id="order_base">
             <label class="form-label">注文商品</label>
             <div class="product-order-section">
                 <div class="product-item">
@@ -780,7 +794,7 @@
              ['福井信用金庫 事前振込(手数料はご負担ください)', 'fukui_bank_transfer'], 
              ['ゆうちょ銀行 事前振込(手数料はご負担ください)', 'yucho_bank_transfer']], 
             { include_blank: '選択してください' }, 
-            { class: 'form-select' } %>
+            { id: 'order_payment_method', class: 'form-select' } %>
             <% if @order.errors[:payment_method].any? %>
             <span class="error-message"><%= @order.errors[:payment_method].first %></span>
             <% end %>
@@ -816,9 +830,9 @@
              ['「うさぎや」ロゴデザイン・青', 'logo_blue'], 
              ['うさぎ柄・ピンク', 'rabbit_pink']], 
             { include_blank: 'もちパイ・帯のみ(包装なし)' }, 
-            { class: 'form-select' } %>
-            <% if @order.errors[:wrapping].any? %>
-            <span class="error-message"><%= @order.errors[:wrapping].first %></span>
+            { id: 'order_wrapping_type', class: 'form-select' } %>
+            <% if @order.errors[:wrapping_type].any? %>
+            <span class="error-message"><%= @order.errors[:wrapping_type].first %></span>
             <% end %>
         </div>
 
@@ -842,6 +856,27 @@
 </div>
 
 <script>
+    // エラーメッセージのリンクをクリックしたときのスクロール処理
+    function scrollToField(event, fieldId) {
+        event.preventDefault();
+        const field = document.getElementById(fieldId);
+        if (field) {
+            const headerOffset = 120; // ヘッダーの高さ + 余白
+            const elementPosition = field.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+
+            // フィールドにフォーカスを当てる
+            setTimeout(() => {
+                field.focus();
+            }, 500);
+        }
+    }
+
     // 送り先選択の切り替え
     document.addEventListener('DOMContentLoaded', function() {
         // 注文フォームへのスムーススクロール
