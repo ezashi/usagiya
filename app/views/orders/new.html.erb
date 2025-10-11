@@ -583,7 +583,7 @@
     <div id="order-form" class="order-form-section">
         <h2 class="order-form-title">ご注文フォーム</h2>
 
-        <%= form_with model: @order, url: orders_path, method: :post, local: true do |f| %>
+        <%= form_with model: @order, url: orders_path, method: :post, data: { turbo: false } do |f| %>
         <!-- エラーメッセージ表示 -->
         <% if @order.errors.any? %>
         <div class="error-messages">
@@ -717,7 +717,7 @@
                     <span class="product-name">もちパイ6個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= f.number_field 'products[6pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 1200 } %>
+                        <%= number_field_tag 'order[products][6pieces]', 0, class: 'quantity-input', min: 0, data: { price: 1200 } %>
                     </div>
                 </div>
 
@@ -725,7 +725,7 @@
                     <span class="product-name">もちパイ8個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= f.number_field 'products[8pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 1600 } %>
+                        <%= number_field_tag 'order[products][8pieces]', 0, class: 'quantity-input', min: 0, data: { price: 1600 } %>
                     </div>
                 </div>
 
@@ -733,7 +733,7 @@
                     <span class="product-name">もちパイ10個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= f.number_field 'products[10pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 2000 } %>
+                        <%= number_field_tag 'order[products][10pieces]', 0, class: 'quantity-input', min: 0, data: { price: 2000 } %>
                     </div>
                 </div>
 
@@ -741,7 +741,7 @@
                     <span class="product-name">もちパイ12個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= f.number_field 'products[12pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 2400 } %>
+                        <%= number_field_tag 'order[products][12pieces]', 0, class: 'quantity-input', min: 0, data: { price: 2400 } %>
                     </div>
                 </div>
 
@@ -749,7 +749,7 @@
                     <span class="product-name">もちパイ15個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= f.number_field 'products[15pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 3000 } %>
+                        <%= number_field_tag 'order[products][15pieces]', 0, class: 'quantity-input', min: 0, data: { price: 3000 } %>
                     </div>
                 </div>
 
@@ -757,7 +757,7 @@
                     <span class="product-name">もちパイ20個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= f.number_field 'products[20pieces]', class: 'quantity-input', value: 0, min: 0, data: { price: 4000 } %>
+                        <%= number_field_tag 'order[products][20pieces]', 0, class: 'quantity-input', min: 0, data: { price: 4000 } %>
                     </div>
                 </div>
             </div>

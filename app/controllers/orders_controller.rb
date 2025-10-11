@@ -1,3 +1,4 @@
+# app/controllers/orders_controller.rb
 class OrdersController < ApplicationController
   def new
     @order = Order.new
@@ -42,14 +43,7 @@ class OrdersController < ApplicationController
       :delivery_time,
       :wrapping,
       :notes,
-      products: [
-        :'6pieces',
-        :'8pieces',
-        :'10pieces',
-        :'12pieces',
-        :'15pieces',
-        :'20pieces'
-      ]
+      products: {}
     )
   end
 end

@@ -5,19 +5,19 @@ ja:
     attributes:
       order:
         customer_name: お名前
-        customer_postal_code: 郵便番号
-        customer_address: ご住所
-        customer_phone: 電話番号
-        customer_email: メールアドレス
-        shipping_type: 送り先
-        shipping_name: お送り先のお名前
-        shipping_postal_code: お送り先の郵便番号
-        shipping_address: お送り先の住所
-        shipping_phone: お送り先の電話番号
+        postal_code: 郵便番号
+        address: ご住所
+        phone: 電話番号
+        email: メールアドレス
+        same_address: 送り先
+        delivery_name: お送り先のお名前
+        delivery_postal_code: お送り先の郵便番号
+        delivery_address: お送り先の住所
+        delivery_phone: お送り先の電話番号
         payment_method: お支払い方法
         delivery_date: 到着希望日
         delivery_time: 希望到着時間
-        wrapping: 包装
+        wrapping_type: 包装
         notes: ご希望欄
         products: 注文商品
     errors:
@@ -27,34 +27,34 @@ ja:
             customer_name:
               blank: を入力してください
               too_long: は50文字以内で入力してください
-            customer_postal_code:
+            postal_code:
               blank: を入力してください
-              invalid: は正しい形式で入力してください（例: 123-4567）
-            customer_address:
+              invalid: は正しい形式で入力してください（例 123-4567）
+            address:
               blank: を入力してください
               too_long: は200文字以内で入力してください
-            customer_phone:
+            phone:
               blank: を入力してください
-              invalid: は正しい形式で入力してください（例: 090-1234-5678）
-            customer_email:
+              invalid: は正しい形式で入力してください（例 090-1234-5678）
+            email:
               blank: を入力してください
               invalid: はメールアドレスの形式で入力してください
             payment_method:
               blank: を選択してください
               inclusion: は有効なお支払い方法を選択してください
-            wrapping:
+            wrapping_type:
               blank: を選択してください
               inclusion: は有効な包装を選択してください
-            shipping_name:
+            delivery_name:
               blank: を入力してください
               too_long: は50文字以内で入力してください
-            shipping_postal_code:
+            delivery_postal_code:
               blank: を入力してください
-              invalid: は正しい形式で入力してください（例: 123-4567）
-            shipping_address:
+              invalid: は正しい形式で入力してください（例 123-4567）
+            delivery_address:
               blank: を入力してください
               too_long: は200文字以内で入力してください
-            shipping_phone:
+            delivery_phone:
               blank: を入力してください
-              invalid: は正しい形式で入力してください（例: 03-1234-5678）
+              invalid: は正しい形式で入力してください（例 03-1234-5678）
           no_products: 少なくとも1つの商品を注文してください
