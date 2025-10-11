@@ -7,8 +7,17 @@ class OrdersController < ApplicationController
   end
 
   def create
-    @order = Order.new(order_params)
+    # パラメータの変換処理
+    order_params_hash = order_params.to_h
 
+    # wrappingをwrapping_typeに変換
+    if order_params_hash["wrapping"].present?
+      order_params_hash["wrapping_type"] = order_params_hash.delete("wrapping")
+    end
+
+    @order = Order.new(order_params_hash)
+
+    # shipping_typeをsame_addressに変換
     if params[:order][:shipping_type] == "different"
       @order.same_address = false
     else
