@@ -19,10 +19,7 @@ class Order < ApplicationRecord
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
 
   # 支払い方法のバリデーション
-  validates :payment_method, presence: true, inclusion: { in: %w[credit_card cash_on_delivery fukui_bank_transfer yucho_bank_transfer], allow_blank: true }
-
-  # 包装のバリデーション
-  validates :wrapping_type, presence: true, inclusion: { in: %w[no_wrapping logo_red logo_blue rabbit_pink], allow_blank: true }
+  validates :payment_method, presence: true
 
   # 送り先のバリデーション（別の住所の場合のみ）
   validates :delivery_name, presence: true, length: { maximum: 50 }, if: :different_shipping_address?

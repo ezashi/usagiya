@@ -25,36 +25,32 @@ ja:
         order:
           attributes:
             customer_name:
-              blank: を入力してください
-              too_long: は50文字以内で入力してください
+              blank: お名前を入力してください
+              too_long: お名前は50文字以内で入力してください
             postal_code:
-              blank: を入力してください
-              invalid: は正しい形式で入力してください（例 123-4567）
+              blank: 郵便番号を入力してください
+              invalid: 郵便番号は正しい形式で入力してください（例 123-4567）
             address:
-              blank: を入力してください
-              too_long: は200文字以内で入力してください
+              blank: ご住所を入力してください
+              too_long: ご住所は200文字以内で入力してください
             phone:
-              blank: を入力してください
-              invalid: は正しい形式で入力してください（例 090-1234-5678）
+              blank: 電話番号を入力してください
+              invalid: 電話番号は正しい形式で入力してください（例 090-1234-5678）
             email:
-              blank: を入力してください
-              invalid: はメールアドレスの形式で入力してください
+              blank: メールアドレスを入力してください
+              invalid: メールアドレスは正しい形式で入力してください
             payment_method:
-              blank: を選択してください
-              inclusion: は有効なお支払い方法を選択してください
-            wrapping_type:
-              blank: を選択してください
-              inclusion: は有効な包装を選択してください
+              blank: お支払い方法を選択してください
             delivery_name:
-              blank: を入力してください
-              too_long: は50文字以内で入力してください
+              blank: お送り先のお名前を入力してください
+              too_long: お送り先のお名前は50文字以内で入力してください
             delivery_postal_code:
-              blank: を入力してください
-              invalid: は正しい形式で入力してください（例 123-4567）
+              blank: お送り先の郵便番号を入力してください
+              invalid: お送り先の郵便番号は正しい形式で入力してください（例 123-4567）
             delivery_address:
-              blank: を入力してください
-              too_long: は200文字以内で入力してください
+              blank: お送り先の住所を入力してください
+              too_long: お送り先の住所は200文字以内で入力してください
             delivery_phone:
-              blank: を入力してください
-              invalid: は正しい形式で入力してください（例 03-1234-5678）
+              blank: お送り先の電話番号を入力してください
+              invalid: お送り先の電話番号は正しい形式で入力してください（例 03-1234-5678）
           no_products: 少なくとも1つの商品を注文してください

@@ -602,7 +602,7 @@
                 <% @order.errors.each do |error| %>
                 <li>
                     <a href="#order_<%= error.attribute %>" onclick="scrollToField(event, 'order_<%= error.attribute %>')">
-                        <%= error.full_message %>
+                        <%= error.message %>
                     </a>
                 </li>
                 <% end %>
@@ -798,12 +798,17 @@
             <% if @order.errors[:payment_method].any? %>
             <span class="error-message"><%= @order.errors[:payment_method].first %></span>
             <% end %>
+            <p class="form-note">※クレジットカードの場合、リクルートIDの登録後の決済となります。</p>
         </div>
 
         <!-- 到着希望日 -->
         <div class="form-group">
             <label class="form-label">到着希望日</label>
             <%= f.date_field :delivery_date, class: 'form-input', min: Date.today + 3 %>
+            <p class="form-note">
+                ※お申込みより5日以降の日にちをご記入ください。<br>
+                ご記入がない場合は調整後、最短でのお届けとさせていただきます
+            </p>
         </div>
 
         <!-- 希望到着時間 -->
