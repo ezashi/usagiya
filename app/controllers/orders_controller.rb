@@ -1,10 +1,12 @@
 class OrdersController < ApplicationController
   def new
     @order = Order.new
+    @order.shipping_type = 'same'
   end
 
   def create
     @order = Order.new(order_params)
+    @order.shipping_type ||= 'same'
 
     if @order.save
       # 注文者への確認メール送信
