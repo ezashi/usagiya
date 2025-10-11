@@ -140,6 +140,7 @@
     }
 
     .flow-arrow {
+        text-align: center;
         margin: 5px 0;
         margin-left: 12px;
         font-size: 18px;
@@ -337,6 +338,59 @@
         line-height: 1.6;
     }
 
+    .error-messages {
+        background-color: #fee;
+        border: 2px solid #d32f2f;
+        border-radius: 4px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .error-messages h3 {
+        color: #d32f2f;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .error-messages ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .error-messages li {
+        color: #d32f2f;
+        font-size: 14px;
+        margin-bottom: 8px;
+        padding-left: 20px;
+        position: relative;
+    }
+
+    .error-messages li:before {
+        content: "•";
+        position: absolute;
+        left: 5px;
+    }
+
+    .field_with_errors {
+        display: inline;
+    }
+
+    .field_with_errors .form-input,
+    .field_with_errors .form-textarea,
+    .field_with_errors .form-select {
+        border-color: #d32f2f;
+        background-color: #fff5f5;
+    }
+
+    .error-message {
+        color: #d32f2f;
+        font-size: 13px;
+        margin-top: 5px;
+        display: block;
+    }
+
     .submit-button {
         width: 100%;
         padding: 18px;
@@ -529,13 +583,29 @@
     <div id="order-form" class="order-form-section">
         <h2 class="order-form-title">ご注文フォーム</h2>
 
-        <%= form_with url: orders_path, method: :post, local: true do |f| %>
+        <% @order ||= Order.new %>
+        <%= form_with model: @order, url: orders_path, method: :post, local: true do |f| %>
+        <!-- エラーメッセージ表示 -->
+        <% if @order.errors.any? %>
+        <div class="error-messages">
+            <h3><%= @order.errors.count %>個のエラーが発生しました</h3>
+            <ul>
+                <% @order.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+        <% end %>
+
         <!-- ご注文者様情報 -->
         <div class="form-group">
             <label class="form-label">
                 ご注文者様のお名前<span class="required">*必須</span>
             </label>
             <%= f.text_field :customer_name, class: 'form-input', required: true, placeholder: '山田 太郎' %>
+            <% if @order.errors[:customer_name].any? %>
+            <span class="error-message"><%= @order.errors[:customer_name].first %></span>
+            <% end %>
         </div>
 
         <div class="form-group">
@@ -545,6 +615,9 @@
             <div class="postal-code-group">
                 <%= f.text_field :customer_postal_code, class: 'form-input postal-code-input', required: true, placeholder: '916-0071', pattern: '\d{3}-?\d{4}' %>
             </div>
+            <% if @order.errors[:customer_postal_code].any? %>
+            <span class="error-message"><%= @order.errors[:customer_postal_code].first %></span>
+            <% end %>
         </div>
 
         <div class="form-group">
@@ -552,6 +625,9 @@
                 ご注文者様のご住所<span class="required">*必須</span>
             </label>
             <%= f.text_field :customer_address, class: 'form-input', required: true, placeholder: '福井県鯖江市持明寺町5-10-1' %>
+            <% if @order.errors[:customer_address].any? %>
+            <span class="error-message"><%= @order.errors[:customer_address].first %></span>
+            <% end %>
         </div>
 
         <div class="form-group">
@@ -559,6 +635,9 @@
                 ご注文者様の電話番号<span class="required">*必須</span>
             </label>
             <%= f.text_field :customer_phone, class: 'form-input', required: true, placeholder: '0778-62-0861', type: 'tel' %>
+            <% if @order.errors[:customer_phone].any? %>
+            <span class="error-message"><%= @order.errors[:customer_phone].first %></span>
+            <% end %>
         </div>
 
         <div class="form-group">
@@ -566,6 +645,9 @@
                 E-MAIL<span class="required">*必須</span>
             </label>
             <%= f.email_field :customer_email, class: 'form-input', required: true, placeholder: 'usagiya-oishi@gmail.com' %>
+            <% if @order.errors[:customer_email].any? %>
+            <span class="error-message"><%= @order.errors[:customer_email].first %></span>
+            <% end %>
         </div>
 
         <!-- 送り先選択 -->
@@ -591,6 +673,9 @@
                         お送り先のお名前<span class="required">*必須</span>
                     </label>
                     <%= f.text_field :shipping_name, class: 'form-input', placeholder: '佐藤 花子' %>
+                    <% if @order.errors[:shipping_name].any? %>
+                    <span class="error-message"><%= @order.errors[:shipping_name].first %></span>
+                    <% end %>
                 </div>
 
                 <div style="margin-bottom: 30px;">
@@ -598,6 +683,9 @@
                         お送り先の郵便番号<span class="required">*必須</span>
                     </label>
                     <%= f.text_field :shipping_postal_code, class: 'form-input', placeholder: '100-8111', pattern: '\d{3}-?\d{4}' %>
+                    <% if @order.errors[:shipping_postal_code].any? %>
+                    <span class="error-message"><%= @order.errors[:shipping_postal_code].first %></span>
+                    <% end %>
                 </div>
 
                 <div style="margin-bottom: 30px;">
@@ -605,6 +693,9 @@
                         お送り先の住所<span class="required">*必須</span>
                     </label>
                     <%= f.text_field :shipping_address, class: 'form-input', placeholder: '東京都千代田区○○1-1' %>
+                    <% if @order.errors[:shipping_address].any? %>
+                    <span class="error-message"><%= @order.errors[:shipping_address].first %></span>
+                    <% end %>
                 </div>
 
                 <div>
@@ -612,6 +703,9 @@
                         お送り先の電話<span class="required">*必須</span>
                     </label>
                     <%= f.text_field :shipping_phone, class: 'form-input', placeholder: '03-3213-1111', type: 'tel' %>
+                    <% if @order.errors[:shipping_phone].any? %>
+                    <span class="error-message"><%= @order.errors[:shipping_phone].first %></span>
+                    <% end %>
                 </div>
             </div>
         </div>
@@ -688,6 +782,9 @@
              ['ゆうちょ銀行 事前振込(手数料はご負担ください)', 'yucho_bank_transfer']], 
             { include_blank: '選択してください' }, 
             { class: 'form-select', required: true } %>
+            <% if @order.errors[:payment_method].any? %>
+            <span class="error-message"><%= @order.errors[:payment_method].first %></span>
+            <% end %>
         </div>
 
         <!-- 到着希望日 -->
@@ -721,6 +818,9 @@
              ['うさぎ柄・ピンク', 'rabbit_pink']], 
             { include_blank: 'もちパイ・帯のみ(包装なし)' }, 
             { class: 'form-select', required: true } %>
+            <% if @order.errors[:wrapping].any? %>
+            <span class="error-message"><%= @order.errors[:wrapping].first %></span>
+            <% end %>
         </div>
 
         <!-- ご希望欄 -->
@@ -786,7 +886,13 @@
             }
         }
 
-        // 初期状態を設定
+        // 初期状態を設定（エラーがある場合も考慮）
+        if (shippingFields && shippingFields.querySelector('.error-message')) {
+            // エラーがある場合は「別の住所」を選択状態にして表示
+            if (shippingDifferent) {
+                shippingDifferent.checked = true;
+            }
+        }
         toggleShippingFields();
 
         if (shippingSame) {
