@@ -73,7 +73,7 @@ class Order < ApplicationRecord
   end
 
   def same_address?
-    same_address == true || same_address == "1"
+    same_address == true || same_address == "1" || same_address == 1
   end
 
   def payment_method_label
@@ -105,5 +105,8 @@ class Order < ApplicationRecord
 
     # 管理者への通知メール
     OrderMailer.admin_notification(self).deliver_later
+  rescue => e
+    Rails.logger.error "メール送信エラー: #{e.message}"
+    # エラーが発生してもメール送信失敗で注文自体を失敗させない
   end
 end

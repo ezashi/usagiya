@@ -1,5 +1,5 @@
 class Admin::OrdersController < Admin::BaseController
-  before_action :set_order, only: [:show, :update_status]
+  before_action :set_order, only: [ :show, :update_status ]
 
   def index
     @orders = Order.includes(:order_items)
@@ -14,18 +14,18 @@ class Admin::OrdersController < Admin::BaseController
 
     # 日付範囲でフィルタリング
     if params[:start_date].present?
-      @orders = @orders.where('created_at >= ?', params[:start_date])
+      @orders = @orders.where("created_at >= ?", params[:start_date])
     end
 
     if params[:end_date].present?
-      @orders = @orders.where('created_at <= ?', params[:end_date].end_of_day)
+      @orders = @orders.where("created_at <= ?", params[:end_date].end_of_day)
     end
 
     # 検索
     if params[:search].present?
       search_term = "%#{params[:search]}%"
       @orders = @orders.where(
-        'customer_name LIKE ? OR email LIKE ? OR phone LIKE ?',
+        "customer_name LIKE ? OR email LIKE ? OR phone LIKE ?",
         search_term, search_term, search_term
       )
     end
@@ -37,9 +37,9 @@ class Admin::OrdersController < Admin::BaseController
 
   def update_status
     if @order.update(status: params[:status])
-      redirect_to admin_order_path(@order), notice: 'ステータスを更新しました。'
+      redirect_to admin_order_path(@order), notice: "ステータスを更新しました。"
     else
-      redirect_to admin_order_path(@order), alert: 'ステータスの更新に失敗しました。'
+      redirect_to admin_order_path(@order), alert: "ステータスの更新に失敗しました。"
     end
   end
 

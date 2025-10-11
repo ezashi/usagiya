@@ -32,7 +32,7 @@ Rails.application.routes.draw do
   resources :inquiries, only: [ :new, :create ]
 
   # 冷凍もちパイ注文
-  resources :orders, only: [:new, :create] do
+  resources :orders, only: [ :new, :create ] do
     collection do
       post :confirm  # 確認画面へのPOST
       get :complete  # 完了画面
@@ -63,7 +63,11 @@ Rails.application.routes.draw do
     resources :calendar_events
 
     # 注文管理
-    resources :orders, only: [ :index, :show ]
+    resources :orders, only: [ :index, :show ] do
+    member do
+      patch :update_status  # この行を追加
+    end
+  end
 
     # お問い合わせ管理
     resources :inquiries, only: [ :index, :show ]

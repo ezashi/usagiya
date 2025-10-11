@@ -1,5 +1,5 @@
 class OrderMailer < ApplicationMailer
-  default from: "noreply@usagiya-fukui.jp"
+  default from: ENV.fetch("SMTP_USER", "noreply@usagiya-fukui.jp")
 
   # 顧客向け注文確認メール
   def customer_confirmation(order)
@@ -13,7 +13,7 @@ class OrderMailer < ApplicationMailer
   # 管理者向け注文通知メール
   def admin_notification(order)
     @order = order
-    # 管理者のメールアドレスは環境変数または設定ファイルから取得
+    # 管理者のメールアドレスは環境変数から取得
     admin_email = ENV["ADMIN_EMAIL"] || "admin@usagiya-fukui.jp"
 
     mail(

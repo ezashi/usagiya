@@ -1,0 +1,60 @@
+ja:
+  activerecord:
+    models:
+      order: 注文
+      order_item: 注文商品
+    attributes:
+      order:
+        customer_name: お名前
+        postal_code: 郵便番号
+        address: ご住所
+        phone: 電話番号
+        email: メールアドレス
+        delivery_name: お送り先のお名前
+        delivery_postal_code: お送り先の郵便番号
+        delivery_address: お送り先のご住所
+        delivery_phone: お送り先の電話番号
+        same_address: 送り先
+        payment_method: お支払い方法
+        delivery_date: 到着希望日
+        delivery_time: 希望到着時間
+        wrapping_type: 包装の有無
+        notes: ご希望欄
+        total_amount: 合計金額
+        status: ステータス
+      order_item:
+        product_type: 商品種類
+        quantity: 数量
+    errors:
+      models:
+        order:
+          attributes:
+            customer_name:
+              blank: を入力してください
+            postal_code:
+              blank: を入力してください
+              invalid: "は7桁の数字で入力してください(例: 123-4567)"
+            address:
+              blank: を入力してください
+            phone:
+              blank: を入力してください
+              invalid: は10桁または11桁の数字で入力してください
+            email:
+              blank: を入力してください
+              invalid: の形式が正しくありません
+            payment_method:
+              blank: を選択してください
+            wrapping_type:
+              blank: を選択してください
+            delivery_name:
+              blank: を入力してください
+            delivery_postal_code:
+              blank: を入力してください
+              invalid: は7桁の数字で入力してください
+            delivery_address:
+              blank: を入力してください
+            delivery_phone:
+              blank: を入力してください
+              invalid: は10桁または11桁の数字で入力してください
+            base:
+              at_least_one_item: 商品を1つ以上選択してください
