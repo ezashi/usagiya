@@ -125,22 +125,7 @@
         line-height: 1.8;
     }
 
-    .flow-step-number {
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        background-color: #333;
-        color: #fff;
-        border-radius: 50%;
-        text-align: center;
-        line-height: 24px;
-        font-size: 14px;
-        margin-right: 10px;
-        flex-shrink: 0;
-    }
-
     .flow-arrow {
-        text-align: center;
         margin: 5px 0;
         margin-left: 12px;
         font-size: 18px;
@@ -544,38 +529,32 @@
         <div class="flow-content">
             <div class="flow-steps">
                 <div class="flow-step">
-                    <span class="flow-step-number">①</span>
-                    <span>うさぎや店舗にてパイで包み焼きあげます</span>
+                    <span>①うさぎや店舗にてパイで包み焼きあげます</span>
                 </div>
                 <div class="flow-arrow">↓</div>
 
                 <div class="flow-step">
-                    <span class="flow-step-number">②</span>
-                    <span>急速冷凍します</span>
+                    <span>②急速冷凍します</span>
                 </div>
                 <div class="flow-arrow">↓</div>
 
                 <div class="flow-step">
-                    <span class="flow-step-number">③</span>
-                    <span>梱包して発送します</span>
+                    <span>③梱包して発送します</span>
                 </div>
                 <div class="flow-arrow">↓</div>
 
                 <div class="flow-step">
-                    <span class="flow-step-number">④</span>
-                    <span>お客様にお届け</span>
+                    <span>④お客様にお届け</span>
                 </div>
                 <div class="flow-arrow">↓</div>
 
                 <div class="flow-step">
-                    <span class="flow-step-number">⑤</span>
-                    <span>お召し上がりの約2時間前に自然解凍 → ⑥そのままお召し上がりください</span>
+                    <span>⑤お召し上がりの約2時間前に自然解凍 → ⑥そのままお召し上がりください</span>
                 </div>
                 <div class="flow-arrow">↓</div>
 
                 <div class="flow-step">
-                    <span class="flow-step-number">⑥</span>
-                    <span>トースターで約2~3分焼いてお召し上がりいただくと一層おいしくなります♪</span>
+                    <span>⑥トースターで約2~3分焼いてお召し上がりいただくと一層おいしくなります♪</span>
                 </div>
 
                 <div class="expiry-note">
@@ -842,7 +821,7 @@
              ['「うさぎや」ロゴデザイン・赤', 'logo_red'], 
              ['「うさぎや」ロゴデザイン・青', 'logo_blue'], 
              ['うさぎ柄・ピンク', 'rabbit_pink']], 
-            { selected: @order.wrapping }, 
+            { selected: @order.wrapping_type }, 
             { id: 'order_wrapping_type', class: 'form-select' } %>
             <% if @order.errors[:wrapping_type].any? || @order.errors[:wrapping].any? %>
             <span class="error-message"><%= @order.errors[:wrapping_type].first || @order.errors[:wrapping].first %></span>
