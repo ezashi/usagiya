@@ -1,299 +1,319 @@
 <%= render 'shared/header' %>
 
-<div class="container mx-auto px-4 py-8 max-w-7xl">
-    <!-- 冷凍もちパイ発送についての説明 -->
-    <div class="bg-white rounded-xl shadow-md p-8 mb-8">
-        <!-- ヘッダー部分（タイトルとボタン） -->
-        <div class="flex justify-between items-start mb-8">
-            <h2 class="text-3xl font-bold text-gray-900">「もちパイ」冷凍発送について</h2>
-            <a href="#order-form" class="inline-flex items-center px-6 py-3 bg-white border-2 border-gray-800 text-gray-800 font-bold rounded hover:bg-gray-50 transition-colors">
-                注文フォームへ
-            </a>
-        </div>
+<div class="pt-32 pb-16">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <!-- 冷凍もちパイ発送についての説明 -->
+        <div class="bg-white rounded-xl shadow-md p-6 sm:p-8 lg:p-10 mb-8">
+            <!-- ヘッダー部分（タイトルとボタン） -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">「もちパイ」冷凍発送について</h2>
+                <a href="#order-form" class="inline-flex items-center px-6 py-3 bg-white border-2 border-gray-800 text-gray-800 font-bold rounded hover:bg-gray-50 transition-colors whitespace-nowrap">
+                    注文フォームへ
+                </a>
+            </div>
 
-        <!-- メインコンテンツ -->
-        <div class="grid md:grid-cols-2 gap-8 items-start">
-            <!-- 左側: 説明文と発送の流れ -->
-            <div class="space-y-6">
-                <!-- 説明文 -->
-                <div class="text-gray-700 space-y-2 text-base">
-                    <p>「もちパイの焼きたてを召し上がっていただきたい」そんな思いで作っています。</p>
-                    <p>「遠くの方にも召し上がっていただきたい」そんな気持ちも持っています。</p>
-                    <p>もちパイを作りたて、焼きたてのまま、おいしくお届けできないだろうか...</p>
-                    <p>...いろいろ考え試行錯誤の末、作りたてを急速に冷凍発送してお送りできるようになりました。</p>
-                </div>
+            <!-- メインコンテンツ -->
+            <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
+                <!-- 左側: 説明文と発送の流れ -->
+                <div class="space-y-8">
+                    <!-- 説明文 -->
+                    <div class="text-gray-700 space-y-6 text-base leading-relaxed">
+                        <p>「もちパイの焼きたてを召し上がっていただきたい」<br class="hidden sm:block">そんな思いで作っています。</p>
 
-                <!-- 発送の流れ -->
-                <div class="mt-8">
-                    <p class="font-bold text-lg text-gray-800 mb-4">「もちパイ」発送の流れ</p>
-                    <div class="space-y-3">
-                        <div class="flex items-start">
-                            <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">①</span>
-                            <span class="text-gray-700">うさぎや店舗にてパイで包み焼きあげます。</span>
-                        </div>
-                        <div class="pl-8 text-gray-400 text-2xl">↓</div>
-                        <div class="flex items-start">
-                            <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">②</span>
-                            <span class="text-gray-700">急速冷凍します</span>
-                        </div>
-                        <div class="pl-8 text-gray-400 text-2xl">↓</div>
-                        <div class="flex items-start">
-                            <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">③</span>
-                            <span class="text-gray-700">梱包して発送します</span>
-                        </div>
-                        <div class="pl-8 text-gray-400 text-2xl">↓</div>
-                        <div class="flex items-start">
-                            <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">④</span>
-                            <span class="text-gray-700">お客様にお届け</span>
-                        </div>
-                        <div class="pl-8 text-gray-400 text-2xl">↓</div>
-                        <div class="flex items-start">
-                            <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">⑤</span>
-                            <span class="text-gray-700">お召し上がりの約2時間前に自然解凍　→　<span class="text-pink-600 font-bold">⑥</span>そのままお召し上がりください</span>
-                        </div>
-                        <div class="pl-8 text-gray-400 text-2xl">↓</div>
-                        <div class="flex items-start">
-                            <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">⑥</span>
-                            <span class="text-gray-700">トースターで約2~3分焼いてお召し上がりいただくと一層おいしくなります♪</span>
-                        </div>
+                        <p>「遠くの方にも召し上がっていただきたい」<br class="hidden sm:block">そんな気持ちも持っています。</p>
+
+                        <p>もちパイを作りたて、焼きたてのまま、<br class="hidden sm:block">おいしくお届けできないだろうか...</p>
+
+                        <p>...いろいろ考え試行錯誤の末、<br class="hidden sm:block">作りたてを急速に冷凍発送してお送りできるようになりました。</p>
                     </div>
 
-                    <div class="mt-6 text-gray-600 text-sm">
-                        <p>☆消費期限は解凍前...約20日間</p>
-                        <p class="ml-14">解凍後...翌日中</p>
+                    <!-- 発送の流れ -->
+                    <div>
+                        <p class="font-bold text-lg text-gray-800 mb-4">「もちパイ」発送の流れ</p>
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">①</span>
+                                <span class="text-gray-700">うさぎや店舗にてパイで包み焼きあげます。</span>
+                            </div>
+                            <div class="pl-8 text-gray-400 text-2xl">↓</div>
+                            <div class="flex items-start">
+                                <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">②</span>
+                                <span class="text-gray-700">急速冷凍します</span>
+                            </div>
+                            <div class="pl-8 text-gray-400 text-2xl">↓</div>
+                            <div class="flex items-start">
+                                <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">③</span>
+                                <span class="text-gray-700">梱包して発送します</span>
+                            </div>
+                            <div class="pl-8 text-gray-400 text-2xl">↓</div>
+                            <div class="flex items-start">
+                                <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">④</span>
+                                <span class="text-gray-700">お客様にお届け</span>
+                            </div>
+                            <div class="pl-8 text-gray-400 text-2xl">↓</div>
+                            <div class="flex items-start">
+                                <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">⑤</span>
+                                <span class="text-gray-700">お召し上がりの約2時間前に自然解凍</span>
+                            </div>
+                            <div class="pl-8 text-gray-400 text-2xl">↓</div>
+                            <div class="flex items-start">
+                                <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">⑥</span>
+                                <span class="text-gray-700">そのままお召し上がりいただけます</span>
+                            </div>
+                            <div class="pl-8 text-gray-400 text-2xl">↓</div>
+                            <div class="flex items-start">
+                                <span class="text-pink-600 font-bold text-lg mr-3 flex-shrink-0">⑦</span>
+                                <span class="text-gray-700">トースターで約2~3分焼くと一層おいしくなります♪</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 text-gray-600 text-sm space-y-1">
+                            <p>☆消費期限は解凍前...約20日間</p>
+                            <p class="ml-14">解凍後...翌日中</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右側: メイン画像 -->
+                <div class="flex items-start justify-center">
+                    <%= image_tag 'orders/reitoumotipai.png', 
+                alt: '冷凍もちパイ', 
+                class: 'w-full max-w-sm md:max-w-md rounded-lg shadow-md',
+                onerror: "this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"400\" height=\"300\"%3E%3Crect width=\"400\" height=\"300\" fill=\"%23f0f0f0\"/%3E%3Ctext x=\"50%25\" y=\"50%25\" text-anchor=\"middle\" dy=\".3em\" fill=\"%23999\" font-size=\"16\"%3Ereitoumotipai.png%3C/text%3E%3C/svg%3E';" %>
+                </div>
+            </div>
+
+            <!-- 下部の画像（中央配置・縮小表示） -->
+            <div class="mt-8 lg:mt-12 flex justify-center">
+                <div class="w-full max-w-4xl">
+                    <%= image_tag 'orders/reitou.png', 
+                alt: '冷凍もちパイ断面', 
+                class: 'w-full h-auto rounded-lg shadow-md object-contain',
+                style: 'max-height: 400px;',
+                onerror: "this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"400\"%3E%3Crect width=\"800\" height=\"400\" fill=\"%23f0f0f0\"/%3E%3Ctext x=\"50%25\" y=\"50%25\" text-anchor=\"middle\" dy=\".3em\" fill=\"%23999\" font-size=\"16\"%3Ereitou.png%3C/text%3E%3C/svg%3E';" %>
+                </div>
+            </div>
+        </div>
+
+        <!-- 注文フォーム -->
+        <div id="order-form" class="bg-white rounded-xl shadow-md p-6 sm:p-8 lg:p-10">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">ご注文フォーム</h2>
+
+            <%= form_with model: @order, url: confirm_orders_path, method: :post, data: { turbo: false } do |f| %>
+            <%= render 'shared/error_messages', object: @order %>
+
+            <!-- ご注文者様情報 -->
+            <div class="mb-8">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">ご注文者様情報</h3>
+
+                <div class="space-y-6">
+                    <!-- お名前 -->
+                    <div>
+                        <%= f.label :customer_name, class: "block text-sm font-bold text-gray-700 mb-2" do %>
+                        お名前 <span class="text-red-600">*</span>
+                        <% end %>
+                        <%= f.text_field :customer_name, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "山田 太郎" %>
+                    </div>
+
+                    <!-- 郵便番号 -->
+                    <div>
+                        <%= f.label :postal_code, class: "block text-sm font-bold text-gray-700 mb-2" do %>
+                        郵便番号 <span class="text-red-600">*</span>
+                        <% end %>
+                        <%= f.text_field :postal_code, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "123-4567" %>
+                        <p class="text-sm text-gray-500 mt-1">例: 123-4567 または 1234567</p>
+                    </div>
+
+                    <!-- ご住所 -->
+                    <div>
+                        <%= f.label :address, "ご住所", class: "block text-sm font-bold text-gray-700 mb-2" do %>
+                        ご住所 <span class="text-red-600">*</span>
+                        <% end %>
+                        <%= f.text_area :address, rows: 2, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "福井県越前市○○町1-2-3" %>
+                    </div>
+
+                    <!-- 電話番号 -->
+                    <div>
+                        <%= f.label :phone, "電話番号", class: "block text-sm font-bold text-gray-700 mb-2" do %>
+                        電話番号 <span class="text-red-600">*</span>
+                        <% end %>
+                        <%= f.text_field :phone, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "09012345678" %>
+                        <p class="text-sm text-gray-500 mt-1">ハイフンなし 10桁または11桁</p>
+                    </div>
+
+                    <!-- メールアドレス -->
+                    <div>
+                        <%= f.label :email, "E-MAIL", class: "block text-sm font-bold text-gray-700 mb-2" do %>
+                        E-MAIL <span class="text-red-600">*</span>
+                        <% end %>
+                        <%= f.email_field :email, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "example@example.com" %>
                     </div>
                 </div>
             </div>
 
-            <!-- 右側: メイン画像 -->
-            <div class="flex items-start justify-center">
-                <%= image_tag 'orders/reitoumotipai.png', 
-              alt: '冷凍もちパイ', 
-              class: 'w-full max-w-md rounded-lg shadow-md',
-              onerror: "this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"400\" height=\"300\"%3E%3Crect width=\"400\" height=\"300\" fill=\"%23f0f0f0\"/%3E%3Ctext x=\"50%25\" y=\"50%25\" text-anchor=\"middle\" dy=\".3em\" fill=\"%23999\" font-size=\"16\"%3Ereitoumotipai.png%3C/text%3E%3C/svg%3E';" %>
-            </div>
-        </div>
+            <!-- 送り先 -->
+            <div class="mb-8">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">送り先 <span class="text-red-600">*</span></h3>
 
-        <!-- 下部の画像 -->
-        <div class="mt-8">
-            <%= image_tag 'orders/reitou.png', 
-            alt: '冷凍もちパイ断面', 
-            class: 'w-full max-w-2xl mx-auto rounded-lg shadow-md',
-            onerror: "this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"400\"%3E%3Crect width=\"800\" height=\"400\" fill=\"%23f0f0f0\"/%3E%3Ctext x=\"50%25\" y=\"50%25\" text-anchor=\"middle\" dy=\".3em\" fill=\"%23999\" font-size=\"16\"%3Ereitou.png%3C/text%3E%3C/svg%3E';" %>
-        </div>
-    </div>
-
-    <!-- 注文フォーム -->
-    <div id="order-form" class="bg-white rounded-xl shadow-md p-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">ご注文フォーム</h2>
-
-        <%= form_with model: @order, url: confirm_orders_path, method: :post, data: { turbo: false } do |f| %>
-        <%= render 'shared/error_messages', object: @order %>
-
-        <!-- ご注文者様情報 -->
-        <div class="mb-8">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">ご注文者様情報</h3>
-
-            <div class="space-y-6">
-                <!-- お名前 -->
-                <div>
-                    <%= f.label :customer_name, class: "block text-sm font-bold text-gray-700 mb-2" do %>
-                    お名前 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_field :customer_name, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "山田 太郎" %>
-                </div>
-
-                <!-- 郵便番号 -->
-                <div>
-                    <%= f.label :postal_code, class: "block text-sm font-bold text-gray-700 mb-2" do %>
-                    郵便番号 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_field :postal_code, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "123-4567" %>
-                    <p class="text-sm text-gray-500 mt-1">例: 123-4567 または 1234567</p>
-                </div>
-
-                <!-- ご住所 -->
-                <div>
-                    <%= f.label :address, "ご住所", class: "block text-sm font-bold text-gray-700 mb-2" do %>
-                    ご住所 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_area :address, rows: 2, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "福井県越前市○○町1-2-3" %>
-                </div>
-
-                <!-- 電話番号 -->
-                <div>
-                    <%= f.label :phone, "電話番号", class: "block text-sm font-bold text-gray-700 mb-2" do %>
-                    電話番号 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_field :phone, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "09012345678" %>
-                    <p class="text-sm text-gray-500 mt-1">ハイフンなし 10桁または11桁</p>
-                </div>
-
-                <!-- メールアドレス -->
-                <div>
-                    <%= f.label :email, "E-MAIL", class: "block text-sm font-bold text-gray-700 mb-2" do %>
-                    E-MAIL <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.email_field :email, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "example@example.com" %>
-                </div>
-            </div>
-        </div>
-
-        <!-- 送り先 -->
-        <div class="mb-8">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">送り先</h3>
-
-            <div class="mb-6">
-                <%= f.label :same_address, class: "inline-flex items-center cursor-pointer" do %>
-                <%= f.check_box :same_address, class: "mr-2 h-5 w-5 text-pink-600 focus:ring-pink-500 border-gray-300 rounded", data: { action: "change->delivery-address#toggle" } %>
-                <span class="text-gray-700">ご注文者様と同じ住所に送る</span>
-                <% end %>
-            </div>
-
-            <div id="delivery-address-fields" class="space-y-6" data-delivery-address-target="fields">
-                <!-- お送り先のお名前 -->
-                <div>
-                    <%= f.label :delivery_name, class: "block text-sm font-bold text-gray-700 mb-2" do %>
-                    お送り先のお名前 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_field :delivery_name, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "佐藤 花子" %>
-                </div>
-
-                <!-- お送り先の郵便番号 -->
-                <div>
-                    <%= f.label :delivery_postal_code, class: "block text-sm font-bold text-gray-700 mb-2" do %>
-                    お送り先の郵便番号 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_field :delivery_postal_code, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "123-4567" %>
-                </div>
-
-                <!-- お送り先の住所 -->
-                <div>
-                    <%= f.label :delivery_address, class: "block text-sm font-bold text-gray-700 mb-2" do %>
-                    お送り先の住所 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_area :delivery_address, rows: 2, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "東京都渋谷区○○1-2-3" %>
-                </div>
-
-                <!-- お送り先の電話番号 -->
-                <div>
-                    <%= f.label :delivery_phone, class: "block text-sm font-bold text-gray-700 mb-2" do %>
-                    お送り先の電話番号 <span class="text-red-600">*</span>
-                    <% end %>
-                    <%= f.text_field :delivery_phone, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "09012345678" %>
-                </div>
-            </div>
-        </div>
-
-        <!-- 注文商品 -->
-        <div class="mb-8">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">注文商品</h3>
-
-            <%= f.fields_for :order_items do |item_fields| %>
-            <%= item_fields.hidden_field :product_type %>
-            <div class="flex items-center justify-between py-3 border-b border-gray-200">
-                <div class="flex-1">
-                    <label class="text-gray-700 font-medium">
-                        <%= Order::PRODUCT_PRICES[item_fields.object.product_type][:name] %>
+                <div class="mb-6 space-y-3">
+                    <label class="flex items-center cursor-pointer p-4 border-2 border-gray-300 rounded-lg hover:border-pink-500 transition-colors">
+                        <%= f.radio_button :same_address, true, class: "mr-3 h-5 w-5 text-pink-600 focus:ring-pink-500 border-gray-300", checked: true, data: { action: "change->delivery-address#toggle" } %>
+                        <span class="text-gray-700 font-medium">ご注文者様と同じ住所に送る</span>
                     </label>
-                    <span class="text-gray-500 text-sm ml-2">
-                        ¥<%= number_with_delimiter(Order::PRODUCT_PRICES[item_fields.object.product_type][:price]) %>
-                    </span>
+
+                    <label class="flex items-center cursor-pointer p-4 border-2 border-gray-300 rounded-lg hover:border-pink-500 transition-colors">
+                        <%= f.radio_button :same_address, false, class: "mr-3 h-5 w-5 text-pink-600 focus:ring-pink-500 border-gray-300", data: { action: "change->delivery-address#toggle" } %>
+                        <span class="text-gray-700 font-medium">別の住所に送る</span>
+                    </label>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-gray-600">数:</span>
-                    <%= item_fields.number_field :quantity, min: 0, value: 0, class: "w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-center", data: { action: "change->order-total#calculate" } %>
-                    <span class="text-gray-600">個</span>
+
+                <div id="delivery-address-fields" class="space-y-6 hidden">
+                    <!-- お送り先のお名前 -->
+                    <div>
+                        <%= f.label :delivery_name, class: "block text-sm font-bold text-gray-700 mb-2" do %>
+                        お送り先のお名前 <span class="text-red-600">*</span>
+                        <% end %>
+                        <%= f.text_field :delivery_name, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "佐藤 花子" %>
+                    </div>
+
+                    <!-- お送り先の郵便番号 -->
+                    <div>
+                        <%= f.label :delivery_postal_code, class: "block text-sm font-bold text-gray-700 mb-2" do %>
+                        お送り先の郵便番号 <span class="text-red-600">*</span>
+                        <% end %>
+                        <%= f.text_field :delivery_postal_code, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "123-4567" %>
+                    </div>
+
+                    <!-- お送り先の住所 -->
+                    <div>
+                        <%= f.label :delivery_address, class: "block text-sm font-bold text-gray-700 mb-2" do %>
+                        お送り先の住所 <span class="text-red-600">*</span>
+                        <% end %>
+                        <%= f.text_area :delivery_address, rows: 2, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "東京都渋谷区○○1-2-3" %>
+                    </div>
+
+                    <!-- お送り先の電話番号 -->
+                    <div>
+                        <%= f.label :delivery_phone, class: "block text-sm font-bold text-gray-700 mb-2" do %>
+                        お送り先の電話番号 <span class="text-red-600">*</span>
+                        <% end %>
+                        <%= f.text_field :delivery_phone, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "09012345678" %>
+                    </div>
                 </div>
             </div>
-            <% end %>
 
-            <div class="mt-6 text-right">
-                <p class="text-2xl font-bold text-gray-800">
-                    合計: <span id="order-total" data-order-total-target="total">¥0</span>
-                </p>
-            </div>
-        </div>
+            <!-- 注文商品 -->
+            <div class="mb-8">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">注文商品</h3>
 
-        <!-- 支払い方法 -->
-        <div class="mb-8">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">
-                お支払い方法 <span class="text-red-600">*</span>
-            </h3>
-
-            <div class="space-y-3">
-                <% Order::PAYMENT_METHODS.each do |key, label| %>
-                <div class="flex items-start">
-                    <%= f.radio_button :payment_method, key, class: "mt-1 h-5 w-5 text-pink-600 focus:ring-pink-500 border-gray-300" %>
-                    <%= f.label "payment_method_#{key}", label, class: "ml-3 text-gray-700 cursor-pointer" %>
+                <%= f.fields_for :order_items do |item_fields| %>
+                <%= item_fields.hidden_field :product_type %>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-gray-200 gap-2" data-product-type="<%= item_fields.object.product_type %>">
+                    <div class="flex-1">
+                        <label class="text-gray-700 font-medium">
+                            <%= Order::PRODUCT_PRICES[item_fields.object.product_type][:name] %>
+                        </label>
+                        <span class="text-gray-500 text-sm ml-2">
+                            ¥<%= number_with_delimiter(Order::PRODUCT_PRICES[item_fields.object.product_type][:price]) %>
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-600">数:</span>
+                        <%= item_fields.number_field :quantity, 
+                      min: 0, 
+                      value: 0, 
+                      class: "w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-center quantity-input",
+                      data: { 
+                        price: Order::PRODUCT_PRICES[item_fields.object.product_type][:price],
+                        product_type: item_fields.object.product_type
+                      } %>
+                        <span class="text-gray-600">個</span>
+                    </div>
                 </div>
                 <% end %>
-            </div>
-        </div>
 
-        <!-- 配送希望日時 -->
-        <div class="mb-8">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">配送希望日時</h3>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- 到着希望日 -->
-                <div>
-                    <%= f.label :delivery_date, "到着希望日", class: "block text-sm font-bold text-gray-700 mb-2" %>
-                    <%= f.date_field :delivery_date, min: Date.today + 4.days, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" %>
-                    <p class="text-sm text-red-600 mt-1">※4日以上先の日付をご指定ください</p>
-                </div>
-
-                <!-- 希望到着時間 -->
-                <div>
-                    <%= f.label :delivery_time, "希望到着時間", class: "block text-sm font-bold text-gray-700 mb-2" %>
-                    <%= f.select :delivery_time, Order::DELIVERY_TIMES, { include_blank: "指定なし" }, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" %>
+                <div class="mt-6 text-right">
+                    <p class="text-xl sm:text-2xl font-bold text-gray-800">
+                        合計: <span id="order-total">¥0</span>
+                    </p>
                 </div>
             </div>
-        </div>
 
-        <!-- 包装の有無 -->
-        <div class="mb-8">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">
-                包装の有無 <span class="text-red-600">*</span>
-            </h3>
+            <!-- 支払い方法 -->
+            <div class="mb-8">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">
+                    お支払い方法 <span class="text-red-600">*</span>
+                </h3>
 
-            <div class="space-y-3">
-                <% Order::WRAPPING_OPTIONS.each do |key, label| %>
-                <div class="flex items-start">
-                    <%= f.radio_button :wrapping_type, key, class: "mt-1 h-5 w-5 text-pink-600 focus:ring-pink-500 border-gray-300" %>
-                    <%= f.label "wrapping_type_#{key}", label, class: "ml-3 text-gray-700 cursor-pointer" %>
+                <%= f.select :payment_method, 
+                options_for_select(Order::PAYMENT_METHODS.map { |k, v| [v, k] }),
+                { include_blank: "選択してください" },
+                class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" %>
+            </div>
+
+            <!-- 配送希望日時 -->
+            <div class="mb-8">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">配送希望日時</h3>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- 到着希望日 -->
+                    <div>
+                        <%= f.label :delivery_date, "到着希望日", class: "block text-sm font-bold text-gray-700 mb-2" %>
+                        <%= f.date_field :delivery_date, min: Date.today + 4.days, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" %>
+                        <p class="text-sm text-red-600 mt-1">※4日以上先の日付をご指定ください</p>
+                    </div>
+
+                    <!-- 希望到着時間 -->
+                    <div>
+                        <%= f.label :delivery_time, "希望到着時間", class: "block text-sm font-bold text-gray-700 mb-2" %>
+                        <%= f.select :delivery_time, 
+                    Order::DELIVERY_TIMES, 
+                    { include_blank: "指定なし" }, 
+                    class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" %>
+                    </div>
                 </div>
+            </div>
+
+            <!-- 包装の有無 -->
+            <div class="mb-8">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">
+                    包装の有無 <span class="text-red-600">*</span>
+                </h3>
+
+                <%= f.select :wrapping_type, 
+                options_for_select(Order::WRAPPING_OPTIONS.map { |k, v| [v, k] }),
+                { include_blank: "選択してください" },
+                class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" %>
+            </div>
+
+            <!-- ご希望欄 -->
+            <div class="mb-8">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">ご希望欄</h3>
+
+                <%= f.label :notes, class: "block text-sm text-gray-600 mb-2" do %>
+                ※もちパイは組み合わせができますので、種類と個数をご記入ください。（ご記入がない場合はおまかせとなります）<br>
+                ※包装の場合、熨斗の有無（お名前の記入）もあればご記入ください。<br>
+                ※手提げ袋が必要な方はご記入ください。
                 <% end %>
+                <%= f.text_area :notes, rows: 5, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "例: もちパイ6個入りを白あん3個、こしあん3個で。熨斗あり「御中元 山田太郎」。手提げ袋1枚。" %>
             </div>
-        </div>
 
-        <!-- ご希望欄 -->
-        <div class="mb-8">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">ご希望欄</h3>
+            <!-- 注意事項 -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
+                <h4 class="font-bold text-yellow-800 mb-2">ご注文前の注意事項</h4>
+                <ul class="list-disc list-inside text-sm text-yellow-700 space-y-1">
+                    <li>2〜3日前までのご注文は受け付けできません。</li>
+                    <li>年末年始、連休前は1週間の余裕を持ってご注文ください。</li>
+                    <li>お急ぎの方はお電話にてご相談ください。(TEL: 0778-62-0861)</li>
+                </ul>
+            </div>
 
-            <%= f.label :notes, class: "block text-sm text-gray-600 mb-2" do %>
-            ※もちパイは組み合わせができますので、種類と個数をご記入ください。（ご記入がない場合はおまかせとなります）<br>
-            ※包装の場合、熨斗の有無（お名前の記入）もあればご記入ください。<br>
-            ※手提げ袋が必要な方はご記入ください。
+            <!-- 送信ボタン -->
+            <div class="text-center">
+                <%= f.submit "ご注文内容を確認する", class: "inline-block px-8 sm:px-12 py-3 sm:py-4 bg-pink-600 text-white font-bold text-base sm:text-lg rounded-lg hover:bg-pink-700 transition-colors cursor-pointer shadow-lg w-full sm:w-auto" %>
+            </div>
             <% end %>
-            <%= f.text_area :notes, rows: 5, class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder: "例: もちパイ6個入りを白あん3個、こしあん3個で。熨斗あり「御中元 山田太郎」。手提げ袋1枚。" %>
         </div>
-
-        <!-- 注意事項 -->
-        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
-            <h4 class="font-bold text-yellow-800 mb-2">ご注文前の注意事項</h4>
-            <ul class="list-disc list-inside text-sm text-yellow-700 space-y-1">
-                <li>2〜3日前までのご注文は受け付けできません。</li>
-                <li>年末年始、連休前は1週間の余裕を持ってご注文ください。</li>
-                <li>お急ぎの方はお電話にてご相談ください。(TEL: 0778-62-0861)</li>
-            </ul>
-        </div>
-
-        <!-- 送信ボタン -->
-        <div class="text-center">
-            <%= f.submit "ご注文内容を確認する", class: "inline-block px-12 py-4 bg-pink-600 text-white font-bold text-lg rounded-lg hover:bg-pink-700 transition-colors cursor-pointer shadow-lg" %>
-        </div>
-        <% end %>
     </div>
 </div>
 
@@ -301,39 +321,34 @@
 <script>
     // 送り先住所の表示切り替え
     document.addEventListener('DOMContentLoaded', function() {
-        const sameAddressCheckbox = document.querySelector('input[name="order[same_address]"]');
+        const sameAddressRadios = document.querySelectorAll('input[name="order[same_address]"]');
         const deliveryFields = document.getElementById('delivery-address-fields');
 
         function toggleDeliveryFields() {
-            if (sameAddressCheckbox.checked) {
-                deliveryFields.style.display = 'none';
+            const sameAddress = document.querySelector('input[name="order[same_address]"]:checked')?.value === 'true';
+            if (sameAddress) {
+                deliveryFields.classList.add('hidden');
             } else {
-                deliveryFields.style.display = 'block';
+                deliveryFields.classList.remove('hidden');
             }
         }
 
-        sameAddressCheckbox.addEventListener('change', toggleDeliveryFields);
+        sameAddressRadios.forEach(radio => {
+            radio.addEventListener('change', toggleDeliveryFields);
+        });
+
         toggleDeliveryFields(); // 初期表示
 
         // 合計金額の計算
-        const quantityInputs = document.querySelectorAll('input[name*="[quantity]"]');
+        const quantityInputs = document.querySelectorAll('.quantity-input');
         const totalElement = document.getElementById('order-total');
-
-        const prices = {
-            'mochipai_6': 1200,
-            'mochipai_8': 1600,
-            'mochipai_10': 2000,
-            'mochipai_12': 2400,
-            'mochipai_15': 3000,
-            'mochipai_20': 4000
-        };
 
         function calculateTotal() {
             let total = 0;
             quantityInputs.forEach(input => {
-                const productType = input.closest('.border-b').querySelector('input[name*="[product_type]"]').value;
                 const quantity = parseInt(input.value) || 0;
-                total += prices[productType] * quantity;
+                const price = parseInt(input.dataset.price) || 0;
+                total += price * quantity;
             });
             totalElement.textContent = '¥' + total.toLocaleString();
         }
@@ -341,6 +356,14 @@
         quantityInputs.forEach(input => {
             input.addEventListener('change', calculateTotal);
             input.addEventListener('input', calculateTotal);
+
+            // エンターキーでフォーム送信を防ぐ
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    calculateTotal();
+                }
+            });
         });
 
         calculateTotal(); // 初期計算

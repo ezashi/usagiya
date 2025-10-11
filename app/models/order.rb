@@ -87,7 +87,8 @@ class Order < ApplicationRecord
   private
 
   def must_have_at_least_one_item
-    if order_items.reject(&:marked_for_destruction?).sum(:quantity) <= 0
+    total_quantity = order_items.reject(&:marked_for_destruction?).sum { |item| item.quantity.to_i }
+    if total_quantity <= 0
       errors.add(:base, "商品を1つ以上選択してください")
     end
   end
