@@ -670,11 +670,11 @@
             </label>
             <div class="radio-group">
                 <div class="radio-item">
-                    <%= f.radio_button :shipping_type, 'same', id: 'shipping_same', checked: true %>
+                    <%= f.radio_button :shipping_type, 'same', id: 'shipping_same', checked: (@order.shipping_type != 'different') %>
                     <label for="shipping_same">ご注文者様と同じ住所に送る</label>
                 </div>
                 <div class="radio-item">
-                    <%= f.radio_button :shipping_type, 'different', id: 'shipping_different' %>
+                    <%= f.radio_button :shipping_type, 'different', id: 'shipping_different', checked: (@order.shipping_type == 'different') %>
                     <label for="shipping_different">別の住所に送る</label>
                 </div>
             </div>
@@ -731,7 +731,7 @@
                     <span class="product-name">もちパイ6個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= number_field_tag 'order[products][6pieces]', 0, class: 'quantity-input', min: 0, data: { price: 1200 } %>
+                        <%= number_field_tag 'order[products][6pieces]', (@order.products&.dig('6pieces') || 0), class: 'quantity-input', min: 0, data: { price: 1200 } %>
                     </div>
                 </div>
 
@@ -739,7 +739,7 @@
                     <span class="product-name">もちパイ8個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= number_field_tag 'order[products][8pieces]', 0, class: 'quantity-input', min: 0, data: { price: 1600 } %>
+                        <%= number_field_tag 'order[products][8pieces]', (@order.products&.dig('8pieces') || 0), class: 'quantity-input', min: 0, data: { price: 1600 } %>
                     </div>
                 </div>
 
@@ -747,7 +747,7 @@
                     <span class="product-name">もちパイ10個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= number_field_tag 'order[products][10pieces]', 0, class: 'quantity-input', min: 0, data: { price: 2000 } %>
+                        <%= number_field_tag 'order[products][10pieces]', (@order.products&.dig('10pieces') || 0), class: 'quantity-input', min: 0, data: { price: 2000 } %>
                     </div>
                 </div>
 
@@ -755,7 +755,7 @@
                     <span class="product-name">もちパイ12個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= number_field_tag 'order[products][12pieces]', 0, class: 'quantity-input', min: 0, data: { price: 2400 } %>
+                        <%= number_field_tag 'order[products][12pieces]', (@order.products&.dig('12pieces') || 0), class: 'quantity-input', min: 0, data: { price: 2400 } %>
                     </div>
                 </div>
 
@@ -763,7 +763,7 @@
                     <span class="product-name">もちパイ15個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= number_field_tag 'order[products][15pieces]', 0, class: 'quantity-input', min: 0, data: { price: 3000 } %>
+                        <%= number_field_tag 'order[products][15pieces]', (@order.products&.dig('15pieces') || 0), class: 'quantity-input', min: 0, data: { price: 3000 } %>
                     </div>
                 </div>
 
@@ -771,7 +771,7 @@
                     <span class="product-name">もちパイ20個入り</span>
                     <div class="product-quantity">
                         <label>数:</label>
-                        <%= number_field_tag 'order[products][20pieces]', 0, class: 'quantity-input', min: 0, data: { price: 4000 } %>
+                        <%= number_field_tag 'order[products][20pieces]', (@order.products&.dig('20pieces') || 0), class: 'quantity-input', min: 0, data: { price: 4000 } %>
                     </div>
                 </div>
             </div>
@@ -913,18 +913,18 @@
                 shippingFields.classList.add('active');
             } else {
                 shippingFields.classList.remove('active');
-                // フィールドをクリア
-                shippingFields.querySelectorAll('input').forEach(input => {
-                    input.value = '';
-                });
             }
         }
 
         // 初期状態を設定（エラーがある場合も考慮）
-        if (shippingFields && shippingFields.querySelector('.error-message')) {
+        if (shippingDifferent && shippingDifferent.checked) {
+            // 「別の住所」が選択されている場合は表示
+            shippingFields.classList.add('active');
+        } else if (shippingFields && shippingFields.querySelector('.error-message')) {
             // エラーがある場合は「別の住所」を選択状態にして表示
             if (shippingDifferent) {
                 shippingDifferent.checked = true;
+                shippingFields.classList.add('active');
             }
         }
         toggleShippingFields();
@@ -949,6 +949,9 @@
             });
             totalAmount.textContent = '¥' + total.toLocaleString();
         }
+
+        // ページロード時に合計を計算（エラー後の値保持に対応）
+        calculateTotal();
 
         quantityInputs.forEach(input => {
             input.addEventListener('input', calculateTotal);
