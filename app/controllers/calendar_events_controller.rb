@@ -42,31 +42,3 @@ class CalendarEventsController < ApplicationController
     calendar
   end
 end
-
-
-# ============================================
-# config/routes.rb に追加
-# ============================================
-
-# 営業カレンダー
-resources :calendar_events, only: [ :index ]
-
-
-# ============================================
-# app/helpers/application_helper.rb に追加
-# ============================================
-
-def event_type_label(event_type)
-  case event_type
-  when "regular_holiday"
-    "定休日"
-  when "irregular_holiday"
-    "休業"
-  when "sales_start"
-    "販売開始"
-  when "sales_end"
-    "販売終了"
-  else
-    "イベント"
-  end
-end

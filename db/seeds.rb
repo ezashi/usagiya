@@ -71,7 +71,6 @@ puts "商品数: #{Product.count}"
 puts "お知らせ数: #{Notice.count}"
 
 
-# ... 前の部分は同じ ...
 
 puts "\n営業カレンダーのダミーデータを作成中..."
 
@@ -84,13 +83,14 @@ current_month_start = today.beginning_of_month
 next_month_start = today.next_month.beginning_of_month
 
 # 定休日（毎週日曜日）
-[ current_month_start, next_month_start ].each do |month_start|
+[current_month_start, next_month_start].each do |month_start|
   month_end = month_start.end_of_month
   (month_start..month_end).each do |date|
     if date.sunday?
       CalendarEvent.create!(
         event_type: :regular_holiday,
         event_date: date,
+        title: "定休日",
         description: "定休日です",
         auto_notice: false
       )
@@ -108,51 +108,50 @@ irregular_dates.each do |date|
   CalendarEvent.create!(
     event_type: :irregular_holiday,
     event_date: date,
+    title: "休業日",
     description: "不定休です",
     auto_notice: false
   )
 end
 
-# 販売開始日（今月の15日） - titleを使わないバージョン
-if current_month_start.month == today.month
-  event = CalendarEvent.create!(
+# 販売開始日（今月の15日）
+if current_month_start.month == today.month && today.day <= 15
+  CalendarEvent.create!(
     event_type: :sales_start,
     event_date: Date.new(today.year, today.month, 15),
-    description: "栗まんじゅう販売開始\n秋の新商品「栗まんじゅう」の販売を開始します",
+    title: "栗まんじゅう販売開始",
+    description: "秋の新商品「栗まんじゅう」の販売を開始します",
     auto_notice: false
   )
-  # titleカラムが存在する場合のみ設定
-  event.update(title: "栗まんじゅう販売開始") if event.respond_to?(:title=)
 end
 
 # 販売終了日（来月の20日）
-event = CalendarEvent.create!(
+CalendarEvent.create!(
   event_type: :sales_end,
   event_date: Date.new(next_month_start.year, next_month_start.month, 20),
-  description: "桜餅販売終了\n春限定の桜餅の販売を終了します",
+  title: "桜餅販売終了",
+  description: "春限定の桜餅の販売を終了します",
   auto_notice: false
 )
-event.update(title: "桜餅販売終了") if event.respond_to?(:title=)
 
 # その他イベント（カスタムカラー）
-event = CalendarEvent.create!(
+CalendarEvent.create!(
   event_type: :other,
   event_date: Date.new(today.year, today.month, 5),
-  description: "もちパイフェア\nもちパイが特別価格でお買い求めいただけます",
+  title: "もちパイフェア",
+  description: "もちパイが特別価格でお買い求めいただけます",
+  color: "#ec4899",
   auto_notice: false
 )
-# colorとtitleカラムが存在する場合のみ設定
-event.update(color: "#ec4899") if event.respond_to?(:color=)
-event.update(title: "もちパイフェア") if event.respond_to?(:title=)
 
-event = CalendarEvent.create!(
+CalendarEvent.create!(
   event_type: :other,
   event_date: Date.new(today.year, today.month, 25),
-  description: "和菓子教室\n和菓子作り体験教室を開催します",
+  title: "和菓子教室",
+  description: "和菓子作り体験教室を開催します",
+  color: "#8b5cf6",
   auto_notice: false
 )
-event.update(color: "#8b5cf6") if event.respond_to?(:color=)
-event.update(title: "和菓子教室") if event.respond_to?(:title=)
 
 puts "✓ カレンダーイベントを #{CalendarEvent.count}件 作成しました"
 

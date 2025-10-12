@@ -22,11 +22,7 @@ Rails.application.routes.draw do
   resources :notices, only: [ :index, :show ]
 
   # 営業カレンダー
-  resources :calendar_events, only: [ :index ] do
-    collection do
-      get :month  # 月別カレンダー取得用
-    end
-  end
+  resources :calendar_events, only: [:index]
 
   # お問い合わせ
   resources :inquiries, only: [ :new, :create ]

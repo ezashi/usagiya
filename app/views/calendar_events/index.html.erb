@@ -1,468 +1,497 @@
 <%= render 'shared/header' %>
 
 <style>
-    /* ============================================
-       基本スタイル
-       ============================================ */
-    .calendar-container {
+    /* 営業カレンダー専用スタイル */
+    .calendar-page-wrapper {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Arial, sans-serif;
+        background: #FAF4EF;
         min-height: 100vh;
-        background: linear-gradient(to bottom, #fef3c7, #ffffff);
-        padding-top: 140px;
-        padding-bottom: 4rem;
     }
 
-    .calendar-content {
-        max-width: 80rem;
-        margin: 0 auto;
-        padding: 0 2rem;
-    }
-
-    /* ============================================
-       ヘッダー
-       ============================================ */
-    .calendar-header {
+    /* カレンダーページヘッダー */
+    .calendar-page-header {
+        background: #fcedf5;
+        padding: 180px 20px 40px;
         text-align: center;
-        margin-bottom: 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .calendar-title {
-        font-size: 3rem;
-        font-weight: bold;
-        color: #1f2937;
-        margin-bottom: 0.5rem;
+    .calendar-page-header h1 {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 10px;
     }
 
-    .calendar-subtitle {
+    .calendar-page-header p {
+        color: #333;
         font-size: 1rem;
-        color: #6b7280;
     }
 
-    /* ============================================
-       月切り替えナビゲーション
-       ============================================ */
-    .month-navigation {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 2rem;
-        margin-bottom: 2rem;
+    /* カレンダーコンテンツコンテナ */
+    .calendar-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        overflow-x: hidden;
     }
 
-    .month-button {
+    /* カレンダーナビゲーション */
+    .calendar-page-nav {
+        background: #F9F9F9;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        background-color: #f59e0b;
-        color: white;
+    }
+
+    .calendar-page-nav h2 {
+        font-size: 1.8rem;
+        color: #333;
+    }
+
+    .calendar-nav-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .calendar-nav-button {
+        padding: 10px 20px;
+        background: #ffc0cb;
+        color: #333;
         border: none;
-        border-radius: 0.75rem;
-        font-weight: bold;
+        border-radius: 8px;
         cursor: pointer;
-        transition: all 0.3s;
+        font-weight: bold;
         text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s;
     }
 
-    .month-button:hover {
-        background-color: #d97706;
-        transform: scale(1.05);
+    .calendar-nav-button:hover {
+        background: #ff69b4;
+        transform: translateY(-2px);
     }
 
-    .month-button svg {
-        width: 1.25rem;
-        height: 1.25rem;
+    /* カレンダーラッパー */
+    .calendar-page-wrapper-inner {
+        background: #fff;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        overflow-x: auto;
     }
 
-    .current-month {
-        font-size: 1.75rem;
+    .calendar-page-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .calendar th.sunday {
+        color: #ff6b6b;
+    }
+
+    .calendar th.saturday {
+        color: #4dabf7;
+    }
+
+    .calendar-page-table td {
+        padding: 10px;
+        border: 1px solid #e9ecef;
+        vertical-align: top;
+        height: 100px;
+        background: #fff;
+    }
+
+    .calendar-page-table td.empty {
+        background: #f8f9fa;
+    }
+
+    .calendar-page-table td.sunday {
+        background: #ffe0e0;
+    }
+
+    .calendar-page-table td.holiday {
+        background: #ffebee;
+    }
+
+    .calendar-cell-content {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .calendar-day-number {
         font-weight: bold;
-        color: #1f2937;
-        min-width: 200px;
-        text-align: center;
+        color: #333;
+        margin-bottom: 5px;
     }
 
-    /* ============================================
-       凡例
-       ============================================ */
+    .sunday .day-number {
+        color: #ff6b6b;
+    }
+
+    .calendar-event-label {
+        margin: 3px 0;
+        padding: 4px 6px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        display: block;
+        max-width: 100%;
+        box-sizing: border-box;
+        word-wrap: break-word;
+        line-height: 1.3;
+        border-left: 3px solid transparent;
+    }
+
+    /* 定休日 - 赤色 */
+    .calendar-event-regular-holiday {
+        background: #dc3545;
+        color: #fff;
+        border-left-color: #a71d2a;
+    }
+
+    /* 不定休（休業日） - 薄紅色 */
+    .calendar-event-irregular-holiday {
+        background: #ffb6c1;
+        color: #333;
+        border-left-color: #ff69b4;
+    }
+
+    /* 販売開始日 - 黄色 */
+    .calendar-event-sales-start {
+        background: #ffc107;
+        color: #333;
+        border-left-color: #ff9800;
+    }
+
+    /* 販売終了日 - 青色 */
+    .calendar-event-sales-end {
+        background: #007bff;
+        color: #fff;
+        border-left-color: #0056b3;
+    }
+
+    /* その他 - カスタムカラー（デフォルトはグラデーション） */
+    .calendar-event-other {
+        background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+        color: #fff;
+        border-left-color: rgba(0, 0, 0, 0.3);
+    }
+
+    /* 凡例 */
     .legend {
-        background: white;
-        border-radius: 1rem;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
     }
 
-    .legend-title {
-        font-size: 1.125rem;
-        font-weight: bold;
-        color: #1f2937;
-        margin-bottom: 1rem;
+    .legend h3 {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 15px;
     }
 
     .legend-items {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
     }
 
     .legend-item {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 8px;
     }
 
     .legend-color {
-        width: 1.5rem;
-        height: 1.5rem;
-        border-radius: 0.25rem;
-        border: 1px solid #e5e7eb;
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
     }
 
-    .legend-label {
-        font-size: 0.875rem;
-        color: #4b5563;
+    /* 店舗情報 */
+    .calendar-store-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
     }
 
-    /* ============================================
-       カレンダーテーブル
-       ============================================ */
-    .calendar-wrapper {
-        background: white;
-        border-radius: 1rem;
-        overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    .calendar-info-card {
+        background: #fff;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .calendar-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .calendar-table thead {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    }
-
-    .calendar-table th {
-        padding: 1rem;
-        color: white;
-        font-weight: bold;
-        font-size: 1.125rem;
-        text-align: center;
-    }
-
-    .calendar-table th.sunday {
-        background-color: rgba(220, 38, 38, 0.2);
-    }
-
-    .calendar-table th.saturday {
-        background-color: rgba(59, 130, 246, 0.2);
-    }
-
-    .calendar-table td {
-        border: 1px solid #e5e7eb;
-        padding: 0;
-        height: 100px;
-        vertical-align: top;
-        background-color: white;
-    }
-
-    .calendar-day {
-        width: 100%;
-        height: 100%;
-        padding: 0.5rem;
+    .calendar-info-card h3 {
+        font-size: 1.3rem;
+        color: #ffc0cb;
+        margin-bottom: 15px;
         display: flex;
-        flex-direction: column;
+        align-items: center;
+        gap: 10px;
     }
 
-    .day-number {
-        font-size: 1.125rem;
-        font-weight: bold;
-        color: #1f2937;
-        margin-bottom: 0.25rem;
+    .calendar-info-card p {
+        color: #666;
+        line-height: 1.8;
+        margin-bottom: 10px;
     }
 
-    .calendar-table td.sunday .day-number {
-        color: #dc2626;
+    .calendar-info-card strong {
+        color: #333;
     }
 
-    .calendar-table td.saturday .day-number {
-        color: #3b82f6;
+    /* 注意書き */
+    .calendar-notice-box {
+        background: #fff;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid #ffc0cb;
     }
 
-    .calendar-table td.today {
-        background-color: #fef3c7;
-        box-shadow: inset 0 0 0 2px #f59e0b;
+    .notice-box h3 {
+        font-size: 1.3rem;
+        color: #ffc0cb;
+        margin-bottom: 15px;
     }
 
-    .calendar-table td.empty {
-        background-color: #f9fafb;
+    .notice-box p {
+        color: #666;
+        line-height: 1.8;
     }
 
-    /* イベントバッジ */
-    .event-badges {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        margin-top: 0.25rem;
-    }
-
-    .event-badge {
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        font-size: 0.75rem;
-        font-weight: bold;
-        color: white;
-        text-align: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* イベント色 */
-    .event-regular-holiday {
-        background-color: #dc2626;
-    }
-
-    .event-irregular-holiday {
-        background-color: #FFB6C1;
-    }
-
-    .event-sales-start {
-        background-color: #fbbf24;
-        color: #1f2937;
-    }
-
-    .event-sales-end {
-        background-color: #3b82f6;
-    }
-
-    /* ============================================
-       レスポンシブ: 1024px以下（PC）
-       ============================================ */
-    @media (max-width: 1024px) {
-        .calendar-content {
-            max-width: 64rem;
-            padding: 0 1.5rem;
-        }
-
-        .calendar-title {
-            font-size: 2.5rem;
-        }
-
-        .calendar-table td {
-            height: 80px;
-        }
-    }
-
-    /* ============================================
-       レスポンシブ: 768px以下（Tablet）
-       ============================================ */
+    /* レスポンシブ */
     @media (max-width: 768px) {
-        .calendar-container {
-            padding-top: 120px;
+        .page-header h1 {
+            font-size: 1.8rem;
         }
 
-        .calendar-content {
-            padding: 0 1rem;
-        }
-
-        .calendar-title {
-            font-size: 2rem;
-        }
-
-        .current-month {
-            font-size: 1.5rem;
-            min-width: 150px;
-        }
-
-        .month-button {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        .calendar-table th {
-            padding: 0.75rem 0.25rem;
-            font-size: 0.875rem;
-        }
-
-        .calendar-table td {
-            height: 70px;
-            padding: 0;
-        }
-
-        .calendar-day {
-            padding: 0.25rem;
-        }
-
-        .day-number {
-            font-size: 0.875rem;
-        }
-
-        .event-badge {
-            font-size: 0.625rem;
-            padding: 0.125rem 0.25rem;
-        }
-
-        .legend-items {
+        .calendar-nav {
             flex-direction: column;
-            gap: 0.5rem;
-        }
-    }
-
-    /* ============================================
-       レスポンシブ: 480px以下（Mobile）
-       ============================================ */
-    @media (max-width: 480px) {
-        .calendar-container {
-            padding-top: 100px;
+            gap: 15px;
         }
 
-        .calendar-title {
+        .calendar-nav h2 {
             font-size: 1.5rem;
         }
 
-        .calendar-subtitle {
-            font-size: 0.875rem;
-        }
-
-        .current-month {
-            font-size: 1.25rem;
-            min-width: 120px;
-        }
-
-        .month-navigation {
-            gap: 1rem;
-        }
-
-        .month-button {
-            padding: 0.5rem;
-        }
-
-        .month-button span {
-            display: none;
-        }
-
-        .calendar-table th {
-            padding: 0.5rem 0.125rem;
-            font-size: 0.75rem;
-        }
-
-        .calendar-table td {
-            height: 60px;
-        }
-
-        .day-number {
-            font-size: 0.75rem;
+        .calendar td {
+            padding: 5px;
+            height: 80px;
+            font-size: 0.85rem;
         }
 
         .event-badge {
-            font-size: 0.5rem;
-            padding: 0.125rem;
+            font-size: 0.65rem;
+            padding: 2px 5px;
+        }
+
+        .event-title {
+            display: none;
         }
     }
 </style>
+</head>
 
-<div class="calendar-container">
-    <div class="calendar-content">
-        <!-- ヘッダー -->
-        <div class="calendar-header">
-            <h1 class="calendar-title">営業カレンダー</h1>
-            <p class="calendar-subtitle">※赤字は定休日です。</p>
+<body>
+    <div class="calendar-page-wrapper">
+        <!-- ページヘッダー -->
+        <div class="calendar-page-header">
+            <h1>営業カレンダー</h1>
+            <p>定休日や営業時間をご確認いただけます</p>
         </div>
 
-        <!-- 月切り替えナビゲーション -->
-        <div class="month-navigation">
-            <%= link_to calendar_events_path(year: @prev_year, month: @prev_month), class: "month-button" do %>
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-            <span>前月</span>
-            <% end %>
+        <!-- メインコンテンツ -->
+        <div class="calendar-container">
+            <!-- カレンダーナビゲーション -->
+            <div class="calendar-page-nav">
+                <div class="calendar-nav-buttons">
+                    <%= link_to calendar_events_path(year: @prev_year, month: @prev_month), class: "calendar-nav-button" do %>
+                    ← 前月
+                    <% end %>
+                </div>
 
-            <div class="current-month">
-                <%= "#{@year}年#{@month}月" %>
+                <h2><%= @year %>年<%= @month %>月</h2>
+
+                <div class="calendar-nav-buttons">
+                    <%= link_to calendar_events_path(year: @next_year, month: @next_month), class: "calendar-nav-button" do %>
+                    次月 →
+                    <% end %>
+                </div>
             </div>
 
-            <%= link_to calendar_events_path(year: @next_year, month: @next_month), class: "month-button" do %>
-            <span>次月</span>
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <% end %>
-        </div>
-
-        <!-- 凡例 -->
-        <div class="legend">
-            <h3 class="legend-title">凡例</h3>
-            <div class="legend-items">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #dc2626;"></div>
-                    <span class="legend-label">定休日</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #FFB6C1;"></div>
-                    <span class="legend-label">不定休</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #fbbf24;"></div>
-                    <span class="legend-label">販売開始日</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #3b82f6;"></div>
-                    <span class="legend-label">販売終了日</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);"></div>
-                    <span class="legend-label">その他イベント</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- カレンダー -->
-        <div class="calendar-wrapper">
-            <table class="calendar-table">
-                <thead>
-                    <tr>
-                        <th class="sunday">日</th>
-                        <th>月</th>
-                        <th>火</th>
-                        <th>水</th>
-                        <th>木</th>
-                        <th>金</th>
-                        <th class="saturday">土</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% @calendar.each_slice(7) do |week| %>
-                    <tr>
-                        <% week.each do |day_info| %>
-                        <% if day_info[:date].nil? %>
-                        <td class="empty"></td>
-                        <% else %>
-                        <td class="<%= day_info[:date].sunday? ? 'sunday' : '' %> <%= day_info[:date].saturday? ? 'saturday' : '' %> <%= day_info[:date] == Date.today ? 'today' : '' %>">
-                            <div class="calendar-day">
-                                <div class="day-number"><%= day_info[:date].day %></div>
-                                <div class="event-badges">
-                                    <% day_info[:events].each do |event| %>
-                                    <% if event.event_type == 'other' && event.color.present? %>
-                                    <div class="event-badge" style="background-color: <%= event.color %>;">
-                                        <%= event.title || 'イベント' %>
+            <!-- カレンダー -->
+            <div class="calendar-page-wrapper-inner">
+                <table class="calendar-page-table">
+                    <colgroup>
+                        <col style="width: 14.285714%;">
+                        <col style="width: 14.285714%;">
+                        <col style="width: 14.285714%;">
+                        <col style="width: 14.285714%;">
+                        <col style="width: 14.285714%;">
+                        <col style="width: 14.285714%;">
+                        <col style="width: 14.285714%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="sunday">日</th>
+                            <th>月</th>
+                            <th>火</th>
+                            <th>水</th>
+                            <th>木</th>
+                            <th>金</th>
+                            <th class="saturday">土</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @calendar.each_slice(7) do |week| %>
+                        <tr>
+                            <% week.each_with_index do |day, index| %>
+                            <% if day[:date].nil? %>
+                            <td class="empty"></td>
+                            <% else %>
+                            <% 
+                                is_sunday = day[:date].wday == 0
+                                # 日曜日は自動的に定休日として扱う（DBに保存されていなくても）
+                                all_events = day[:events].to_a
+                                if is_sunday && !all_events.any? { |e| e.regular_holiday? }
+                                    # 仮想的な定休日イベントを追加
+                                    virtual_holiday = OpenStruct.new(
+                                        event_type: 'regular_holiday',
+                                        title: '定休日',
+                                        color: nil,
+                                        regular_holiday?: true,
+                                        irregular_holiday?: false,
+                                        other?: false
+                                    )
+                                    all_events.unshift(virtual_holiday)
+                                end
+                                
+                                has_holiday = all_events.any? { |e| e.respond_to?(:regular_holiday?) && e.regular_holiday? } || 
+                                              all_events.any? { |e| e.respond_to?(:irregular_holiday?) && e.irregular_holiday? }
+                                cell_class = is_sunday ? "sunday" : ""
+                                cell_class += " holiday" if has_holiday
+                            %>
+                            <td class="<%= cell_class %>">
+                                <div class="calendar-cell-content">
+                                    <div class="calendar-day-number"><%= day[:date].day %></div>
+                                    <% all_events.each do |event| %>
+                                    <% 
+                                            # イベントタイトルの決定
+                                            event_title = case event.event_type
+                                            when 'regular_holiday'
+                                                '定休日'
+                                            when 'irregular_holiday'
+                                                '休業日'
+                                            else
+                                                event.title.present? ? event.title : CalendarEvent.event_type_options.key(event.event_type)
+                                            end
+                                            
+                                            # カスタムスタイルの設定（その他の場合）
+                                            custom_style = ""
+                                            if event.other? && event.color.present?
+                                                # 背景色を設定
+                                                custom_style += "background: #{event.color};"
+                                                
+                                                # 背景色に応じてテキスト色を自動調整
+                                                # 明るい色の場合は黒文字、暗い色の場合は白文字
+                                                color_hex = event.color.gsub('#', '')
+                                                if color_hex.length == 6
+                                                    r = color_hex[0..1].to_i(16)
+                                                    g = color_hex[2..3].to_i(16)
+                                                    b = color_hex[4..5].to_i(16)
+                                                    brightness = (r * 299 + g * 587 + b * 114) / 1000
+                                                    custom_style += brightness > 155 ? " color: #333;" : " color: #fff;"
+                                                end
+                                            end
+                                        %>
+                                    <div class="calendar-event-label calendar-event-<%= event.event_type.tr('_', '-') %>" style="<%= custom_style %>" title="<%= event_title %>">
+                                        <%= event_title %>
                                     </div>
-                                    <% else %>
-                                    <div class="event-badge event-<%= event.event_type %>">
-                                        <%= event_type_label(event.event_type) %>
-                                    </div>
-                                    <% end %>
                                     <% end %>
                                 </div>
-                            </div>
-                        </td>
+                            </td>
+                            <% end %>
+                            <% end %>
+                        </tr>
                         <% end %>
-                        <% end %>
-                    </tr>
-                    <% end %>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 店舗情報 -->
+            <div class="calendar-store-info">
+                <div class="calendar-info-card">
+                    <h3>📍 アクセス</h3>
+                    <p><strong>住所</strong><br>福井県鯖江市持明寺町5-10-1</p>
+                </div>
+
+                <div class="calendar-info-card">
+                    <h3>⏰ 営業時間</h3>
+                    <p><strong>平日・土曜日:</strong> 9:00〜18:00<br>
+                        <strong>定休日:</strong> 日曜日<br>
+                        (月曜日に不定休あり)
+                    </p>
+                </div>
+
+                <div class="calendar-info-card">
+                    <h3>📞 お問い合わせ</h3>
+                    <p><strong>TEL:</strong> 0778-62-0861<br>
+                        <%= link_to "お問い合わせフォーム", new_inquiry_path, style: "color: #ffc0cb; text-decoration: underline;" %><br>
+                        <%= link_to "LINE", "https://page.line.me/296kbwry?openQrModal=true", target: "_blank", style: "color: #ffc0cb; text-decoration: underline;" %><br>
+                        <%= link_to "Instagram", "https://www.instagram.com/usagiya.fukui/?hl=ja", target: "_blank", style: "color: #ffc0cb; text-decoration: underline;" %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 注意書き -->
+            <div class="calendar-notice-box">
+                <h3>ご注意</h3>
+                <p>
+                    大量生産せずに、一つ一つ手作りしておりますので急なご注文に対応できかねる場合もあります。ご了承ください。<br><br>
+                    お早目のご連絡をお待ちしております。
+                </p>
+            </div>
         </div>
     </div>
-</div>
+
+    <script>
+        // ハンバーガーメニューの動作(既存のヘッダーに依存)
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const overlay = document.querySelector('.overlay');
+            const sideMenu = document.querySelector('.side-menu');
+            const closeBtn = document.querySelector('.side-menu-close');
+
+            if (hamburger && overlay && sideMenu && closeBtn) {
+                hamburger.addEventListener('click', function() {
+                    overlay.classList.add('active');
+                    sideMenu.classList.add('active');
+                });
+
+                overlay.addEventListener('click', function() {
+                    overlay.classList.remove('active');
+                    sideMenu.classList.remove('active');
+                });
+
+                closeBtn.addEventListener('click', function() {
+                    overlay.classList.remove('active');
+                    sideMenu.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
