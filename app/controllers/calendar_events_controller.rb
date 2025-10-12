@@ -36,9 +36,48 @@ class CalendarEventsController < ApplicationController
     # 月の日付
     (first_day..last_day).each do |date|
       day_events = events.select { |e| e.event_date == date }
+
+      # 日曜日の場合、定休日イベントがなければ仮想的に追加
+      if date.sunday? && !day_events.any? { |e| e.regular_holiday? }
+        # 仮想的な定休日オブジェクトを作成
+        virtual_holiday = VirtualHoliday.new
+        day_events = [ virtual_holiday ] + day_events
+      end
+
       calendar << { date: date, events: day_events }
     end
 
     calendar
+  end
+end
+
+# 仮想的な定休日クラス
+class VirtualHoliday
+  def event_type
+    "regular_holiday"
+  end
+
+  def title
+    "定休日"
+  end
+
+  def color
+    nil
+  end
+
+  def regular_holiday?
+    true
+  end
+
+  def irregular_holiday?
+    false
+  end
+
+  def other?
+    false
+  end
+
+  def description
+    "定休日です"
   end
 end

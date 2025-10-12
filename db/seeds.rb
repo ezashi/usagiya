@@ -83,7 +83,7 @@ current_month_start = today.beginning_of_month
 next_month_start = today.next_month.beginning_of_month
 
 # 定休日（毎週日曜日）
-[current_month_start, next_month_start].each do |month_start|
+[ current_month_start, next_month_start ].each do |month_start|
   month_end = month_start.end_of_month
   (month_start..month_end).each do |date|
     if date.sunday?
