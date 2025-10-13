@@ -1,5 +1,8 @@
-<%= render 'shared/header' %>
+<% content_for :title do %>
+御菓子処うさぎやの想い
+<% end %>
 
+<% content_for :page_styles do %>
 <style>
     * {
         margin: 0;
@@ -7,67 +10,65 @@
         box-sizing: border-box;
     }
 
-    html {
-        scroll-behavior: smooth;
-    }
-
     body {
+        font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #000;
+        color: #fff;
         overflow-x: hidden;
     }
 
     .spirit-container {
         width: 100%;
-        min-height: 100vh;
+        height: 100%;
     }
 
-    /* ============================================
-       タイトルセクション
-       ============================================ */
+    /* タイトルセクション */
     .title-section {
         height: 100vh;
         display: flex;
-        align-items: center;
+        flex-direction: column;
         justify-content: center;
+        align-items: center;
         background: #eee;
         position: relative;
-        padding-top: 100px;
     }
 
-    .logo-image {
-        max-width: 600px;
-        width: 80%;
+    .spirit-logo-image {
+        width: 500px;
         height: auto;
+        margin-bottom: 2rem;
+        animation: fadeInScale 1.5s ease-out;
     }
 
-    @keyframes fadeInUp {
+    @keyframes fadeInScale {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: scale(0.8);
         }
 
         to {
             opacity: 1;
-            transform: translateY(0);
+            transform: scale(1);
         }
     }
 
-    /* ============================================
-       画像セクション
-       ============================================ */
+    /* 画像セクション */
     .image-section {
-        width: 100%;
-        height: 100vh;
+        min-height: 100vh;
         position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
     }
 
     .background-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
         position: absolute;
         top: 0;
         left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         z-index: 1;
     }
 
@@ -77,7 +78,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.5);
         z-index: 2;
     }
 
@@ -85,32 +86,19 @@
         position: relative;
         z-index: 3;
         width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 10rem 3rem 6rem 3rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
     }
 
-    .image-section:last-of-type .content-wrapper {
-        padding-top: 16rem;
-    }
-
-    /* 最後のセクションのサブタイトルに追加マージン */
-    .image-section:last-of-type .subtitle {
-        margin-top: 2rem;
-    }
-
-    /* ============================================
-       サブタイトル
-       ============================================ */
     .subtitle {
-        align-self: flex-start;
-        text-align: left;
-        max-width: 600px;
         opacity: 0;
-        transform: translateX(-30px);
-        transition: opacity 1s ease-out, transform 1s ease-out;
+        transform: translateX(-50px);
+        transition: all 1s ease-out;
     }
 
     .subtitle.visible {
@@ -119,100 +107,54 @@
     }
 
     .subtitle h2 {
-        font-size: 2.5rem;
+        font-size: 35px;
         font-weight: bold;
-        color: #ffffff;
-        -webkit-text-stroke: 1.5px #000;
-        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
-        line-height: 3.5;
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         margin-bottom: 1rem;
     }
 
-    @keyframes fadeInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    /* ============================================
-       テキスト
-       ============================================ */
     .text-content {
-        align-self: flex-end;
-        max-width: 700px;
         opacity: 0;
-        transform: translateY(30px);
-        transition: opacity 1s ease-out 0.3s, transform 1s ease-out 0.3s;
+        transform: translateX(50px);
+        transition: all 1s ease-out 0.3s;
     }
 
     .text-content.visible {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateX(0);
     }
 
     .text-content p {
-        font-size: 19px;
-        color: #ffffff;
-        line-height: 1.5;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-        background: rgba(0, 0, 0, 0.2);
-        padding: 2rem;
-        border-radius: 1rem;
-        backdrop-filter: blur(5px);
+        font-size: 1.1rem;
+        line-height: 2;
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        margin-bottom: 1rem;
     }
 
-    /* ============================================
-       スクロールインジケーター
-       ============================================ */
+    /* スクロールインジケーター */
     .scroll-indicator {
         position: absolute;
         bottom: 2rem;
         left: 50%;
         transform: translateX(-50%);
-        z-index: 10;
+        z-index: 4;
+        width: 40px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .scroll-indicator:hover {
+        transform: translateX(-50%) scale(1.1);
     }
 
     .scroll-indicator.with-arrow {
         animation: bounce 2s infinite;
-    }
-
-    .image-section:last-of-type .scroll-indicator {
-        top: 8rem;
-        bottom: auto;
-    }
-
-    .scroll-indicator svg {
-        width: 2rem;
-        height: 2rem;
-        color: #ffffff;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-        transition: all 0.3s ease;
-    }
-
-    .scroll-indicator.with-arrow:hover svg {
-        transform: translateY(5px);
-    }
-
-    .scroll-progress {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        backdrop-filter: blur(10px);
-        border: 3px solid #F9F9F9;
-        transition: all 0.3s ease;
-    }
-
-    .scroll-progress:hover {
-        background: rgba(255, 255, 255, 0.5);
-        transform: scale(1.1);
     }
 
     @keyframes bounce {
@@ -234,158 +176,93 @@
         }
     }
 
-    /* ============================================
-       レスポンシブ: 1024px
-       ============================================ */
-    @media (max-width: 1024px) {
-        .logo-image {
-            max-width: 500px;
+    .scroll-indicator svg {
+        width: 30px;
+        height: 30px;
+        color: #fff;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .scroll-progress {
+        width: 2px;
+        height: 40px;
+        background: linear-gradient(to bottom, #fff 0%, transparent 100%);
+        animation: scrollDown 2s infinite;
+    }
+
+    @keyframes scrollDown {
+        0% {
+            transform: translateY(-100%);
+            opacity: 0;
         }
 
-        .subtitle h2 {
-            font-size: 2rem;
+        50% {
+            opacity: 1;
         }
 
-        .text-content p {
-            font-size: 1.125rem;
-            padding: 1.5rem;
-        }
-
-        .content-wrapper {
-            padding: 9rem 2rem 5rem 2rem;
-        }
-
-        .image-section:last-of-type .content-wrapper {
-            padding-top: 15rem;
-        }
-
-        .image-section:last-of-type .subtitle {
-            margin-top: 1.5rem;
-        }
-
-        .scroll-progress {
-            width: 38px;
-            height: 38px;
-        }
-
-        .image-section:last-of-type .scroll-indicator {
-            top: 7rem;
+        100% {
+            transform: translateY(100%);
+            opacity: 0;
         }
     }
 
-    /* ============================================
-       レスポンシブ: 768px
-       ============================================ */
+    /* レスポンシブ対応 */
     @media (max-width: 768px) {
-        .title-section {
-            padding-top: 80px;
+        .spirit-logo-image {
+            width: 300px;
         }
 
-        .logo-image {
-            max-width: 400px;
+        .content-wrapper {
+            grid-template-columns: 1fr;
+            padding: 2rem 1rem;
+            gap: 2rem;
         }
 
         .subtitle h2 {
-            font-size: 1.75rem;
+            font-size: 1.8rem;
         }
 
         .text-content p {
             font-size: 1rem;
-            padding: 1.25rem;
-            line-height: 1.8;
-        }
-
-        .content-wrapper {
-            padding: 8rem 1.5rem 5rem 1.5rem;
-        }
-
-        .image-section:last-of-type .content-wrapper {
-            padding-top: 14rem;
-        }
-
-        .image-section:last-of-type .subtitle {
-            margin-top: 1.5rem;
-        }
-
-        .subtitle,
-        .text-content {
-            max-width: 100%;
-        }
-
-        .scroll-progress {
-            width: 35px;
-            height: 35px;
         }
 
         .image-section:last-of-type .scroll-indicator {
-            top: 6rem;
+            display: none;
         }
     }
 
-    /* ============================================
-       レスポンシブ: 480px
-       ============================================ */
     @media (max-width: 480px) {
-        .title-section {
-            padding-top: 60px;
-        }
-
-        .logo-image {
-            max-width: 300px;
-            width: 90%;
+        .spirit-logo-image {
+            width: 300px;
         }
 
         .subtitle h2 {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
         }
 
         .text-content p {
-            font-size: 0.875rem;
-            padding: 1rem;
-            line-height: 1.7;
+            font-size: 0.9rem;
         }
 
-        .content-wrapper {
-            padding: 6rem 1rem 4rem 1rem;
-        }
-
-        .image-section:last-of-type .content-wrapper {
-            padding-top: 12rem;
-        }
-
-        .image-section:last-of-type .subtitle {
-            margin-top: 1rem;
-        }
-
-        .scroll-indicator svg {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
-
-        .scroll-progress {
-            width: 30px;
-            height: 30px;
-            border: 2px solid #F9F9F9;
-        }
-
-        .image-section:last-of-type .scroll-indicator {
+        section:last-of-type .scroll-indicator {
             top: 5rem;
         }
     }
 </style>
+<% end %>
 
 <div class="spirit-container">
-    <section class="title-section">
-        <%= image_tag 'usagiya_logo.png', class: 'logo-image', alt: '御菓子処うさぎやの想い' %>
+    <section class="title-section" id="section-0">
+        <%= image_tag 'usagiya_logo.png', class: 'spirit-logo-image', alt: '御菓子処うさぎやの想い' %>
 
-        <div class="scroll-indicator with-arrow">
+        <div class="scroll-indicator with-arrow" data-target="section-1">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
             </svg>
         </div>
     </section>
 
-    <section class="image-section" data-section="1">
+    <section class="image-section" id="section-1" data-section="1">
         <%= image_tag 'shop/motipai_danmen.png', class: 'background-image', alt: 'もちパイ断面' %>
         <div class="overlay"></div>
         <div class="content-wrapper">
@@ -408,12 +285,12 @@
             </div>
         </div>
 
-        <div class="scroll-indicator">
+        <div class="scroll-indicator" data-target="section-2">
             <div class="scroll-progress"></div>
         </div>
     </section>
 
-    <section class="image-section" data-section="2">
+    <section class="image-section" id="section-2" data-section="2">
         <%= image_tag 'shop/moti_pai.png', class: 'background-image', alt: 'もちパイ' %>
         <div class="overlay"></div>
         <div class="content-wrapper">
@@ -429,12 +306,12 @@
             </div>
         </div>
 
-        <div class="scroll-indicator">
+        <div class="scroll-indicator" data-target="section-3">
             <div class="scroll-progress"></div>
         </div>
     </section>
 
-    <section class="image-section" data-section="3">
+    <section class="image-section" id="section-3" data-section="3">
         <%= image_tag 'shop/dorayaki.png', class: 'background-image', alt: 'どら焼き' %>
         <div class="overlay"></div>
         <div class="content-wrapper">
@@ -448,16 +325,13 @@
             </div>
         </div>
 
-        <div class="scroll-indicator">
-            <div class="scroll-progress"></div>
-        </div>
     </section>
 </div>
 
+<% content_for :page_scripts do %>
 <script>
-    // スムーズスクロールとアニメーションの実装
     document.addEventListener('DOMContentLoaded', function() {
-        // Intersection Observer でスクロールアニメーション
+        // スクロールアニメーション用のIntersection Observer
         const observerOptions = {
             root: null,
             rootMargin: '-10% 0px -10% 0px',
@@ -486,52 +360,39 @@
             });
         }, observerOptions);
 
-        const imageSections = document.querySelectorAll('.image-section');
-        imageSections.forEach(section => {
-            observer.observe(section);
-        });
+        // 各セクションを監視
+        const sections = document.querySelectorAll('.image-section');
+        sections.forEach(section => observer.observe(section));
 
         // スクロールインジケーターのクリック処理
         const scrollIndicators = document.querySelectorAll('.scroll-indicator');
-        const allSections = document.querySelectorAll('.title-section, .image-section');
-
-        scrollIndicators.forEach((indicator, index) => {
+        scrollIndicators.forEach(indicator => {
             indicator.addEventListener('click', function() {
-                // 最後のセクション（画像セクション3）の場合は画像セクション2へ
-                const currentSection = indicator.closest('.image-section');
-                const isLastSection = currentSection && currentSection.dataset.section === '3';
-
-                if (isLastSection) {
-                    // 画像セクション2へスクロール
-                    const targetSection = allSections[2]; // 0: title, 1: image1, 2: image2
+                const targetId = this.getAttribute('data-target');
+                if (targetId) {
+                    const targetSection = document.getElementById(targetId);
                     if (targetSection) {
                         targetSection.scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
-                } else {
-                    // 次のセクションへ
-                    const nextSection = allSections[index + 1];
-                    if (nextSection) {
-                        nextSection.scrollIntoView({
-                            behavior: 'smooth'
+                            behavior: 'smooth',
+                            block: 'start'
                         });
                     }
                 }
             });
         });
 
-        // パララックス効果
-        window.addEventListener('scroll', function() {
-            const imageSections = document.querySelectorAll('.image-section');
-            imageSections.forEach(section => {
-                const rect = section.getBoundingClientRect();
-                const scrollPercent = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-                const backgroundImage = section.querySelector('.background-image');
-                if (backgroundImage && scrollPercent >= 0 && scrollPercent <= 1) {
-                    backgroundImage.style.transform = `translateY(${(scrollPercent - 0.5) * 20}%)`;
-                }
+        // スクロールインジケーターにホバーエフェクト追加
+        scrollIndicators.forEach(indicator => {
+            indicator.style.cursor = 'pointer';
+
+            indicator.addEventListener('mouseenter', function() {
+                this.style.opacity = '0.8';
+            });
+
+            indicator.addEventListener('mouseleave', function() {
+                this.style.opacity = '1';
             });
         });
     });
 </script>
+<% end %>

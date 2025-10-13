@@ -2,7 +2,7 @@
 <html lang="ja">
 
 <head>
-    <title>うさぎや</title>
+    <title><%= content_for?(:title) ? yield(:title) : "御菓子処うさぎや" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -34,11 +34,19 @@
         }
     </style>
 
+    <%= yield :page_styles %>
+
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
 </head>
 
 <body>
+    <!-- 共通ヘッダー（管理画面以外） -->
+    <% unless controller_path.start_with?('admin') %>
+    <%= render 'shared/header' %>
+    <% end %>
+
     <%= yield %>
+    <%= yield :page_scripts %>
 </body>
 
 </html>
