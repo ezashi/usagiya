@@ -68,8 +68,6 @@ const mountComponent = (rootId, Component, retryCount = 0) => {
 const mountAllComponents = () => {
   console.log('Mounting all components...')
   
-  ensureWhiteBackground()
-  
   // ホームページではReactコンポーネントをマウントしない（ERBを使用）
   const isHomePage = window.location.pathname === '/' || window.location.pathname === '/pages/home'
   
@@ -105,7 +103,6 @@ const debouncedMount = () => {
   }
   
   mountTimeout = setTimeout(() => {
-    ensureWhiteBackground()
     mountAllComponents()
   }, 50)
 }
@@ -113,11 +110,9 @@ const debouncedMount = () => {
 // 初回読み込み時
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    ensureWhiteBackground()
     mountAllComponents()
   })
 } else {
-  ensureWhiteBackground()
   mountAllComponents()
 }
 
@@ -131,53 +126,11 @@ document.addEventListener('turbo:before-visit', () => {
 })
 
 document.addEventListener('turbo:before-render', () => {
-  ensureWhiteBackground()
   unmountAllComponents()
 })
 
 document.addEventListener('turbo:render', debouncedMount)
 document.addEventListener('turbo:load', debouncedMount)
 document.addEventListener('turbo:frame-load', debouncedMount)
-
-// 背景色監視（安全策）
-let backgroundCheckInterval = null
-
-const startBackgroundCheck = () => {
-  if (backgroundCheckInterval) {
-    clearInterval(backgroundCheckInterval)
-  }
-  
-  backgroundCheckInterval = setInterval(() => {
-    const bodyBg = window.getComputedStyle(document.body).backgroundColor
-    const htmlBg = window.getComputedStyle(document.documentElement).backgroundColor
-    
-    if (bodyBg === 'rgb(0, 0, 0)' || htmlBg === 'rgb(0, 0, 0)') {
-      console.warn('Black background detected! Forcing white...')
-      ensureWhiteBackground()
-    }
-  }, 500)
-}
-
-const stopBackgroundCheck = () => {
-  if (backgroundCheckInterval) {
-    clearInterval(backgroundCheckInterval)
-    backgroundCheckInterval = null
-  }
-}
-
-document.addEventListener('turbo:load', () => {
-  startBackgroundCheck()
-  setTimeout(stopBackgroundCheck, 5000)
-})
-
-if (document.readyState === 'complete') {
-  startBackgroundCheck()
-  setTimeout(stopBackgroundCheck, 5000)
-} else {
-  window.addEventListener('load', () => {
-    startBackgroundCheck()
-    setTimeout(stopBackgroundCheck, 5000)
-  })
-}
 
 console.log('Application.js loaded successfully!')
