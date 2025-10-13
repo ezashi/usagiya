@@ -24,10 +24,12 @@
         height: 100%;
         opacity: 0;
         transition: opacity 1s ease-in-out;
+        pointer-events: none;
     }
 
     .slide.active {
         opacity: 1;
+        pointer-events: auto;
     }
 
     .slide img {
@@ -36,7 +38,7 @@
         object-fit: cover;
     }
 
-    /* さとふるスライドのクリック可能スタイル */
+    /* さとふるスライドのみクリック可能 */
     .slide-clickable {
         cursor: pointer;
     }
@@ -44,6 +46,11 @@
     .slide-clickable:hover img {
         transform: scale(1.05);
         transition: transform 0.3s;
+    }
+
+    /* 他のスライドは通常のカーソル */
+    .slide:not(.slide-clickable) {
+        cursor: default;
     }
 
     /* コンテンツエリア */
@@ -185,7 +192,7 @@
     <div class="slide" data-slide-index="2">
         <%= image_tag 'top/motipai.jpg', alt: 'もちパイ' %>
     </div>
-    <div class="slide slide-clickable" data-slide-index="3">
+    <div class="slide slide-clickable" data-slide-index="3" data-url="https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1">
         <%= image_tag 'top/satofuru.jpg', alt: 'さとふる' %>
     </div>
 </section>
@@ -246,9 +253,11 @@
 
 <%= content_for :page_scripts do %>
 <script>
-    // スライドショー機能
-    document.addEventListener('DOMContentLoaded', function() {
+    // Turbo対応: スライドショー機能
+    function initializeSlideshow() {
         const slides = document.querySelectorAll('.slide');
+        if (!slides || slides.length === 0) return;
+
         let currentSlide = 0;
 
         function showSlide(index) {
@@ -265,15 +274,52 @@
             showSlide(currentSlide);
         }
 
-        // 5秒ごとにスライド切り替え
-        setInterval(nextSlide, 5000);
+        // 既存のインターバルをクリア
+        if (window.slideshowInterval) {
+            clearInterval(window.slideshowInterval);
+        }
 
-        // さとふるスライドのクリックイベント
-        const satofuruSlide = document.querySelector('.slide-clickable');
-        if (satofuruSlide) {
-            satofuruSlide.addEventListener('click', function() {
-                window.open('https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1', '_blank');
+        // 5秒ごとにスライド切り替え
+        window.slideshowInterval = setInterval(nextSlide, 5000);
+
+        // さとふるスライド（slide-clickableクラスを持つもの）のクリックイベント
+        // 既存のイベントリスナーをすべて削除してから新しく追加
+        const clickableSlides = document.querySelectorAll('.slide-clickable');
+        clickableSlides.forEach(function(slide) {
+            // 要素を複製して置き換え（既存のイベントリスナーを削除）
+            const newSlide = slide.cloneNode(true);
+            slide.parentNode.replaceChild(newSlide, slide);
+        });
+
+        // 新しく追加されたクリック可能なスライドにイベントリスナーを追加
+        document.querySelectorAll('.slide-clickable').forEach(function(slide) {
+            slide.addEventListener('click', function(e) {
+                // アクティブなスライドのみクリック可能
+                if (this.classList.contains('active')) {
+                    const url = this.getAttribute('data-url');
+                    if (url) {
+                        window.open(url, '_blank');
+                    }
+                }
             });
+        });
+    }
+
+    // 初回読み込み時
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeSlideshow);
+    } else {
+        initializeSlideshow();
+    }
+
+    // Turboページ遷移時
+    document.addEventListener('turbo:load', initializeSlideshow);
+    document.addEventListener('turbo:render', initializeSlideshow);
+
+    // ページ離脱時にインターバルをクリア
+    document.addEventListener('turbo:before-render', function() {
+        if (window.slideshowInterval) {
+            clearInterval(window.slideshowInterval);
         }
     });
 </script>

@@ -100,6 +100,10 @@
         z-index: 1999;
     }
 
+    .overlay-featured.active {
+        display: block;
+    }
+
     .side-menu-featured {
         position: fixed;
         top: 0;
@@ -111,6 +115,10 @@
         transition: right 0.3s;
         z-index: 2000;
         overflow-y: auto;
+    }
+
+    .side-menu-featured.active {
+        right: 0;
     }
 
     .side-menu-close {
@@ -150,7 +158,7 @@
         transform: translateX(5px);
     }
 
-    /* レスポンシブ対応 - トップ画面と同じ */
+    /* レスポンシブ対応 */
     @media (max-width: 1024px) {
         header {
             padding: 20px 30px;
@@ -231,7 +239,7 @@
         <%= link_to "季節限定商品", seasonal_products_path %>
         <%= link_to "お知らせ", notices_path %>
         <%= link_to "お問い合わせ", new_inquiry_path %>
-        <div class="hamburger" id="hamburger-featured">
+        <div class="hamburger" id="hamburger-menu">
             <span></span>
             <span></span>
         </div>
@@ -239,11 +247,11 @@
 </header>
 
 <!-- オーバーレイ -->
-<div class="overlay-featured" id="overlay-featured"></div>
+<div class="overlay-featured" id="overlay-menu"></div>
 
 <!-- サイドメニュー -->
-<div class="side-menu-featured" id="sideMenu-featured">
-    <div class="side-menu-close" id="closeMenu-featured">&times;</div>
+<div class="side-menu-featured" id="sideMenu">
+    <div class="side-menu-close" id="closeMenu">&times;</div>
     <ul class="side-menu-links">
         <li><%= link_to "ホーム", root_path %></li>
         <li><%= link_to "御菓子処うさぎやの想い", spirit_path %></li>
@@ -260,40 +268,58 @@
 </div>
 
 <script>
-    function initializeHamburgerMenu() {
-        const hamburger = document.getElementById('hamburger-featured');
-        const sideMenu = document.getElementById('sideMenu-featured');
-        const overlay = document.getElementById('overlay-featured');
-        const closeMenu = document.getElementById('closeMenu-featured');
+    // Turbo対応: 初回とページ遷移の両方で実行
+    function initializeHeaderMenu() {
+        const hamburger = document.getElementById('hamburger-menu');
+        const overlay = document.getElementById('overlay-menu');
+        const sideMenu = document.getElementById('sideMenu');
+        const closeMenu = document.getElementById('closeMenu');
 
-        if (hamburger && sideMenu && overlay && closeMenu) {
-            // 既存のイベントリスナーを削除して重複を防ぐ
-            hamburger.replaceWith(hamburger.cloneNode(true));
-            const newHamburger = document.getElementById('hamburger-featured');
-            const newOverlay = document.getElementById('overlay-featured');
-            const newCloseMenu = document.getElementById('closeMenu-featured');
-
-            newHamburger.addEventListener('click', function(e) {
-                e.preventDefault();
-                sideMenu.style.right = '0';
-                newOverlay.style.display = 'block';
-            });
-
-            newCloseMenu.addEventListener('click', function(e) {
-                e.preventDefault();
-                sideMenu.style.right = '-300px';
-                newOverlay.style.display = 'none';
-            });
-
-            newOverlay.addEventListener('click', function(e) {
-                e.preventDefault();
-                sideMenu.style.right = '-300px';
-                newOverlay.style.display = 'none';
-            });
+        if (!hamburger || !overlay || !sideMenu || !closeMenu) {
+            return;
         }
+
+        // 既存のイベントリスナーを削除（重複防止）
+        const newHamburger = hamburger.cloneNode(true);
+        const newCloseMenu = closeMenu.cloneNode(true);
+        const newOverlay = overlay.cloneNode(true);
+
+        hamburger.parentNode.replaceChild(newHamburger, hamburger);
+        closeMenu.parentNode.replaceChild(newCloseMenu, closeMenu);
+        overlay.parentNode.replaceChild(newOverlay, overlay);
+
+        // 新しい要素を取得
+        const ham = document.getElementById('hamburger-menu');
+        const over = document.getElementById('overlay-menu');
+        const close = document.getElementById('closeMenu');
+
+        // メニューを開く
+        ham.addEventListener('click', function(e) {
+            e.stopPropagation();
+            over.classList.add('active');
+            sideMenu.classList.add('active');
+        });
+
+        // メニューを閉じる
+        close.addEventListener('click', function() {
+            over.classList.remove('active');
+            sideMenu.classList.remove('active');
+        });
+
+        over.addEventListener('click', function() {
+            over.classList.remove('active');
+            sideMenu.classList.remove('active');
+        });
     }
 
-    document.addEventListener('DOMContentLoaded', initializeHamburgerMenu);
+    // 初回読み込み時
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeHeaderMenu);
+    } else {
+        initializeHeaderMenu();
+    }
 
-    document.addEventListener('turbo:load', initializeHamburgerMenu);
+    // Turboページ遷移時
+    document.addEventListener('turbo:load', initializeHeaderMenu);
+    document.addEventListener('turbo:render', initializeHeaderMenu);
 </script>
