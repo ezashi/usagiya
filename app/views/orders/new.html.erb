@@ -847,50 +847,43 @@
     </div>
 </div>
 
+
 <script>
-    // エラーメッセージのリンクをクリックしたときのスクロール処理
-    function scrollToField(event, fieldId) {
-        event.preventDefault();
-        const field = document.getElementById(fieldId);
-        if (field) {
-            const headerOffset = 140; // ヘッダーの高さ + 余白を増やす
-            const elementPosition = field.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    // フォームの初期化関数
+    function initializeOrderForm() {
+        // 合計金額の計算
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        const totalAmount = document.getElementById('total-amount');
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
-
-            // フィールドにフォーカスを当てる
-            setTimeout(() => {
-                field.focus();
-            }, 500);
-        }
-    }
-
-    // 送り先選択の切り替え
-    document.addEventListener('DOMContentLoaded', function() {
-        // 注文フォームへのスムーススクロール
-        const orderButton = document.querySelector('.order-button');
-        if (orderButton) {
-            orderButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                const orderForm = document.getElementById('order-form');
-                if (orderForm) {
-                    // ヘッダーの高さを考慮してスクロール位置を調整
-                    const headerOffset = 100; // ヘッダーの高さ + 余白
-                    const elementPosition = orderForm.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
+        if (!quantityInputs.length || !totalAmount) {
+            console.warn('注文フォームの要素が見つかりません');
+            return;
         }
 
+        function calculateTotal() {
+            let total = 0;
+            quantityInputs.forEach(input => {
+                const quantity = parseInt(input.value) || 0;
+                const price = parseInt(input.dataset.price) || 0;
+                total += quantity * price;
+            });
+            totalAmount.textContent = '¥' + total.toLocaleString();
+        }
+
+        // ページロード時に合計を計算
+        calculateTotal();
+
+        // 各入力フィールドにイベントリスナーを追加
+        quantityInputs.forEach(input => {
+            // 既存のイベントリスナーを削除してから追加（重複防止）
+            input.removeEventListener('input', calculateTotal);
+            input.removeEventListener('change', calculateTotal);
+
+            input.addEventListener('input', calculateTotal);
+            input.addEventListener('change', calculateTotal);
+        });
+
+        // 送り先選択の切り替え
         const shippingSame = document.getElementById('shipping_same');
         const shippingDifferent = document.getElementById('shipping_different');
         const shippingFields = document.getElementById('shipping-address-fields');
@@ -903,36 +896,53 @@
             }
         }
 
-        // ページロード時に状態を確認して表示
-        // ラジオボタンの状態に基づいて表示を切り替え
-        toggleShippingFields();
+        if (shippingFields) {
+            // ページロード時に状態を確認して表示
+            toggleShippingFields();
 
-        if (shippingSame) {
-            shippingSame.addEventListener('change', toggleShippingFields);
+            if (shippingSame) {
+                shippingSame.removeEventListener('change', toggleShippingFields);
+                shippingSame.addEventListener('change', toggleShippingFields);
+            }
+            if (shippingDifferent) {
+                shippingDifferent.removeEventListener('change', toggleShippingFields);
+                shippingDifferent.addEventListener('change', toggleShippingFields);
+            }
         }
-        if (shippingDifferent) {
-            shippingDifferent.addEventListener('change', toggleShippingFields);
-        }
 
-        // 合計金額の計算
-        const quantityInputs = document.querySelectorAll('.quantity-input');
-        const totalAmount = document.getElementById('total-amount');
+        // 注文フォームへのスムーススクロール
+        const orderButton = document.querySelector('.order-button');
+        if (orderButton) {
+            orderButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const orderForm = document.getElementById('order-form');
+                if (orderForm) {
+                    const headerOffset = 100;
+                    const elementPosition = orderForm.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-        function calculateTotal() {
-            let total = 0;
-            quantityInputs.forEach(input => {
-                const quantity = parseInt(input.value) || 0;
-                const price = parseInt(input.dataset.price) || 0;
-                total += quantity * price;
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
             });
-            totalAmount.textContent = '¥' + total.toLocaleString();
         }
+    }
 
-        // ページロード時に合計を計算（エラー後の値保持に対応）
-        calculateTotal();
+    // DOMContentLoadedイベントで初期化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeOrderForm);
+    } else {
+        // DOMが既に読み込まれている場合は即座に実行
+        initializeOrderForm();
+    }
 
-        quantityInputs.forEach(input => {
-            input.addEventListener('input', calculateTotal);
-        });
-    });
+    // Turbolinks/Turbo対応
+    if (typeof Turbo !== 'undefined') {
+        document.addEventListener('turbo:load', initializeOrderForm);
+    } else {
+        // Turbolinksの古いバージョン対応
+        document.addEventListener('turbolinks:load', initializeOrderForm);
+    }
 </script>
