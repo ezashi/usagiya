@@ -1,9 +1,11 @@
 <%= content_for :page_styles do %>
 <style>
+    html,
     body {
         margin: 0;
         padding: 0;
         overflow-x: hidden;
+        background-color: #ffffff !important;
     }
 
     /* メインビジュアル - 画面いっぱい（レスポンシブ対応） */
@@ -16,6 +18,8 @@
         align-items: center;
         justify-content: center;
         background: #000;
+        margin: 0;
+        padding: 0;
     }
 
     .slide {
@@ -27,6 +31,9 @@
         pointer-events: none;
         top: 0;
         left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .slide.active {
@@ -39,6 +46,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        display: block;
     }
 
     /* さとふるスライドのみクリック可能 */
@@ -59,18 +67,23 @@
     /* コンテンツエリア */
     .content-wrapper {
         max-width: 1400px;
-        margin: 0 auto;
+        margin: 0 auto !important;
         padding: 60px 20px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: #ffffff;
     }
 
     /* 店舗情報セクション */
     .shop-info {
         background: white;
         padding: 60px 40px;
-        margin: 40px auto;
+        margin: 40px auto !important;
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         max-width: 1200px;
+        width: calc(100% - 80px);
+        box-sizing: border-box;
     }
 
     .shop-info h2 {
@@ -257,76 +270,141 @@
 
 <%= content_for :page_scripts do %>
 <script>
-    // Turbo対応: スライドショー機能
-    function initializeSlideshow() {
-        const slides = document.querySelectorAll('.slide');
-        if (!slides || slides.length === 0) return;
+    (function() {
+        'use strict';
 
+        console.log('=== Slideshow script loaded ===');
+
+        let slideshowInterval = null;
         let currentSlide = 0;
+        let slides = null;
+        let isInitialized = false;
 
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.remove('active');
-                if (i === index) {
-                    slide.classList.add('active');
+        function initializeSlideshow() {
+            if (isInitialized) {
+                console.log('Slideshow already initialized, skipping...');
+                return;
+            }
+
+            console.log('Initializing slideshow...');
+
+            slides = document.querySelectorAll('.main-visual .slide');
+            console.log('Found slides:', slides.length);
+
+            if (!slides || slides.length === 0) {
+                console.warn('No slides found');
+                return;
+            }
+
+            // すべてのスライドからactiveクラスを削除
+            slides.forEach(slide => slide.classList.remove('active'));
+
+            // 最初のスライドをアクティブに
+            if (slides[0]) {
+                slides[0].classList.add('active');
+                console.log('First slide activated');
+            }
+
+            currentSlide = 0;
+
+            // 既存のインターバルをクリア
+            if (slideshowInterval) {
+                clearInterval(slideshowInterval);
+            }
+
+            // スライド切り替え関数
+            function nextSlide() {
+                if (!slides || slides.length === 0) return;
+
+                // 現在のスライドを非表示
+                slides[currentSlide].classList.remove('active');
+
+                // 次のスライドへ
+                currentSlide = (currentSlide + 1) % slides.length;
+
+                // 次のスライドを表示
+                slides[currentSlide].classList.add('active');
+
+                console.log('Switched to slide:', currentSlide);
+            }
+
+            // 5秒ごとに自動切り替え
+            slideshowInterval = setInterval(nextSlide, 5000);
+
+            // クリック可能なスライドの処理
+            setupClickableSlides();
+
+            isInitialized = true;
+            console.log('Slideshow initialized successfully!');
+        }
+
+        function setupClickableSlides() {
+            const clickableSlides = document.querySelectorAll('.slide-clickable');
+            console.log('Found clickable slides:', clickableSlides.length);
+
+            clickableSlides.forEach(function(slide) {
+                // 既存のイベントリスナーを削除するために複製
+                const newSlide = slide.cloneNode(true);
+                if (slide.parentNode) {
+                    slide.parentNode.replaceChild(newSlide, slide);
                 }
             });
-        }
 
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % slides.length;
-            showSlide(currentSlide);
-        }
-
-        // 既存のインターバルをクリア
-        if (window.slideshowInterval) {
-            clearInterval(window.slideshowInterval);
-        }
-
-        showSlide(0);
-
-        // 5秒ごとにスライド切り替え
-        window.slideshowInterval = setInterval(nextSlide, 5000);
-
-        // さとふるスライド（slide-clickableクラスを持つもの）のクリックイベント
-        // 既存のイベントリスナーをすべて削除してから新しく追加
-        const clickableSlides = document.querySelectorAll('.slide-clickable');
-        clickableSlides.forEach(function(slide) {
-            // 要素を複製して置き換え（既存のイベントリスナーを削除）
-            const newSlide = slide.cloneNode(true);
-            slide.parentNode.replaceChild(newSlide, slide);
-        });
-
-        // 新しく追加されたクリック可能なスライドにイベントリスナーを追加
-        document.querySelectorAll('.slide-clickable').forEach(function(slide) {
-            slide.addEventListener('click', function(e) {
-                // アクティブなスライドのみクリック可能
-                if (this.classList.contains('active')) {
-                    const url = this.getAttribute('data-url');
-                    if (url) {
-                        window.open(url, '_blank');
+            // 新しくクリックイベントを追加
+            document.querySelectorAll('.slide-clickable').forEach(function(slide) {
+                slide.addEventListener('click', function(e) {
+                    if (this.classList.contains('active')) {
+                        const url = this.getAttribute('data-url');
+                        if (url) {
+                            console.log('Opening URL:', url);
+                            window.open(url, '_blank');
+                        }
                     }
-                }
+                });
             });
-        });
-    }
-
-    // 初回読み込み時
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeSlideshow);
-    } else {
-        initializeSlideshow();
-    }
-
-    // Turboページ遷移時
-    document.addEventListener('turbo:load', initializeSlideshow);
-    document.addEventListener('turbo:render', initializeSlideshow);
-
-    // ページ離脱時にインターバルをクリア
-    document.addEventListener('turbo:before-render', function() {
-        if (window.slideshowInterval) {
-            clearInterval(window.slideshowInterval);
         }
-    });
+
+        function cleanup() {
+            console.log('Cleaning up slideshow...');
+            if (slideshowInterval) {
+                clearInterval(slideshowInterval);
+                slideshowInterval = null;
+            }
+            isInitialized = false;
+        }
+
+        // 初期化のタイミング
+        function tryInitialize() {
+            // メインビジュアルが存在するか確認
+            const mainVisual = document.querySelector('.main-visual');
+            if (mainVisual) {
+                setTimeout(initializeSlideshow, 200);
+            }
+        }
+
+        // DOMContentLoaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', tryInitialize);
+        } else {
+            tryInitialize();
+        }
+
+        // Turbo対応
+        document.addEventListener('turbo:load', function() {
+            console.log('turbo:load event');
+            cleanup();
+            tryInitialize();
+        });
+
+        document.addEventListener('turbo:before-render', function() {
+            console.log('turbo:before-render - cleaning up');
+            cleanup();
+        });
+
+        // ページ離脱時のクリーンアップ
+        window.addEventListener('beforeunload', cleanup);
+
+        console.log('=== Slideshow script setup complete ===');
+    })();
 </script>
 <% end %>

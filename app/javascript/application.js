@@ -16,17 +16,6 @@ console.log('Application.js loading...')
 // マウント済みコンポーネントを追跡
 const mountedRoots = new Map()
 
-// 背景色を強制的に白に設定する関数
-const ensureWhiteBackground = () => {
-  document.documentElement.style.backgroundColor = '#ffffff'
-  document.body.style.backgroundColor = '#ffffff'
-  
-  const rootElements = document.querySelectorAll('[id$="-root"]')
-  rootElements.forEach(el => {
-    el.style.backgroundColor = '#ffffff'
-  })
-}
-
 // Reactコンポーネントを安全にマウントする関数
 const mountComponent = (rootId, Component, retryCount = 0) => {
   const maxRetries = 3
