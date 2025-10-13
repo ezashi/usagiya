@@ -29,6 +29,7 @@
         object-fit: contain;
         filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
         transition: opacity 0.3s;
+        background-color: transparent;
     }
 
     .logo-image:hover {
@@ -268,58 +269,75 @@
 </div>
 
 <script>
-    // Turbo対応: 初回とページ遷移の両方で実行
-    function initializeHeaderMenu() {
+    // Turbo対応のハンバーガーメニュースクリプト
+    function initializeHamburgerMenu() {
         const hamburger = document.getElementById('hamburger-menu');
-        const overlay = document.getElementById('overlay-menu');
         const sideMenu = document.getElementById('sideMenu');
         const closeMenu = document.getElementById('closeMenu');
+        const overlay = document.getElementById('overlay-menu');
 
-        if (!hamburger || !overlay || !sideMenu || !closeMenu) {
+        if (!hamburger || !sideMenu || !closeMenu || !overlay) {
+            console.warn('Hamburger menu elements not found');
             return;
         }
 
-        // 既存のイベントリスナーを削除（重複防止）
-        const newHamburger = hamburger.cloneNode(true);
-        const newCloseMenu = closeMenu.cloneNode(true);
-        const newOverlay = overlay.cloneNode(true);
-
-        hamburger.parentNode.replaceChild(newHamburger, hamburger);
-        closeMenu.parentNode.replaceChild(newCloseMenu, closeMenu);
-        overlay.parentNode.replaceChild(newOverlay, overlay);
-
-        // 新しい要素を取得
-        const ham = document.getElementById('hamburger-menu');
-        const over = document.getElementById('overlay-menu');
-        const close = document.getElementById('closeMenu');
-
         // メニューを開く
-        ham.addEventListener('click', function(e) {
+        const openMenu = (e) => {
+            e.preventDefault();
             e.stopPropagation();
-            over.classList.add('active');
             sideMenu.classList.add('active');
-        });
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
 
         // メニューを閉じる
-        close.addEventListener('click', function() {
-            over.classList.remove('active');
+        const closeMenuFunc = () => {
             sideMenu.classList.remove('active');
-        });
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        };
 
-        over.addEventListener('click', function() {
-            over.classList.remove('active');
-            sideMenu.classList.remove('active');
+        // イベントリスナーをクリア（重複防止）
+        const newHamburger = hamburger.cloneNode(true);
+        hamburger.parentNode.replaceChild(newHamburger, hamburger);
+
+        const newCloseMenu = closeMenu.cloneNode(true);
+        closeMenu.parentNode.replaceChild(newCloseMenu, closeMenu);
+
+        const newOverlay = overlay.cloneNode(true);
+        overlay.parentNode.replaceChild(newOverlay, overlay);
+
+        // 新しいイベントリスナーを追加
+        newHamburger.addEventListener('click', openMenu);
+        newCloseMenu.addEventListener('click', closeMenuFunc);
+        newOverlay.addEventListener('click', closeMenuFunc);
+
+        // サイドメニュー内のリンクをクリックしたらメニューを閉じる
+        const sideMenuLinks = document.querySelectorAll('#sideMenu a');
+        sideMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                setTimeout(closeMenuFunc, 100);
+            });
         });
     }
 
-    // 初回読み込み時
+    // 初回ロード時
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeHeaderMenu);
+        document.addEventListener('DOMContentLoaded', initializeHamburgerMenu);
     } else {
-        initializeHeaderMenu();
+        initializeHamburgerMenu();
     }
 
-    // Turboページ遷移時
-    document.addEventListener('turbo:load', initializeHeaderMenu);
-    document.addEventListener('turbo:render', initializeHeaderMenu);
+    // Turbo対応
+    document.addEventListener('turbo:load', initializeHamburgerMenu);
+    document.addEventListener('turbo:render', initializeHamburgerMenu);
+
+    // ページ遷移前にメニューを閉じる
+    document.addEventListener('turbo:before-visit', () => {
+        const sideMenu = document.getElementById('sideMenu');
+        const overlay = document.getElementById('overlay-menu');
+        if (sideMenu) sideMenu.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
 </script>
