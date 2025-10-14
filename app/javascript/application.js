@@ -86,7 +86,7 @@ const unmountAllComponents = () => {
   mountedRoots.forEach((root, rootId) => {
     try {
       root.unmount()
-      console.log(`${rootId} unmounted`)
+      console.log(`${rootId} unmounted successfully`)
     } catch (error) {
       console.error(`Error unmounting ${rootId}:`, error)
     }
@@ -95,42 +95,39 @@ const unmountAllComponents = () => {
   mountedRoots.clear()
 }
 
-let mountTimeout = null
-
-const debouncedMount = () => {
-  if (mountTimeout) {
-    clearTimeout(mountTimeout)
-  }
+// ページ読み込み時とTurbo遷移時の処理
+const initializePage = () => {
+  console.log('Initializing page...')
   
-  mountTimeout = setTimeout(() => {
+  // 既存のコンポーネントをアンマウント
+  unmountAllComponents()
+  
+  // 新しいコンポーネントをマウント
+  setTimeout(() => {
     mountAllComponents()
-  }, 50)
+  }, 10)
 }
 
-// 初回読み込み時
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    mountAllComponents()
-  })
-} else {
-  mountAllComponents()
-}
-
-// Turboイベント対応
-document.addEventListener('turbo:before-visit', () => {
-  const sideMenu = document.getElementById('sideMenu')
-  const overlay = document.getElementById('overlay-menu')
-  if (sideMenu) sideMenu.classList.remove('active')
-  if (overlay) overlay.classList.remove('active')
-  document.body.style.overflow = ''
+// DOMContentLoaded: 初回読み込み時
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOMContentLoaded event fired')
+  initializePage()
 })
 
-document.addEventListener('turbo:before-render', () => {
+// turbo:load: Turbo Driveによるページ遷移時
+document.addEventListener('turbo:load', () => {
+  console.log('turbo:load event fired')
+  initializePage()
+})
+
+// turbo:before-cache: ページがキャッシュされる前
+document.addEventListener('turbo:before-cache', () => {
+  console.log('turbo:before-cache event fired')
   unmountAllComponents()
 })
 
-document.addEventListener('turbo:render', debouncedMount)
-document.addEventListener('turbo:load', debouncedMount)
-document.addEventListener('turbo:frame-load', debouncedMount)
-
-console.log('Application.js loaded successfully!')
+// turbo:render: ページがレンダリングされた後
+document.addEventListener('turbo:render', () => {
+  console.log('turbo:render event fired')
+  // スタイルの再適用が必要な場合はここで実行
+})
