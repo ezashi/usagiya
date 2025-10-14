@@ -6,14 +6,158 @@
         min-height: 100vh;
         padding-top: 160px;
         padding-bottom: 40px;
+        background-color: #f9fafb;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
+    .inquiry-wrapper {
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .inquiry-title {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .inquiry-title h1 {
+        font-size: 1.875rem;
+        font-weight: bold;
+        color: #000;
+        margin-bottom: 8px;
+    }
+
+    .inquiry-title p {
+        color: #666;
+        font-size: 18.5px;
+    }
+
+    .inquiry-form-card {
+        border-radius: 8px;
+        padding: 32px;
+    }
+
+    .inquiry-form-group {
+        margin-bottom: 24px;
+    }
+
+    .inquiry-label {
+        display: block;
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .inquiry-required {
+        color: #dc2626;
+        font-size: 0.875rem;
+    }
+
+    .inquiry-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
     .inquiry-input:focus {
-        outline: 2px solid #ec4899;
-        outline-offset: 2px;
+        outline: none;
+        border-color: #ec4899;
+        box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    }
+
+    .inquiry-input.error {
+        border-color: #f87171;
+        background-color: #fef2f2;
+    }
+
+    .inquiry-textarea {
+        resize: vertical;
+        min-height: 150px;
+        font-size: 14px;
+    }
+
+    .inquiry-hint {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin-top: 4px;
+    }
+
+    .inquiry-error-box {
+        background-color: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 24px;
+    }
+
+    .inquiry-error-title {
+        color: #991b1b;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .inquiry-error-list {
+        color: #b91c1c;
+        font-size: 0.875rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .inquiry-error-list li {
+        margin-bottom: 4px;
+    }
+
+    .inquiry-submit-wrapper {
+        text-align: center;
+        padding-top: 16px;
+    }
+
+    .inquiry-submit-button {
+        padding: 12px 32px;
+        background-color: #ffc0cb;
+        font-weight: bold;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .inquiry-submit-button:hover {
+        background-color: #ff83a7;
+    }
+
+    .inquiry-contact-info {
+        margin-top: 32px;
+        text-align: center;
+        color: #666;
+    }
+
+    .inquiry-contact-info p {
+        margin-bottom: 8px;
+    }
+
+    .inquiry-phone {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .inquiry-phone:hover {
+        color: #db2777;
+    }
+
+    .inquiry-hours {
+        font-size: 0.875rem;
+        margin-top: 4px;
     }
 
     @media (max-width: 640px) {
@@ -21,27 +165,49 @@
             padding-top: 100px;
         }
 
+        .inquiry-wrapper {
+            padding: 0 16px;
+        }
+
+        .inquiry-form-card {
+            padding: 24px;
+        }
+
         .inquiry-input {
             font-size: 16px;
+        }
+
+        .inquiry-title h1 {
+            font-size: 1.5rem;
+        }
+
+        .inquiry-title p {
+            font-size: 15px;
+        }
+
+        .inquiry-contact-info p {
+            font-size: 13px;
         }
     }
 </style>
 
-<div class="inquiry-container bg-gray-50">
-    <div class="w-full max-w-lg mx-auto px-4">
+<div class="inquiry-container">
+    <div class="inquiry-wrapper">
         <!-- ページタイトル -->
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">お問い合わせ</h1>
-            <p class="text-gray-600">お気軽にお問い合わせください</p>
+        <div class="inquiry-title">
+            <h1>お問い合わせ</h1>
+            <p>お気軽にお問い合わせください。</p>
+            <p>2~3日以内に返信がない場合、システムの不具合の</p>
+            <p>可能性が有りますので、お手数ですが0778-62-0861までお電話ください。</p>
         </div>
 
         <!-- お問い合わせフォーム -->
         <%= form_with model: @inquiry, url: inquiries_path, local: true do |f| %>
         <!-- エラーメッセージ -->
         <% if @inquiry.errors.any? %>
-        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <p class="text-red-800 font-bold mb-2">入力内容にエラーがあります</p>
-            <ul class="text-red-700 text-sm space-y-1">
+        <div class="inquiry-error-box">
+            <p class="inquiry-error-title">入力内容にエラーがあります</p>
+            <ul class="inquiry-error-list">
                 <% @inquiry.errors.full_messages.each do |message| %>
                 <li>・<%= message %></li>
                 <% end %>
@@ -50,71 +216,76 @@
         <% end %>
 
         <!-- フォームカード -->
-        <div class="bg-white rounded-lg shadow p-6 space-y-6">
+        <div class="inquiry-form-card">
             <!-- お名前 -->
-            <div>
-                <%= f.label :name, class: "block text-gray-700 font-bold mb-2" do %>
-                お名前 <span class="text-red-600 text-sm">*</span>
+            <div class="inquiry-form-group">
+                <%= f.label :name, class: "inquiry-label" do %>
+                お名前 <span class="inquiry-required">*</span>
                 <% end %>
                 <%= f.text_field :name, 
-                        class: "inquiry-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500 #{@inquiry.errors[:name].any? ? 'border-red-400 bg-red-50' : ''}", 
+                        class: "inquiry-input #{@inquiry.errors[:name].any? ? 'error' : ''}", 
                         placeholder: "山田 太郎" %>
             </div>
 
             <!-- 電話番号 -->
-            <div>
-                <%= f.label :phone, class: "block text-gray-700 font-bold mb-2" do %>
-                電話番号 <span class="text-red-600 text-sm">*</span>
+            <div class="inquiry-form-group">
+                <%= f.label :phone, class: "inquiry-label" do %>
+                電話番号 <span class="inquiry-required">*</span>
                 <% end %>
                 <%= f.telephone_field :phone, 
-                        class: "inquiry-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500 #{@inquiry.errors[:phone].any? ? 'border-red-400 bg-red-50' : ''}", 
-                        placeholder: "09012345678" %>
-                <p class="text-gray-500 text-sm mt-1">※ハイフンなしで入力してください</p>
+                        class: "inquiry-input #{@inquiry.errors[:phone].any? ? 'error' : ''}", 
+                        placeholder: "0778620861" %>
+                <p class="inquiry-hint">※ハイフンなしで入力してください</p>
             </div>
 
             <!-- メールアドレス -->
-            <div>
-                <%= f.label :email, class: "block text-gray-700 font-bold mb-2" do %>
-                メールアドレス <span class="text-red-600 text-sm">*</span>
+            <div class="inquiry-form-group">
+                <%= f.label :email, class: "inquiry-label" do %>
+                メールアドレス <span class="inquiry-required">*</span>
                 <% end %>
                 <%= f.email_field :email, 
-                        class: "inquiry-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500 #{@inquiry.errors[:email].any? ? 'border-red-400 bg-red-50' : ''}", 
-                        placeholder: "example@example.com" %>
+                        class: "inquiry-input #{@inquiry.errors[:email].any? ? 'error' : ''}", 
+                        placeholder: "usagiya-oishi@gmail.com" %>
             </div>
 
             <!-- お問い合わせ内容 -->
-            <div>
-                <%= f.label :content, class: "block text-gray-700 font-bold mb-2" do %>
-                お問い合わせ内容 <span class="text-red-600 text-sm">*</span>
+            <div class="inquiry-form-group">
+                <%= f.label :content, class: "inquiry-label" do %>
+                お問い合わせ内容 <span class="inquiry-required">*</span>
                 <% end %>
                 <%= f.text_area :content, 
                         rows: 6, 
-                        class: "inquiry-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500 resize-y #{@inquiry.errors[:content].any? ? 'border-red-400 bg-red-50' : ''}", 
-                        placeholder: "お問い合わせ内容をご記入ください" %>
+                        class: "inquiry-input inquiry-textarea #{@inquiry.errors[:content].any? ? 'error' : ''}", 
+                        placeholder: "※こちらの「お問い合わせ」からのご注文,
+ご予約は受けつけておりませんので「冷凍もちパイの発送」ページまたは、お電話にてお願いいたします。" %>
             </div>
 
             <!-- 画像認証 -->
-            <div>
-                <label class="block text-gray-700 font-bold mb-2">
-                    画像認証 <span class="text-red-600 text-sm">*</span>
+            <div class="inquiry-form-group">
+                <label class="inquiry-label">
+                    画像認証 <span class="inquiry-required">*</span>
                 </label>
                 <%= recaptcha_tags %>
             </div>
 
             <!-- 送信ボタン -->
-            <div class="text-center pt-4">
-                <%= f.submit "送信する", class: "px-8 py-3 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-lg transition-colors cursor-pointer" %>
+            <div class="inquiry-submit-wrapper">
+                <%= f.submit "送信する", class: "inquiry-submit-button" %>
             </div>
         </div>
         <% end %>
 
         <!-- 連絡先情報 -->
-        <div class="mt-8 text-center text-gray-600">
-            <p class="mb-2">お急ぎの場合はお電話でお問い合わせください</p>
-            <p class="text-2xl font-bold text-gray-800">
-                <a href="tel:0776-22-4152" class="hover:text-pink-600 transition-colors">0776-22-4152</a>
+        <div class="inquiry-contact-info">
+            <p>
+                内容を確認いたしまして、速やかにご回答させていただきます。<br>
+                多忙な時期は返信に2〜3日お時間をいただく場合がございます。
+                お急ぎの場合はお電話でお問い合わせください
             </p>
-            <p class="text-sm mt-1">営業時間: 9:00～19:00（定休日: 日曜日）</p>
+            <p>
+                <a href="tel:0776-22-4152" class="inquiry-phone">0776-62-0861</a>
+            </p>
+            <p class="inquiry-hours">営業時間: 9:00～18:00（定休日: 日曜日・不定休: 月曜日）</p>
         </div>
     </div>
 </div>
