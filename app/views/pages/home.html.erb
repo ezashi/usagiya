@@ -99,6 +99,7 @@
         gap: 40px;
         max-width: 1000px;
         margin: 0 auto;
+        align-items: center;
     }
 
     .info-column {
@@ -113,11 +114,14 @@
         margin-bottom: 10px;
         border-bottom: 2px solid #EE827C;
         padding-bottom: 5px;
+        text-align: center;
     }
 
     .info-section p {
         margin: 5px 0;
         line-height: 1.8;
+        color: #333;
+        text-align: center;
     }
 
     .postal-code {
@@ -217,7 +221,7 @@
 <!-- コンテンツエリア -->
 <div class="content-wrapper">
     <!-- 店舗情報セクション -->
-    <section class="shop-info" id="shop-info">
+    <section class="shop-info">
         <h2>店舗情報</h2>
         <div class="info-grid-new">
             <div class="info-column">
@@ -226,19 +230,19 @@
                     <p class="postal-code">〒916-0071</p>
                     <p class="address">福井県鯖江市持明寺町5-10-1</p>
                 </div>
+
                 <div class="info-section">
                     <h3>アクセス</h3>
-                    <p class="bus-info">
+                    <p>
                         <%= link_to "Googleマップで見る", "https://maps.google.com/?q=福井県鯖江市持明寺町5-10-1", target: "_blank", class: "map-link" %>
                     </p>
                 </div>
+
                 <div class="info-section">
-                    <h3>お問い合わせ</h3>
-                    <p>TEL: 0778-62-0861</p>
-                    <p>
-                        <%= link_to "お問い合わせフォーム", new_inquiry_path, style: "color: #EE827C; text-decoration: underline;" %>
-                    </p>
+                    <h3>駐車場</h3>
+                    <p>店舗前に駐車スペースあり</p>
                 </div>
+
             </div>
 
             <div class="info-column">
@@ -248,10 +252,15 @@
                     <p>定休日: 日曜日</p>
                     <p style="font-size: 0.9rem; color: #666;">(月曜日に不定休あり)</p>
                 </div>
+
                 <div class="info-section">
-                    <h3>駐車場</h3>
-                    <p>店舗前に駐車スペースあり</p>
+                    <h3>お問い合わせ</h3>
+                    <p><%= link_to "0778-62-0861", "tel:0778-62-0861" %></p>
+                    <p>
+                        <%= link_to "お問い合わせフォーム", new_inquiry_path, style: "color: #EE827C; text-decoration: underline;" %>
+                    </p>
                 </div>
+
                 <div class="info-section">
                     <h3>SNS</h3>
                     <div class="sns-links">
@@ -263,6 +272,7 @@
                         <% end %>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -325,7 +335,7 @@
                 // 次のスライドを表示
                 slides[currentSlide].classList.add('active');
 
-                console.log('Switched to slide:', currentSlide);
+                console.log('Switched to slide:', currentSlide + '/' + (slides.length - 1));
             }
 
             // 5秒ごとに自動切り替え
@@ -343,21 +353,12 @@
             console.log('Found clickable slides:', clickableSlides.length);
 
             clickableSlides.forEach(function(slide) {
-                // 既存のイベントリスナーを削除するために複製
-                const newSlide = slide.cloneNode(true);
-                if (slide.parentNode) {
-                    slide.parentNode.replaceChild(newSlide, slide);
-                }
-            });
-
-            // 新しくクリックイベントを追加
-            document.querySelectorAll('.slide-clickable').forEach(function(slide) {
                 slide.addEventListener('click', function(e) {
                     if (this.classList.contains('active')) {
                         const url = this.getAttribute('data-url');
                         if (url) {
                             console.log('Opening URL:', url);
-                            window.open(url, '_blank');
+                            window.open(url, '_blank', 'noopener,noreferrer');
                         }
                     }
                 });
@@ -375,10 +376,10 @@
 
         // 初期化のタイミング
         function tryInitialize() {
-            // メインビジュアルが存在するか確認
             const mainVisual = document.querySelector('.main-visual');
             if (mainVisual) {
-                setTimeout(initializeSlideshow, 200);
+                // 画像の読み込みを待つ
+                setTimeout(initializeSlideshow, 100);
             }
         }
 
