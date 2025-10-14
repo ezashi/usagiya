@@ -1,411 +1,393 @@
-<%= content_for :page_styles do %>
-<style>
-    html,
-    body {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        background-color: #ffffff !important;
-    }
+<div data-turbo="false">
+    <style>
+        /* ホームページ専用スタイル */
+        html,
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden !important;
+            background-color: #ffffff !important;
+            width: 100% !important;
+        }
 
-    /* メインビジュアル - 画面いっぱい（レスポンシブ対応） */
-    .main-visual {
-        position: relative;
-        width: 100%;
-        height: 100vh;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #000;
-        margin: 0;
-        padding: 0;
-    }
-
-    .slide {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        transition: opacity 1s ease-in-out;
-        pointer-events: none;
-        top: 0;
-        left: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .slide.active {
-        opacity: 1;
-        z-index: 1;
-        pointer-events: auto;
-    }
-
-    .slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-
-    /* さとふるスライドのみクリック可能 */
-    .slide-clickable {
-        cursor: pointer;
-    }
-
-    .slide-clickable:hover img {
-        transform: scale(1.05);
-        transition: transform 0.3s;
-    }
-
-    /* 他のスライドは通常のカーソル */
-    .slide:not(.slide-clickable) {
-        cursor: default;
-    }
-
-    /* コンテンツエリア */
-    .content-wrapper {
-        max-width: 1400px;
-        margin: 0 auto !important;
-        padding: 60px 20px;
-        width: 100%;
-        box-sizing: border-box;
-        background-color: #ffffff;
-    }
-
-    /* 店舗情報セクション */
-    .shop-info {
-        background: white;
-        padding: 60px 40px;
-        margin: 40px auto !important;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        max-width: 1200px;
-        width: calc(100% - 80px);
-        box-sizing: border-box;
-    }
-
-    .shop-info h2 {
-        text-align: center;
-        font-size: 2rem;
-        margin-bottom: 40px;
-        color: #EE827C;
-    }
-
-    .info-grid-new {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
-        max-width: 1000px;
-        margin: 0 auto;
-        align-items: center;
-    }
-
-    .info-column {
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-    }
-
-    .info-section h3 {
-        font-size: 1.2rem;
-        color: #EE827C;
-        margin-bottom: 10px;
-        border-bottom: 2px solid #EE827C;
-        padding-bottom: 5px;
-        text-align: center;
-    }
-
-    .info-section p {
-        margin: 5px 0;
-        line-height: 1.8;
-        color: #333;
-        text-align: center;
-    }
-
-    .postal-code {
-        font-size: 0.95rem;
-        color: #666;
-    }
-
-    .address {
-        font-size: 1.05rem;
-        font-weight: 500;
-    }
-
-    .bus-info {
-        font-size: 0.95rem;
-        color: #666;
-        line-height: 1.6;
-    }
-
-    .shop-map {
-        margin-top: 40px;
-        text-align: center;
-    }
-
-    .shop-map iframe {
-        width: 100%;
-        max-width: 800px;
-        height: 400px;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .sns-links {
-        display: flex;
-        gap: 15px;
-        margin-top: 10px;
-        justify-content: center;
-    }
-
-    .sns-icon-img {
-        display: block;
-        transition: opacity 0.3s;
-    }
-
-    .sns-icon-img:hover {
-        opacity: 0.7;
-    }
-
-    .sns-image {
-        width: 50px;
-        height: 50px;
-        object-fit: contain;
-    }
-
-    /* レスポンシブ対応 */
-    @media (max-width: 768px) {
+        /* メインビジュアル - 画面いっぱい（レスポンシブ対応） */
         .main-visual {
-            height: 70vh;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            margin: 0;
+            padding: 0;
         }
 
-        .info-grid-new {
-            grid-template-columns: 1fr;
-            gap: 30px;
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            pointer-events: none;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        .slide.active {
+            opacity: 1;
+            z-index: 1;
+            pointer-events: auto;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* さとふるスライドのみクリック可能 */
+        .slide-clickable {
+            cursor: pointer;
+        }
+
+        .slide-clickable:hover img {
+            transform: scale(1.05);
+            transition: transform 0.3s;
+        }
+
+        /* 他のスライドは通常のカーソル */
+        .slide:not(.slide-clickable) {
+            cursor: default;
+        }
+
+        /* コンテンツエリア */
+        .content-wrapper {
+            max-width: 1400px;
+            margin: 0 auto !important;
+            padding: 60px 20px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #ffffff;
+        }
+
+        /* 店舗情報セクション */
         .shop-info {
-            padding: 40px 20px;
+            background: white;
+            padding: 60px 40px;
+            margin: 40px auto !important;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            width: calc(100% - 80px);
+            box-sizing: border-box;
         }
 
         .shop-info h2 {
-            font-size: 1.5rem;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #EE827C;
+        }
+
+        .info-grid-new {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            align-items: center;
+        }
+
+        .info-column {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .info-section h3 {
+            font-size: 1.2rem;
+            color: #EE827C;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #EE827C;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .info-section p {
+            margin: 5px 0;
+            line-height: 1.8;
+            color: #333;
+            text-align: center;
+        }
+
+        .postal-code {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .address {
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        .bus-info {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .shop-map {
+            margin-top: 40px;
+            text-align: center;
         }
 
         .shop-map iframe {
-            height: 300px;
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-    }
-</style>
-<% end %>
 
-<!-- メインビジュアル（画面いっぱい） -->
-<section class="main-visual">
-    <div class="slide active" data-slide-index="0">
-        <%= image_tag 'top/mamedaifuku_kusamoti.jpg', alt: '豆大福と草餅' %>
-    </div>
-    <div class="slide" data-slide-index="1">
-        <%= image_tag 'top/usagimanju.jpg', alt: 'うさぎまんじゅう' %>
-    </div>
-    <div class="slide" data-slide-index="2">
-        <%= image_tag 'top/motipai.jpg', alt: 'もちパイ' %>
-    </div>
-    <div class="slide slide-clickable" data-slide-index="3" data-url="https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1">
-        <%= image_tag 'top/satofuru.jpg', alt: 'さとふる' %>
-    </div>
-</section>
+        .sns-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            justify-content: center;
+        }
 
-<!-- コンテンツエリア -->
-<div class="content-wrapper">
-    <!-- 店舗情報セクション -->
-    <section class="shop-info">
-        <h2>店舗情報</h2>
-        <div class="info-grid-new">
-            <div class="info-column">
-                <div class="info-section">
-                    <h3>住所</h3>
-                    <p class="postal-code">〒916-0071</p>
-                    <p class="address">福井県鯖江市持明寺町5-10-1</p>
-                </div>
+        .sns-icon-img {
+            display: block;
+            transition: opacity 0.3s;
+        }
 
-                <div class="info-section">
-                    <h3>アクセス</h3>
-                    <p>
-                        <%= link_to "Googleマップで見る", "https://maps.google.com/?q=福井県鯖江市持明寺町5-10-1", target: "_blank", class: "map-link" %>
-                    </p>
-                </div>
+        .sns-icon-img:hover {
+            opacity: 0.7;
+        }
 
-                <div class="info-section">
-                    <h3>駐車場</h3>
-                    <p>店舗前に駐車スペースあり</p>
-                </div>
+        .sns-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
 
-            </div>
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .main-visual {
+                height: 70vh;
+            }
 
-            <div class="info-column">
-                <div class="info-section">
-                    <h3>営業時間</h3>
-                    <p>平日・土曜日: 9:00〜18:00</p>
-                    <p>定休日: 日曜日</p>
-                    <p style="font-size: 0.9rem; color: #666;">(月曜日に不定休あり)</p>
-                </div>
+            .info-grid-new {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
 
-                <div class="info-section">
-                    <h3>お問い合わせ</h3>
-                    <p><%= link_to "0778-62-0861", "tel:0778-62-0861" %></p>
-                    <p>
-                        <%= link_to "お問い合わせフォーム", new_inquiry_path, style: "color: #EE827C; text-decoration: underline;" %>
-                    </p>
-                </div>
+            .shop-info {
+                padding: 40px 20px;
+            }
 
-                <div class="info-section">
-                    <h3>SNS</h3>
-                    <div class="sns-links">
-                        <%= link_to 'https://page.line.me/296kbwry?openQrModal=true', target: '_blank', class: 'sns-icon-img' do %>
-                        <%= image_tag 'shop/line.png', alt: 'LINE', class: 'sns-image' %>
-                        <% end %>
-                        <%= link_to 'https://www.instagram.com/usagiya.fukui/?hl=ja', target: '_blank', class: 'sns-icon-img' do %>
-                        <%= image_tag 'shop/instagram.png', alt: 'Instagram', class: 'sns-image' %>
-                        <% end %>
-                    </div>
-                </div>
+            .shop-info h2 {
+                font-size: 1.5rem;
+            }
 
-            </div>
+            .shop-map iframe {
+                height: 300px;
+            }
+        }
+    </style>
+
+    <!-- メインビジュアル（画面いっぱい） -->
+    <section class="main-visual">
+        <div class="slide active" data-slide-index="0">
+            <%= image_tag 'top/mamedaifuku_kusamoti.jpg', alt: '豆大福と草餅' %>
+        </div>
+        <div class="slide" data-slide-index="1">
+            <%= image_tag 'top/usagimanju.jpg', alt: 'うさぎまんじゅう' %>
+        </div>
+        <div class="slide" data-slide-index="2">
+            <%= image_tag 'top/motipai.jpg', alt: 'もちパイ' %>
+        </div>
+        <div class="slide slide-clickable" data-slide-index="3" data-url="https://www.satofull.jp/products/list.php?s4=18&q=%E3%81%86%E3%81%95%E3%81%8E%E3%82%84&cnt=60&p=1">
+            <%= image_tag 'top/satofuru.jpg', alt: 'さとふる' %>
         </div>
     </section>
-</div>
 
-<%= content_for :page_scripts do %>
-<script>
-    (function() {
-        'use strict';
+    <!-- コンテンツエリア -->
+    <div class="content-wrapper">
+        <!-- 店舗情報セクション -->
+        <section class="shop-info">
+            <h2>店舗情報</h2>
+            <div class="info-grid-new">
+                <div class="info-column">
+                    <div class="info-section">
+                        <h3>住所</h3>
+                        <p class="postal-code">〒916-0071</p>
+                        <p class="address">福井県鯖江市持明寺町5-10-1</p>
+                    </div>
 
-        console.log('=== Slideshow script loaded ===');
+                    <div class="info-section">
+                        <h3>アクセス</h3>
+                        <p>
+                            <%= link_to "Googleマップで見る", "https://maps.google.com/?q=福井県鯖江市持明寺町5-10-1", target: "_blank", class: "map-link" %>
+                        </p>
+                    </div>
 
-        let slideshowInterval = null;
-        let currentSlide = 0;
-        let slides = null;
-        let isInitialized = false;
+                    <div class="info-section">
+                        <h3>駐車場</h3>
+                        <p>店舗前に駐車スペースあり</p>
+                    </div>
 
-        function initializeSlideshow() {
-            if (isInitialized) {
-                console.log('Slideshow already initialized, skipping...');
-                return;
+                </div>
+
+                <div class="info-column">
+                    <div class="info-section">
+                        <h3>営業時間</h3>
+                        <p>平日・土曜日: 9:00〜18:00</p>
+                        <p>定休日: 日曜日</p>
+                        <p style="font-size: 0.9rem; color: #666;">(月曜日に不定休あり)</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>お問い合わせ</h3>
+                        <p><%= link_to "0778-62-0861", "tel:0778-62-0861" %></p>
+                        <p>
+                            <%= link_to "お問い合わせフォーム", new_inquiry_path, style: "color: #EE827C; text-decoration: underline;" %>
+                        </p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>SNS</h3>
+                        <div class="sns-links">
+                            <%= link_to 'https://page.line.me/296kbwry?openQrModal=true', target: '_blank', class: 'sns-icon-img' do %>
+                            <%= image_tag 'shop/line.png', alt: 'LINE', class: 'sns-image' %>
+                            <% end %>
+                            <%= link_to 'https://www.instagram.com/usagiya.fukui/?hl=ja', target: '_blank', class: 'sns-icon-img' do %>
+                            <%= image_tag 'shop/instagram.png', alt: 'Instagram', class: 'sns-image' %>
+                            <% end %>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // ホームページのスライドショー（Turbo無効化済み）
+        (function() {
+            'use strict';
+
+            console.log('=== Slideshow script initializing ===');
+
+            let slideshowInterval = null;
+            let currentSlide = 0;
+            let slides = null;
+
+            function initializeSlideshow() {
+                // 初期化済みチェック
+                const mainVisual = document.querySelector('.main-visual');
+                if (!mainVisual) {
+                    console.warn('Main visual not found');
+                    return;
+                }
+
+                if (mainVisual.dataset.initialized === 'true') {
+                    console.log('Slideshow already initialized, skipping');
+                    return;
+                }
+
+                slides = document.querySelectorAll('.main-visual .slide');
+                console.log('Found slides:', slides.length);
+
+                if (!slides || slides.length === 0) {
+                    console.warn('No slides found');
+                    return;
+                }
+
+                // すべてのスライドからactiveクラスを削除
+                slides.forEach(slide => slide.classList.remove('active'));
+
+                // 最初のスライドをアクティブに
+                if (slides[0]) {
+                    slides[0].classList.add('active');
+                    console.log('First slide activated');
+                }
+
+                currentSlide = 0;
+
+                // スライド切り替え関数
+                function nextSlide() {
+                    if (!slides || slides.length === 0) return;
+
+                    slides[currentSlide].classList.remove('active');
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    slides[currentSlide].classList.add('active');
+                }
+
+                // 5秒ごとに自動切り替え
+                slideshowInterval = setInterval(nextSlide, 5000);
+
+                // クリック可能なスライドの処理
+                setupClickableSlides();
+
+                // 初期化済みフラグを設定
+                mainVisual.dataset.initialized = 'true';
+
+                console.log('Slideshow initialized successfully!');
             }
 
-            console.log('Initializing slideshow...');
+            function setupClickableSlides() {
+                const clickableSlides = document.querySelectorAll('.slide-clickable');
+                console.log('Setting up clickable slides:', clickableSlides.length);
 
-            slides = document.querySelectorAll('.main-visual .slide');
-            console.log('Found slides:', slides.length);
-
-            if (!slides || slides.length === 0) {
-                console.warn('No slides found');
-                return;
-            }
-
-            // すべてのスライドからactiveクラスを削除
-            slides.forEach(slide => slide.classList.remove('active'));
-
-            // 最初のスライドをアクティブに
-            if (slides[0]) {
-                slides[0].classList.add('active');
-                console.log('First slide activated');
-            }
-
-            currentSlide = 0;
-
-            // 既存のインターバルをクリア
-            if (slideshowInterval) {
-                clearInterval(slideshowInterval);
-            }
-
-            // スライド切り替え関数
-            function nextSlide() {
-                if (!slides || slides.length === 0) return;
-
-                // 現在のスライドを非表示
-                slides[currentSlide].classList.remove('active');
-
-                // 次のスライドへ
-                currentSlide = (currentSlide + 1) % slides.length;
-
-                // 次のスライドを表示
-                slides[currentSlide].classList.add('active');
-
-                console.log('Switched to slide:', currentSlide + '/' + (slides.length - 1));
-            }
-
-            // 5秒ごとに自動切り替え
-            slideshowInterval = setInterval(nextSlide, 5000);
-
-            // クリック可能なスライドの処理
-            setupClickableSlides();
-
-            isInitialized = true;
-            console.log('Slideshow initialized successfully!');
-        }
-
-        function setupClickableSlides() {
-            const clickableSlides = document.querySelectorAll('.slide-clickable');
-            console.log('Found clickable slides:', clickableSlides.length);
-
-            clickableSlides.forEach(function(slide) {
-                slide.addEventListener('click', function(e) {
-                    if (this.classList.contains('active')) {
-                        const url = this.getAttribute('data-url');
-                        if (url) {
-                            console.log('Opening URL:', url);
-                            window.open(url, '_blank', 'noopener,noreferrer');
-                        }
+                clickableSlides.forEach(function(slide) {
+                    // 既に初期化済みかチェック
+                    if (slide.dataset.clickInitialized === 'true') {
+                        console.log('Slide already has click handler, skipping');
+                        return;
                     }
+
+                    // クリックハンドラーを追加
+                    slide.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        if (this.classList.contains('active')) {
+                            const url = this.getAttribute('data-url');
+                            if (url) {
+                                console.log('Opening URL:', url);
+                                window.open(url, '_blank', 'noopener,noreferrer');
+                            }
+                        }
+                    });
+
+                    // 初期化済みフラグを設定
+                    slide.dataset.clickInitialized = 'true';
                 });
+            }
+
+            // ページ読み込み完了時に初期化
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializeSlideshow);
+            } else {
+                initializeSlideshow();
+            }
+
+            // クリーンアップ（ページ離脱時）
+            window.addEventListener('beforeunload', function() {
+                if (slideshowInterval) {
+                    clearInterval(slideshowInterval);
+                }
             });
-        }
 
-        function cleanup() {
-            console.log('Cleaning up slideshow...');
-            if (slideshowInterval) {
-                clearInterval(slideshowInterval);
-                slideshowInterval = null;
-            }
-            isInitialized = false;
-        }
-
-        // 初期化のタイミング
-        function tryInitialize() {
-            const mainVisual = document.querySelector('.main-visual');
-            if (mainVisual) {
-                // 画像の読み込みを待つ
-                setTimeout(initializeSlideshow, 100);
-            }
-        }
-
-        // DOMContentLoaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', tryInitialize);
-        } else {
-            tryInitialize();
-        }
-
-        // Turbo対応
-        document.addEventListener('turbo:load', function() {
-            console.log('turbo:load event');
-            cleanup();
-            tryInitialize();
-        });
-
-        document.addEventListener('turbo:before-render', function() {
-            console.log('turbo:before-render - cleaning up');
-            cleanup();
-        });
-
-        // ページ離脱時のクリーンアップ
-        window.addEventListener('beforeunload', cleanup);
-
-        console.log('=== Slideshow script setup complete ===');
-    })();
-</script>
-<% end %>
+            console.log('=== Slideshow script setup complete ===');
+        })();
+    </script>
+</div>

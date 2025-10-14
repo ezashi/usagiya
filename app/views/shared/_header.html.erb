@@ -230,7 +230,7 @@
 
 <header>
     <div class="logo">
-        <%= link_to root_path do %>
+        <%= link_to root_path, data: { turbo: false } do %>
         <%= image_tag 'usagiya.png', alt: '御菓子処うさぎや', class: 'logo-image' %>
         <% end %>
     </div>
@@ -254,7 +254,7 @@
 <div class="side-menu-featured" id="sideMenu">
     <div class="side-menu-close" id="closeMenu">&times;</div>
     <ul class="side-menu-links">
-        <li><%= link_to "ホーム", root_path %></li>
+        <li><%= link_to "ホーム", root_path, data: { turbo: false } %></li>
         <li><%= link_to "御菓子処うさぎやの想い", spirit_path %></li>
         <li><%= link_to "おすすめ商品", featured_products_path %></li>
         <li><%= link_to "季節限定商品", seasonal_products_path %></li>
