@@ -114,6 +114,12 @@
         margin-bottom: 4px;
     }
 
+    .inquiry-recaptcha-widget {
+        display: flex;
+        justify-content: center;
+        margin-top: 8px;
+    }
+
     .inquiry-submit-wrapper {
         text-align: center;
         padding-top: 16px;
@@ -265,7 +271,9 @@
                 <label class="inquiry-label">
                     画像認証 <span class="inquiry-required">*</span>
                 </label>
-                <%= recaptcha_tags %>
+                <div class="inquiry-recaptcha-widget">
+                    <%= recaptcha_tags %>
+                </div>
             </div>
 
             <!-- 送信ボタン -->
