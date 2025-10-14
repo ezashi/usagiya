@@ -1,14 +1,38 @@
 <% content_for :title, "お問い合わせ - うさぎや" %>
-<% content_for :description, "うさぎやへのお問い合わせフォーム。商品やご注文に関するご質問など、お気軽にお問い合わせください。" %>
 
 <style>
-    .inquiry-container {
+    /* お問い合わせページ専用スタイル */
+    .inquiry-page-wrapper {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Arial, sans-serif;
+        background: #f9fafb;
         min-height: 100vh;
-        padding-top: 160px;
-        padding-bottom: 40px;
-        background-color: #f9fafb;
+    }
+
+    .inquiry-page-header {
+        background: #fcedf5;
+        padding: 180px 20px 40px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .inquiry-page-header h1 {
+        font-size: 1.875rem;
+        color: #000;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .inquiry-page-header p {
+        color: #333;
+        font-size: 18.5px;
+    }
+
+    /* お問い合わせコンテンツコンテナ */
+    .inquiry-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
         display: flex;
-        align-items: center;
         justify-content: center;
     }
 
@@ -19,25 +43,10 @@
         padding: 0 20px;
     }
 
-    .inquiry-title {
-        text-align: center;
-        margin-bottom: 32px;
-    }
-
-    .inquiry-title h1 {
-        font-size: 1.875rem;
-        font-weight: bold;
-        color: #000;
-        margin-bottom: 8px;
-    }
-
-    .inquiry-title p {
-        color: #666;
-        font-size: 18.5px;
-    }
-
     .inquiry-form-card {
+        background-color: white;
         border-radius: 8px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
         padding: 32px;
     }
 
@@ -167,8 +176,20 @@
     }
 
     @media (max-width: 640px) {
+        .inquiry-page-header {
+            padding: 100px 20px 30px;
+        }
+
+        .inquiry-page-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .inquiry-page-header p {
+            font-size: 14.5px;
+        }
+
         .inquiry-container {
-            padding-top: 100px;
+            padding: 20px 16px;
         }
 
         .inquiry-wrapper {
@@ -180,120 +201,114 @@
         }
 
         .inquiry-input {
-            font-size: 16px;
-        }
-
-        .inquiry-title h1 {
-            font-size: 1.5rem;
-        }
-
-        .inquiry-title p {
-            font-size: 15px;
+            font-size: 14.5px;
         }
 
         .inquiry-contact-info p {
-            font-size: 13px;
+            font-size: 12.5px;
         }
     }
 </style>
 
-<div class="inquiry-container">
-    <div class="inquiry-wrapper">
-        <!-- ページタイトル -->
-        <div class="inquiry-title">
-            <h1>お問い合わせ</h1>
-            <p>お気軽にお問い合わせください。</p>
-            <p>2~3日以内に返信がない場合、システムの不具合の</p>
-            <p>可能性が有りますので、お手数ですが0778-62-0861までお電話ください。</p>
-        </div>
+<div class="inquiry-page-wrapper">
+    <!-- ページヘッダー -->
+    <div class="inquiry-page-header">
+        <h1>お問い合わせ</h1>
+        <p>お気軽にお問い合わせください。</p>
+        <p>2~3日以内に返信がない場合、システムの不具合の</p>
+        <p>可能性が有りますので、お手数ですが0778-62-0861までお電話ください。</p>
+    </div>
 
-        <!-- お問い合わせフォーム -->
-        <%= form_with model: @inquiry, url: inquiries_path, local: true do |f| %>
-        <!-- エラーメッセージ -->
-        <% if @inquiry.errors.any? %>
-        <div class="inquiry-error-box">
-            <p class="inquiry-error-title">入力内容にエラーがあります</p>
-            <ul class="inquiry-error-list">
-                <% @inquiry.errors.full_messages.each do |message| %>
-                <li>・<%= message %></li>
-                <% end %>
-            </ul>
-        </div>
-        <% end %>
+    <!-- メインコンテンツ -->
+    <div class="inquiry-container">
+        <div class="inquiry-wrapper">
+            <!-- お問い合わせフォーム -->
+            <%= form_with model: @inquiry, url: inquiries_path, local: true do |f| %>
+            <!-- エラーメッセージ -->
+            <% if @inquiry.errors.any? %>
+            <div class="inquiry-error-box">
+                <p class="inquiry-error-title">入力内容にエラーがあります</p>
+                <ul class="inquiry-error-list">
+                    <% @inquiry.errors.full_messages.each do |message| %>
+                    <li>・<%= message %></li>
+                    <% end %>
+                </ul>
+            </div>
+            <% end %>
 
-        <!-- フォームカード -->
-        <div class="inquiry-form-card">
-            <!-- お名前 -->
-            <div class="inquiry-form-group">
-                <%= f.label :name, class: "inquiry-label" do %>
-                お名前 <span class="inquiry-required">*</span>
-                <% end %>
-                <%= f.text_field :name, 
+            <!-- フォームカード -->
+            <div class="inquiry-form-card">
+                <!-- お名前 -->
+                <div class="inquiry-form-group">
+                    <%= f.label :name, class: "inquiry-label" do %>
+                    お名前 <span class="inquiry-required">*</span>
+                    <% end %>
+                    <%= f.text_field :name, 
                         class: "inquiry-input #{@inquiry.errors[:name].any? ? 'error' : ''}", 
                         placeholder: "山田 太郎" %>
-            </div>
+                </div>
 
-            <!-- 電話番号 -->
-            <div class="inquiry-form-group">
-                <%= f.label :phone, class: "inquiry-label" do %>
-                電話番号 <span class="inquiry-required">*</span>
-                <% end %>
-                <%= f.telephone_field :phone, 
+                <!-- 電話番号 -->
+                <div class="inquiry-form-group">
+                    <%= f.label :phone, class: "inquiry-label" do %>
+                    電話番号 <span class="inquiry-required">*</span>
+                    <% end %>
+                    <%= f.telephone_field :phone, 
                         class: "inquiry-input #{@inquiry.errors[:phone].any? ? 'error' : ''}", 
                         placeholder: "0778620861" %>
-                <p class="inquiry-hint">※ハイフンなしで入力してください</p>
-            </div>
+                    <p class="inquiry-hint">※ハイフンなしで入力してください</p>
+                </div>
 
-            <!-- メールアドレス -->
-            <div class="inquiry-form-group">
-                <%= f.label :email, class: "inquiry-label" do %>
-                メールアドレス <span class="inquiry-required">*</span>
-                <% end %>
-                <%= f.email_field :email, 
+                <!-- メールアドレス -->
+                <div class="inquiry-form-group">
+                    <%= f.label :email, class: "inquiry-label" do %>
+                    メールアドレス <span class="inquiry-required">*</span>
+                    <% end %>
+                    <%= f.email_field :email, 
                         class: "inquiry-input #{@inquiry.errors[:email].any? ? 'error' : ''}", 
                         placeholder: "usagiya-oishi@gmail.com" %>
-            </div>
+                </div>
 
-            <!-- お問い合わせ内容 -->
-            <div class="inquiry-form-group">
-                <%= f.label :content, class: "inquiry-label" do %>
-                お問い合わせ内容 <span class="inquiry-required">*</span>
-                <% end %>
-                <%= f.text_area :content, 
+                <!-- お問い合わせ内容 -->
+                <div class="inquiry-form-group">
+                    <%= f.label :content, class: "inquiry-label" do %>
+                    お問い合わせ内容 <span class="inquiry-required">*</span>
+                    <% end %>
+                    <%= f.text_area :content, 
                         rows: 6, 
                         class: "inquiry-input inquiry-textarea #{@inquiry.errors[:content].any? ? 'error' : ''}", 
                         placeholder: "※こちらの「お問い合わせ」からのご注文,
 ご予約は受けつけておりませんので「冷凍もちパイの発送」ページまたは、お電話にてお願いいたします。" %>
-            </div>
+                </div>
 
-            <!-- 画像認証 -->
-            <div class="inquiry-form-group">
-                <label class="inquiry-label">
-                    画像認証 <span class="inquiry-required">*</span>
-                </label>
-                <div class="inquiry-recaptcha-widget">
-                    <%= recaptcha_tags %>
+                <!-- 画像認証 -->
+                <div class="inquiry-form-group">
+                    <label class="inquiry-label">
+                        画像認証 <span class="inquiry-required">*</span>
+                    </label>
+                    <div class="inquiry-recaptcha-widget">
+                        <%= recaptcha_tags %>
+                    </div>
+                </div>
+
+                <!-- 送信ボタン -->
+                <div class="inquiry-submit-wrapper">
+                    <%= f.submit "送信する", class: "inquiry-submit-button" %>
                 </div>
             </div>
+            <% end %>
 
-            <!-- 送信ボタン -->
-            <div class="inquiry-submit-wrapper">
-                <%= f.submit "送信する", class: "inquiry-submit-button" %>
+            <!-- 連絡先情報 -->
+            <div class="inquiry-contact-info">
+                <p>
+                    内容を確認いたしまして、速やかにご回答させていただきます。<br>
+                    多忙な時期は返信に2〜3日お時間をいただく場合がございます。
+                    お急ぎの場合はお電話でお問い合わせください
+                </p>
+                <p>
+                    <a href="tel:0776-62-0861" class="inquiry-phone">0776-62-0861</a>
+                </p>
+                <p class="inquiry-hours">営業時間: 9:00～18:00（定休日: 日曜日）</p>
             </div>
         </div>
-        <% end %>
-
-        <!-- 連絡先情報 -->
-        <div class="inquiry-contact-info">
-            <p>
-                内容を確認いたしまして、速やかにご回答させていただきます。<br>
-                多忙な時期は返信に2〜3日お時間をいただく場合がございます。
-                お急ぎの場合はお電話でお問い合わせください
-            </p>
-            <p>
-                <a href="tel:0776-22-4152" class="inquiry-phone">0776-62-0861</a>
-            </p>
-            <p class="inquiry-hours">営業時間: 9:00～18:00（定休日: 日曜日・不定休: 月曜日）</p>
-        </div>
     </div>
-</div>

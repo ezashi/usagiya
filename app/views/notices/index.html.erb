@@ -1,39 +1,60 @@
+<% content_for :title, "お知らせ - うさぎや" %>
+
 <style>
-    .notices-container {
-        min-height: 100vh;
+    /* ============================================
+       お知らせページ専用スタイル
+       ============================================ */
+    .notices-page-wrapper {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Arial, sans-serif;
         background: #ede4e1;
-        padding-top: 140px;
-        padding-bottom: 4rem;
+        min-height: 100vh;
     }
 
-    .notices-content {
-        max-width: 80rem;
-        margin: 0 auto;
-        padding: 0 2rem;
+    /* お知らせページヘッダー（営業カレンダーと同じスタイル） */
+    .notices-page-header {
+        background: #fcedf5;
+        padding: 180px 20px 40px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .back-to-top-button {
-        position: fixed;
-        left: 2rem;
-        top: 150px;
-        z-index: 40;
-        display: flex;
-        align-items: center;
-        background-color: #ffc0cb;
-        border: 1px solid #000;
+    .notices-page-header h1 {
+        font-size: 2.5rem;
         color: #000;
         font-weight: bold;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.75rem;
-        transition: all 0.3s;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        text-decoration: none;
+        margin-bottom: 10px;
+    }
+
+    .notices-page-header p {
+        color: #333;
         font-size: 1rem;
+    }
+
+    /* お知らせコンテンツコンテナ */
+    .notices-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    /* トップへ戻るボタン */
+    .back-to-top-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 24px;
+        background-color: #ffc0cb;
+        color: #000;
+        border: 1px solid #000;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s;
+        margin-bottom: 20px;
     }
 
     .back-to-top-button:hover {
         background-color: #ff99a9;
-        transform: scale(1.05);
+        transform: translateX(-5px);
     }
 
     .back-icon {
@@ -42,35 +63,14 @@
         margin-right: 0.5rem;
     }
 
-    .back-text-full {
-        display: inline;
-    }
-
     .back-text-short {
         display: none;
     }
 
-    /* ============================================
-       ヘッダー
-       ============================================ */
-    .notices-header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
-    .notices-title {
-        font-size: 3rem;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 1rem;
-    }
-
-    /* ============================================
-       検索・フィルター
-       ============================================ */
+    /* 検索・フィルター */
     .search-filter-container {
         background: white;
-        border-radius: 0.75rem;
+        border-radius: 1rem;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         padding: 1.5rem;
         margin-bottom: 2rem;
@@ -79,34 +79,18 @@
     .search-form {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 1.5rem;
     }
 
     .search-row {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .keyword-field {
-        flex: 1;
-    }
-
-    .search-button-wrapper {
-        flex-shrink: 0;
-        display: flex;
-        align-items: flex-end;
-    }
-
-    .filter-row {
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
     }
 
-    .year-field,
-    .month-field {
+    .keyword-field {
         flex: 1;
-        min-width: 150px;
+        min-width: 250px;
     }
 
     .field-label {
@@ -175,9 +159,7 @@
         margin-right: 0.5rem;
     }
 
-    /* ============================================
-       お知らせリスト
-       ============================================ */
+    /* お知らせリスト */
     .notices-list-wrapper {
         display: flex;
         justify-content: center;
@@ -263,13 +245,11 @@
     }
 
     .notice-content {
-        color: #333;
+        color: #666;
         line-height: 1.8;
     }
 
-    /* ============================================
-       お知らせなし
-       ============================================ */
+    /* お知らせなし */
     .no-notices {
         background: white;
         border-radius: 1rem;
@@ -309,9 +289,7 @@
         background-color: #DB2777;
     }
 
-    /* ============================================
-       Proseスタイル（リッチテキスト）
-       ============================================ */
+    /* Proseスタイル（リッチテキスト） */
     .prose h1,
     .prose h2,
     .prose h3 {
@@ -328,197 +306,60 @@
     }
 
     .prose h2 {
-        font-size: 1.25rem;
+        font-size: 1.5rem;
+        border-left: 4px solid #ec4899;
+        padding-left: 0.75rem;
     }
 
     .prose h3 {
-        font-size: 1.125rem;
+        font-size: 1.25rem;
     }
 
     .prose p {
         margin-bottom: 1rem;
     }
 
-    .prose strong {
-        color: #ec4899;
-        font-weight: 700;
+    .prose ul,
+    .prose ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
     }
 
-    .prose a {
-        color: #ec4899;
-        text-decoration: underline;
-        transition: color 0.3s;
-    }
-
-    .prose a:hover {
-        color: #db2777;
+    .prose li {
+        margin-bottom: 0.5rem;
     }
 
     .prose img {
         max-width: 100%;
         height: auto;
         border-radius: 0.5rem;
-        margin: 1.5rem auto;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .prose ul,
-    .prose ol {
-        margin-left: 1.25rem;
-        margin-bottom: 1rem;
-    }
-
-    .prose li {
-        margin-bottom: 0.375rem;
-    }
-
-    .prose blockquote {
-        border-left: 4px solid #ec4899;
-        padding-left: 1rem;
-        margin-left: 0;
-        font-style: italic;
-        color: #6b7280;
-    }
-
-    .prose code {
-        background-color: #f3f4f6;
-        padding: 0.15rem 0.3rem;
-        border-radius: 0.25rem;
-        font-family: 'Courier New', monospace;
-        font-size: 0.875em;
-    }
-
-    .prose pre {
-        background-color: #1f2937;
-        color: #f9fafb;
-        padding: 0.75rem;
-        border-radius: 0.5rem;
-        overflow-x: auto;
-        margin-bottom: 1rem;
-    }
-
-    .prose pre code {
-        background: none;
-        padding: 0;
-        color: inherit;
-    }
-
-    .prose hr {
-        border: none;
-        border-top: 2px solid #e5e7eb;
         margin: 1.5rem 0;
     }
 
-    /* ============================================
-       レスポンシブ: 1024px
-       ============================================ */
-    @media (max-width: 1024px) {
-        .notices-content {
-            max-width: 64rem;
-            padding: 0 1.5rem;
-        }
-
-        .back-to-top-button {
-            left: 1.5rem;
-        }
-
-        .notices-title {
-            font-size: 2.5rem;
-        }
-
-        .notice-title {
-            font-size: 1.5rem;
-        }
-
-        .search-filter-container {
-            padding: 1.25rem;
-        }
-    }
-
-    /* ============================================
-       レスポンシブ: 768px
-       ============================================ */
+    /* レスポンシブ */
     @media (max-width: 768px) {
+        .notices-page-header {
+            padding: 100px 20px 30px;
+        }
+
+        .notices-page-header h1 {
+            font-size: 1.875rem;
+        }
+
         .notices-container {
-            padding-top: 120px;
-        }
-
-        .notices-content {
-            padding: 0 1rem;
-        }
-
-        .back-to-top-button {
-            left: 1rem;
-            top: 100px;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        .back-icon {
-            width: 1rem;
-            height: 1rem;
-            margin-right: 0.25rem;
-        }
-
-        .notices-title {
-            font-size: 2rem;
-        }
-
-        .notice-title {
-            font-size: 1.25rem;
-        }
-
-        .notice-date {
-            font-size: 1rem;
-        }
-
-        .notice-card-content {
-            padding: 1.5rem;
+            padding: 20px 16px;
         }
 
         .search-filter-container {
             padding: 1rem;
         }
 
-        .filter-row {
+        .search-row {
             flex-direction: column;
         }
 
-        .year-field,
-        .month-field {
+        .keyword-field {
             min-width: 100%;
-        }
-
-        .no-notices {
-            padding: 2rem;
-        }
-
-        .no-notices-icon {
-            width: 4rem;
-            height: 4rem;
-        }
-    }
-
-    /* ============================================
-       レスポンシブ: 480px
-       ============================================ */
-    @media (max-width: 480px) {
-        .notices-container {
-            padding-top: 100px;
-        }
-
-        .notices-content {
-            padding: 0 0.75rem;
-        }
-
-        .back-to-top-button {
-            top: 80px;
-            padding: 0.5rem;
-            font-size: 0.75rem;
-        }
-
-        .back-icon {
-            margin-right: 0;
         }
 
         .back-text-full {
@@ -527,35 +368,6 @@
 
         .back-text-short {
             display: inline;
-        }
-
-        .notices-header {
-            margin-bottom: 1.5rem;
-        }
-
-        .notices-title {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .search-filter-container {
-            padding: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .search-row {
-            flex-direction: column;
-        }
-
-        .search-button-wrapper {
-            width: 100%;
-        }
-
-        .search-button,
-        .reset-button {
-            width: 100%;
-            padding: 0.625rem;
-            font-size: 0.875rem;
         }
 
         .notice-card {
@@ -629,19 +441,22 @@
     }
 </style>
 
-<div class="notices-container">
-    <%= link_to root_path, class: "back-to-top-button" do %>
-    <svg class="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-    </svg>
-    <span class="back-text-full">トップへ</span>
-    <span class="back-text-short">←</span>
-    <% end %>
+<div class="notices-page-wrapper">
+    <!-- ページヘッダー -->
+    <div class="notices-page-header">
+        <h1>お知らせ</h1>
+        <p>うさぎやからの最新情報をお届けします</p>
+    </div>
 
-    <div class="notices-content">
-        <div class="notices-header">
-            <h1 class="notices-title">お知らせ</h1>
-        </div>
+    <!-- メインコンテンツ -->
+    <div class="notices-container">
+        <%= link_to root_path, class: "back-to-top-button" do %>
+        <svg class="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        <span class="back-text-full">トップへ</span>
+        <span class="back-text-short">←</span>
+        <% end %>
 
         <!-- 検索・フィルター -->
         <div class="search-filter-container">
@@ -655,127 +470,73 @@
                             placeholder: "お知らせのタイトルや内容を検索",
                             class: "field-input" %>
                 </div>
-                <div class="search-button-wrapper">
-                    <%= f.submit "検索", class: "search-button" do %>
-                    <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    検索
-                    <% end %>
-                </div>
             </div>
 
-            <!-- フィルター行 -->
-            <div class="filter-row">
-                <div class="year-field">
-                    <label class="field-label">年で絞り込み</label>
-                    <%= f.select :year,
-                            options_for_select(
-                                [["すべて", ""]] + (2020..Date.current.year).to_a.reverse.map { |y| [y, y] },
-                                params[:year]
-                            ),
-                            {},
-                            class: "field-select auto-submit" %>
-                </div>
-                <div class="month-field">
-                    <label class="field-label">月で絞り込み</label>
-                    <%= f.select :month,
-                            options_for_select(
-                                [["すべて", ""]] + (1..12).map { |m| ["#{m}月", m] },
-                                params[:month]
-                            ),
-                            {},
-                            class: "field-select auto-submit" %>
-                </div>
-                <div class="search-button-wrapper">
-                    <%= link_to notices_path, class: "reset-button" do %>
-                    <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
-                    リセット
-                    <% end %>
-                </div>
+            <!-- ボタン行 -->
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <%= link_to notices_path, class: "reset-button" do %>
+                <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                リセット
+                <% end %>
+
+                <%= button_tag type: :submit, class: "search-button" do %>
+                <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                検索
+                <% end %>
             </div>
             <% end %>
         </div>
 
-        <% if @notices.any? %>
+        <!-- お知らせリスト -->
         <div class="notices-list-wrapper">
             <div class="notices-list">
+                <% if @notices.any? %>
                 <% @notices.each do |notice| %>
-                <article class="notice-card">
+                <div class="notice-card">
                     <div class="notice-card-content">
                         <div class="notice-header">
                             <div class="notice-title-wrapper">
-                                <h2 class="notice-title">
-                                    <%= notice.title %>
-                                </h2>
+                                <h2 class="notice-title"><%= notice.title %></h2>
                             </div>
-
                             <div class="notice-meta">
-                                <% if notice.published_at > 7.days.ago %>
-                                <span class="new-badge">NEW</span>
-                                <% end %>
-
-                                <time datetime="<%= notice.published_at.iso8601 %>" class="notice-date">
+                                <span class="notice-date">
                                     <svg class="date-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                     </svg>
-                                    <%= notice.published_at.strftime('%Y年%m月%d日') %>
-                                </time>
+                                    <%= notice.published_at.strftime("%Y.%m.%d") %>
+                                </span>
+                                <% if notice.published_at > 7.days.ago %>
+                                <span class="new-badge">NEW</span>
+                                <% end %>
                             </div>
                         </div>
-
                         <div class="notice-divider"></div>
-
                         <div class="notice-content prose">
-                            <%= notice.content %>
+                            <%= sanitize notice.content, tags: %w[p br strong em u h1 h2 h3 ul ol li img a], attributes: %w[href src alt style] %>
                         </div>
                     </div>
-                </article>
+                </div>
+                <% end %>
+                <% else %>
+                <div class="no-notices">
+                    <svg class="no-notices-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                    <% if params[:keyword].present? || params[:year].present? || params[:month].present? %>
+                    <p class="no-notices-title">検索条件に一致するお知らせが見つかりませんでした</p>
+                    <p class="no-notices-text">別の条件で検索してください</p>
+                    <%= link_to "検索をリセット", notices_path, class: "no-notices-button" %>
+                    <% else %>
+                    <p class="no-notices-title">現在、お知らせはありません</p>
+                    <p class="no-notices-text">新しいお知らせが追加されるまでお待ちください</p>
+                    <% end %>
+                </div>
                 <% end %>
             </div>
         </div>
-
-        <% else %>
-        <!-- お知らせがない場合 -->
-        <div class="no-notices">
-            <svg class="no-notices-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-            </svg>
-            <% if params[:keyword].present? || params[:year].present? || params[:month].present? %>
-            <p class="no-notices-title">検索条件に一致するお知らせが見つかりませんでした</p>
-            <p class="no-notices-text">別の条件で検索してください</p>
-            <%= link_to "検索をリセット", notices_path, class: "no-notices-button" %>
-            <% else %>
-            <p class="no-notices-title">現在、お知らせはありません</p>
-            <p class="no-notices-text">新しいお知らせが追加されるまでお待ちください</p>
-            <% end %>
-        </div>
-        <% end %>
     </div>
 </div>
-</div>
-
-<!-- JavaScriptで自動サブミット -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const autoSubmitElements = document.querySelectorAll('.auto-submit');
-
-        autoSubmitElements.forEach(function(element) {
-            element.addEventListener('change', function() {
-                document.getElementById('search-form').submit();
-            });
-        });
-    });
-
-    document.addEventListener('turbo:load', function() {
-        const autoSubmitElements = document.querySelectorAll('.auto-submit');
-
-        autoSubmitElements.forEach(function(element) {
-            element.addEventListener('change', function() {
-                document.getElementById('search-form').submit();
-            });
-        });
-    });
-</script>
