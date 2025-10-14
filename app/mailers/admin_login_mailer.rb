@@ -10,8 +10,8 @@ class AdminLoginMailer < ApplicationMailer
     )
   end
 
-  def failed_login_attempt(email)
-    @email = email
+  def failed_login_attempt(login_id)
+    @login_id = login_id
     @attempt_time = Time.current
     mail(
       to: ENV["ADMIN_EMAIL"] || "admin@usagiya-fukui.jp",

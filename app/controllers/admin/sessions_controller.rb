@@ -1,35 +1,46 @@
-class Admin::SessionsController < Devise::SessionsController
-  # POST /admin/sign_in
+class Admin::SessionsController < ApplicationController
+  layout "application"
+  skip_before_action :require_admin_login, only: [ :new, :create ]
+
+  # GET /admin/login
+  def new
+    redirect_to admin_root_path if admin_logged_in?
+  end
+
+  # POST /admin/login
   def create
-    self.resource = warden.authenticate!(auth_options)
+    login_id = params[:login_id]
+    password = params[:password]
 
-    if resource
-      set_flash_message!(:notice, :signed_in)
-      sign_in(resource_name, resource)
+    admin_user = AdminUser.authenticate(login_id, password)
 
-      # ログイン成功時のメール通知
-      AdminLoginMailer.successful_login(resource).deliver_later
+    if admin_user
+      # ログイン成功
+      session[:admin_user_id] = admin_user.id
 
-      yield resource if block_given?
-      respond_with resource, location: after_sign_in_path_for(resource)
+      # ログイン成功のメール通知
+      AdminLoginMailer.successful_login(admin_user).deliver_later
+
+      redirect_to admin_root_path, notice: "ログインしました"
+    else
+      # ログイン失敗
+      # ログイン失敗のメール通知
+      AdminLoginMailer.failed_login_attempt(login_id).deliver_later if login_id.present?
+
+      flash.now[:alert] = "ログイン情報が正しくありません"
+      render :new
     end
-  rescue
-    # ログイン失敗時のメール通知
-    if params[:admin_user] && params[:admin_user][:email].present?
-      AdminLoginMailer.failed_login_attempt(params[:admin_user][:email]).deliver_later
-    end
-
-    # 通常のログイン失敗処理
-    super
   end
 
-  protected
-
-  def after_sign_in_path_for(resource)
-    admin_root_path
+  # DELETE /admin/logout
+  def destroy
+    session[:admin_user_id] = nil
+    redirect_to admin_login_path, notice: "ログアウトしました"
   end
 
-  def after_sign_out_path_for(resource_or_scope)
-    new_admin_user_session_path
+  private
+
+  def require_admin_login
+    # このコントローラーではスキップされるので空実装
   end
 end

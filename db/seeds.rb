@@ -156,5 +156,23 @@ CalendarEvent.create!(
 puts "✓ カレンダーイベントを #{CalendarEvent.count}件 作成しました"
 
 
-# 管理者ユーザーの作成は後で実装
-# puts "管理者数: #{AdminUser.count}"
+puts "\n管理者ユーザーを作成中..."
+
+# 既存の管理者ユーザーを削除
+AdminUser.destroy_all
+
+# デフォルトの管理者ユーザーを作成
+admin = AdminUser.create!(
+  login_id: "admin",
+  password: "usagiya2024",
+  password_confirmation: "usagiya2024"
+)
+
+puts "✓ 管理者ユーザーを作成しました"
+puts "  ログインID: #{admin.login_id}"
+puts "  パスワード: usagiya2024"
+puts "\n✨ 全てのシード完了!"
+puts "商品数: #{Product.count}"
+puts "お知らせ数: #{Notice.count}"
+puts "カレンダーイベント数: #{CalendarEvent.count}"
+puts "管理者ユーザー数: #{AdminUser.count}"

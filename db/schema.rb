@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_12_020844) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_14_233341) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,10 +53,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_12_020844) do
   end
 
   create_table "admin_users", force: :cascade do |t|
-    t.string "email"
+    t.string "login_id"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["login_id"], name: "index_admin_users_on_login_id", unique: true
   end
 
   create_table "calendar_events", force: :cascade do |t|

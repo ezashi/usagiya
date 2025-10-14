@@ -37,6 +37,14 @@ Rails.application.routes.draw do
 
   # 管理者向けルート
   namespace :admin do
+    # 管理者認証
+    get "login", to: "sessions#new", as: "login"
+    post "login", to: "sessions#create"
+    delete "logout", to: "sessions#destroy", as: "logout"
+
+    # ダッシュボード
+    root to: "dashboard#index"
+
     # 商品管理
     resources :products do
       member do

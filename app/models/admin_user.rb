@@ -1,24 +1,14 @@
 class AdminUser < ApplicationRecord
-  # Devise modules
-  devise :database_authenticatable,
-         :rememberable,
-         :trackable,
-         :validatable
+  # セキュアパスワード機能を使用
+  has_secure_password
 
   # Validations
-  validates :email, presence: true, uniqueness: true
-  validates :password, length: { minimum: 7 }, if: :password_required?
+  validates :login_id, presence: true, uniqueness: true
+  validates :password, length: { minimum: 7 }, if: -> { new_record? || !password.nil? }
 
-  # Callbacks
-  after_create :send_login_notification
-
-  private
-
-  def send_login_notification
-    AdminLoginMailer.successful_login(self).deliver_later
-  end
-
-  def password_required?
-    !persisted? || !password.nil? || !password_confirmation.nil?
+  # 認証メソッド
+  def self.authenticate(login_id, password)
+    user = find_by(login_id: login_id)
+    user&.authenticate(password)
   end
 end
