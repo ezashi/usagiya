@@ -1,9 +1,7 @@
 <% content_for :title, "お知らせ - うさぎや" %>
 
 <style>
-    /* ============================================
-       お知らせページ専用スタイル
-       ============================================ */
+    /* お知らせページ専用スタイル */
     .notices-page-wrapper {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Arial, sans-serif;
         background: #ede4e1;
@@ -63,10 +61,6 @@
         margin-right: 0.5rem;
     }
 
-    .back-text-short {
-        display: none;
-    }
-
     /* 検索・フィルター */
     .search-filter-container {
         background: white;
@@ -116,6 +110,17 @@
         outline: none;
         border-color: #DB2777;
         box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    }
+
+    .filter-row {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-field {
+        flex: 1;
+        min-width: 200px;
     }
 
     .search-button,
@@ -358,16 +363,20 @@
             flex-direction: column;
         }
 
+        .filter-row {
+            flex-direction: column;
+        }
+
+        .filter-field {
+            min-width: 100%;
+        }
+
         .keyword-field {
             min-width: 100%;
         }
 
         .back-text-full {
             display: none;
-        }
-
-        .back-text-short {
-            display: inline;
         }
 
         .notice-card {
@@ -455,7 +464,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
         <span class="back-text-full">トップへ</span>
-        <span class="back-text-short">←</span>
         <% end %>
 
         <!-- 検索・フィルター -->
@@ -466,9 +474,33 @@
                 <div class="keyword-field">
                     <label class="field-label">キーワード検索</label>
                     <%= f.text_field :keyword,
-                            value: params[:keyword],
-                            placeholder: "お知らせのタイトルや内容を検索",
-                            class: "field-input" %>
+                    value: params[:keyword],
+                    placeholder: "お知らせのタイトルや内容を検索",
+                    class: "field-input" %>
+                </div>
+            </div>
+
+            <!-- フィルター行 -->
+            <div class="filter-row">
+                <div class="filter-field">
+                    <label class="field-label">年で絞り込み</label>
+                    <%= f.select :year,
+                options_for_select(
+                    [["すべて", ""]] + (2020..Date.current.year).to_a.reverse.map { |y| ["#{y}年", y] },
+                    params[:year]
+                ),
+                {},
+                class: "field-select auto-submit" %>
+                </div>
+                <div class="filter-field">
+                    <label class="field-label">月で絞り込み</label>
+                    <%= f.select :month,
+                options_for_select(
+                    [["すべて", ""]] + (1..12).map { |m| ["#{m}月", m] },
+                    params[:month]
+                ),
+                {},
+                class: "field-select auto-submit" %>
                 </div>
             </div>
 
@@ -540,3 +572,36 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    // お知らせページのフィルター自動送信機能
+    document.addEventListener('DOMContentLoaded', function() {
+        // 年・月のセレクトボックスに変更イベントを追加
+        const autoSubmitSelects = document.querySelectorAll('.auto-submit');
+
+        autoSubmitSelects.forEach(function(select) {
+            select.addEventListener('change', function() {
+                // フォームを自動的に送信
+                const form = this.closest('form');
+                if (form) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    // Turboを使用している場合の対応
+    document.addEventListener('turbo:load', function() {
+        const autoSubmitSelects = document.querySelectorAll('.auto-submit');
+
+        autoSubmitSelects.forEach(function(select) {
+            select.addEventListener('change', function() {
+                const form = this.closest('form');
+                if (form) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
