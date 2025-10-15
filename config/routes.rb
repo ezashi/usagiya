@@ -49,10 +49,16 @@ Rails.application.routes.draw do
     resources :products do
       member do
         patch :toggle_visibility
+        post :add_to_featured
+        delete :remove_from_featured
+        post :add_to_seasonal
+        delete :remove_from_seasonal
       end
       collection do
         get :featured
         get :seasonal
+        patch :update_featured_order
+        patch :update_seasonal_order
       end
     end
 

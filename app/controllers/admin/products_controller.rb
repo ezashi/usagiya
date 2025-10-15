@@ -1,9 +1,65 @@
-class Admin::ProductsController < ApplicationController
+class Admin::ProductsController < Admin::BaseController
   before_action :set_product, only: [ :edit, :update, :destroy, :toggle_visibility ]
 
   # 商品一覧
   def index
-    @products = Product.ordered.page(params[:page]).per(20)
+    @products = Product.ordered_by_display.page(params[:page]).per(20)
+  end
+
+  # おすすめ商品管理
+  def featured
+    @featured_products = Product.featured.order(:featured_order)
+    @available_products = Product.where(featured: false).order(:name)
+  end
+
+  # 季節限定商品管理
+  def seasonal
+    @seasonal_products = Product.seasonal.order(:seasonal_order)
+    @available_products = Product.where(seasonal: false).order(:name)
+  end
+
+  # おすすめ商品に追加
+  def add_to_featured
+    @product = Product.find(params[:id])
+    @product.add_to_featured
+    redirect_to featured_admin_products_path, notice: "「#{@product.name}」をおすすめ商品に追加しました"
+  end
+
+  # おすすめ商品から削除
+  def remove_from_featured
+    @product = Product.find(params[:id])
+    @product.remove_from_featured
+    redirect_to featured_admin_products_path, notice: "「#{@product.name}」をおすすめ商品から削除しました"
+  end
+
+  # 季節限定商品に追加
+  def add_to_seasonal
+    @product = Product.find(params[:id])
+    @product.add_to_seasonal
+    redirect_to seasonal_admin_products_path, notice: "「#{@product.name}」を季節限定商品に追加しました"
+  end
+
+  # 季節限定商品から削除
+  def remove_from_seasonal
+    @product = Product.find(params[:id])
+    @product.remove_from_seasonal
+    redirect_to seasonal_admin_products_path, notice: "「#{@product.name}」を季節限定商品から削除しました"
+  end
+
+  # おすすめ商品の並び順を更新
+  def update_featured_order
+    params[:order].each_with_index do |id, index|
+      Product.find(id).update_column(:featured_order, index + 1)
+    end
+    head :ok
+  end
+
+  # 季節限定商品の並び順を更新
+  def update_seasonal_order
+    params[:order].each_with_index do |id, index|
+      Product.find(id).update_column(:seasonal_order, index + 1)
+    end
+    head :ok
   end
 
   # 新規作成フォーム
@@ -62,7 +118,8 @@ class Admin::ProductsController < ApplicationController
       :category,
       :visible,
       :featured,
-      :display_order
+      :display_order,
+      :image
     )
   end
 end

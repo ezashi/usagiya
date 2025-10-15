@@ -11,80 +11,425 @@
     <%= javascript_importmap_tags %>
 
     <style>
-        /* サイドバーのトランジション */
-        .sidebar-transition {
+        /* ========== 基本設定 ========== */
+        body.admin-body {
+            background-color: #f3f4f6;
+        }
+
+        /* ========== レイアウト ========== */
+        .admin-layout {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ========== サイドバー（デスクトップ） ========== */
+        .sidebar-desktop {
+            display: none;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 1024px) {
+            .sidebar-desktop {
+                display: flex;
+            }
+        }
+
+        .sidebar-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 16rem;
+            background-color: #111827;
+        }
+
+        /* ロゴエリア */
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 4rem;
+            padding: 0 1rem;
+            background-color: #1f2937;
+        }
+
+        .sidebar-logo a {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-box {
+            border: 2px solid white;
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 0.1em;
+        }
+
+        /* ナビゲーション */
+        .sidebar-nav {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: #d1d5db;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            background-color: #1f2937;
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: #1f2937;
+            color: white;
+            border-left: 4px solid #ec4899;
+        }
+
+        .nav-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+            fill: none;
+            stroke: currentColor;
+        }
+
+        .nav-footer {
+            padding: 0.75rem 1.5rem;
+            margin-top: auto;
+            border-top: 1px solid #1f2937;
+        }
+
+        .nav-footer-link {
+            display: flex;
+            align-items: center;
+            color: #d1d5db;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-footer-link:hover {
+            color: white;
+        }
+
+        /* ========== モバイルサイドバー ========== */
+        .mobile-sidebar {
+            position: fixed;
+            inset: 0;
+            z-index: 40;
+        }
+
+        @media (min-width: 1024px) {
+            .mobile-sidebar {
+                display: none !important;
+            }
+        }
+
+        .mobile-sidebar.hidden {
+            display: none;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(75, 85, 99, 0.75);
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .sidebar-content {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            width: 16rem;
+            background-color: #111827;
+            transform: translateX(-100%);
             transition: transform 0.3s ease-in-out;
         }
 
-        /* モバイルメニューのオーバーレイ */
-        .overlay {
-            transition: opacity 0.3s ease-in-out;
+        .sidebar-content.show {
+            transform: translateX(0);
+        }
+
+        .mobile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 4rem;
+            padding: 0 1rem;
+            background-color: #1f2937;
+        }
+
+        .mobile-header a {
+            display: flex;
+            align-items: center;
+        }
+
+        .mobile-logo-box {
+            border: 2px solid white;
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 0.1em;
+            font-size: 0.875rem;
+        }
+
+        .close-btn {
+            color: #d1d5db;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            color: white;
+        }
+
+        .close-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        /* ========== メインコンテンツエリア ========== */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* トップバー */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 4rem;
+            padding: 0 1rem;
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .menu-btn {
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            color: #4b5563;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .menu-btn:hover {
+            color: #111827;
+            background-color: #f3f4f6;
+        }
+
+        @media (min-width: 1024px) {
+            .menu-btn {
+                display: none;
+            }
+        }
+
+        .menu-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .page-title-wrapper {
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .page-title-wrapper {
+                display: block;
+            }
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        /* ユーザーメニュー */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-size: 0.875rem;
+            color: #4b5563;
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .user-name {
+                display: block;
+            }
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #374151;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background-color: #f3f4f6;
+        }
+
+        .logout-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.5rem;
+        }
+
+        .logout-text {
+            display: none;
+        }
+
+        @media (min-width: 640px) {
+            .logout-text {
+                display: inline;
+            }
+        }
+
+        /* ========== メインコンテンツ ========== */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #f3f4f6;
+            padding: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                padding: 2rem;
+            }
+        }
+
+        /* フラッシュメッセージ */
+        .flash-message {
+            margin-bottom: 1.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .flash-success {
+            background-color: #f0fdf4;
+            border-left: 4px solid #10b981;
+            color: #065f46;
+        }
+
+        .flash-error {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+        }
+
+        .flash-content {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .flash-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+            fill: currentColor;
         }
     </style>
 </head>
 
-<body class="bg-gray-100">
+<body class="admin-body">
     <% if current_admin_user %>
-    <div class="flex h-screen overflow-hidden">
+    <div class="admin-layout">
         <!-- サイドバー（デスクトップ） -->
-        <aside class="hidden lg:flex lg:flex-shrink-0">
-            <div class="flex flex-col w-64 bg-gray-900">
+        <aside class="sidebar-desktop">
+            <div class="sidebar-wrapper">
                 <!-- ロゴ -->
-                <div class="flex items-center justify-center h-16 px-4 bg-gray-800">
-                    <%= link_to admin_root_path, class: "flex items-center" do %>
-                    <div class="border-2 border-white px-4 py-2 font-bold text-white tracking-wider">
+                <div class="sidebar-logo">
+                    <%= link_to admin_root_path do %>
+                    <div class="logo-box">
                         うさぎや
                     </div>
                     <% end %>
                 </div>
 
                 <!-- ナビゲーション -->
-                <nav class="flex-1 flex flex-col overflow-y-auto py-4">
-                    <%= link_to admin_root_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors #{current_page?(admin_root_path) ? 'bg-gray-800 text-white border-l-4 border-pink-500' : ''}" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <nav class="sidebar-nav">
+                    <%= link_to admin_root_path, class: "nav-link #{current_page?(admin_root_path) ? 'active' : ''}" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                     </svg>
                     ダッシュボード
                     <% end %>
 
-                    <%= link_to admin_products_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors #{current_page?(admin_products_path) || current_page?(new_admin_product_path) || (controller_name == 'products' && action_name == 'edit') ? 'bg-gray-800 text-white border-l-4 border-pink-500' : ''}" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= link_to admin_products_path, class: "nav-link #{current_page?(admin_products_path) || current_page?(new_admin_product_path) || (controller_name == 'products' && action_name == 'edit') ? 'active' : ''}" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                     </svg>
                     商品管理
                     <% end %>
 
-                    <%= link_to admin_notices_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors #{current_page?(admin_notices_path) || current_page?(new_admin_notice_path) || (controller_name == 'notices' && action_name == 'edit') ? 'bg-gray-800 text-white border-l-4 border-pink-500' : ''}" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= link_to admin_notices_path, class: "nav-link #{current_page?(admin_notices_path) || current_page?(new_admin_notice_path) || (controller_name == 'notices' && action_name == 'edit') ? 'active' : ''}" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                     </svg>
                     お知らせ管理
                     <% end %>
 
-                    <%= link_to admin_calendar_events_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors #{current_page?(admin_calendar_events_path) || current_page?(new_admin_calendar_event_path) || (controller_name == 'calendar_events' && action_name == 'edit') ? 'bg-gray-800 text-white border-l-4 border-pink-500' : ''}" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= link_to admin_calendar_events_path, class: "nav-link #{current_page?(admin_calendar_events_path) || current_page?(new_admin_calendar_event_path) || (controller_name == 'calendar_events' && action_name == 'edit') ? 'active' : ''}" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
                     営業カレンダー
                     <% end %>
 
-                    <%= link_to admin_orders_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors #{current_page?(admin_orders_path) || (controller_name == 'orders' && action_name == 'show') ? 'bg-gray-800 text-white border-l-4 border-pink-500' : ''}" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= link_to admin_orders_path, class: "nav-link #{current_page?(admin_orders_path) || (controller_name == 'orders' && action_name == 'show') ? 'active' : ''}" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
                     注文管理
                     <% end %>
 
-                    <%= link_to admin_inquiries_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors #{current_page?(admin_inquiries_path) || (controller_name == 'inquiries' && action_name == 'show') ? 'bg-gray-800 text-white border-l-4 border-pink-500' : ''}" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= link_to admin_inquiries_path, class: "nav-link #{current_page?(admin_inquiries_path) || (controller_name == 'inquiries' && action_name == 'show') ? 'active' : ''}" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
                     </svg>
                     お問い合わせ
                     <% end %>
 
-                    <div class="px-6 py-3 mt-auto border-t border-gray-800">
-                        <%= link_to root_path, target: "_blank", class: "flex items-center text-gray-300 hover:text-white transition-colors" do %>
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="nav-footer">
+                        <%= link_to root_path, target: "_blank", class: "nav-footer-link" do %>
+                        <svg class="nav-icon" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                         </svg>
                         公開サイトを見る
@@ -95,73 +440,73 @@
         </aside>
 
         <!-- モバイルサイドバー -->
-        <div id="mobile-sidebar" class="fixed inset-0 z-40 lg:hidden hidden">
+        <div id="mobile-sidebar" class="mobile-sidebar hidden">
             <!-- オーバーレイ -->
-            <div class="fixed inset-0 bg-gray-600 bg-opacity-75 overlay" id="sidebar-overlay"></div>
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
             <!-- サイドバーコンテンツ -->
-            <div class="fixed inset-y-0 left-0 flex flex-col w-64 bg-gray-900 sidebar-transition transform -translate-x-full" id="sidebar-content">
+            <div class="sidebar-content" id="sidebar-content">
                 <!-- ロゴとクローズボタン -->
-                <div class="flex items-center justify-between h-16 px-4 bg-gray-800">
-                    <%= link_to admin_root_path, class: "flex items-center" do %>
-                    <div class="border-2 border-white px-4 py-2 font-bold text-white tracking-wider text-sm">
+                <div class="mobile-header">
+                    <%= link_to admin_root_path do %>
+                    <div class="mobile-logo-box">
                         うさぎや
                     </div>
                     <% end %>
-                    <button id="close-sidebar" class="text-gray-300 hover:text-white">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button id="close-sidebar" class="close-btn">
+                        <svg class="close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
 
                 <!-- ナビゲーション -->
-                <nav class="flex-1 overflow-y-auto py-4">
-                    <%= link_to admin_root_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors #{current_page?(admin_root_path) ? 'bg-gray-800 text-white border-l-4 border-pink-500' : ''}" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <nav class="sidebar-nav">
+                    <%= link_to admin_root_path, class: "nav-link #{current_page?(admin_root_path) ? 'active' : ''}" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                     </svg>
                     ダッシュボード
                     <% end %>
 
-                    <%= link_to admin_products_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= link_to admin_products_path, class: "nav-link" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                     </svg>
                     商品管理
                     <% end %>
 
-                    <%= link_to admin_notices_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= link_to admin_notices_path, class: "nav-link" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                     </svg>
                     お知らせ管理
                     <% end %>
 
-                    <%= link_to admin_calendar_events_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= link_to admin_calendar_events_path, class: "nav-link" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
                     営業カレンダー
                     <% end %>
 
-                    <%= link_to admin_orders_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= link_to admin_orders_path, class: "nav-link" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
                     注文管理
                     <% end %>
 
-                    <%= link_to admin_inquiries_path, class: "flex items-center px-6 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors" do %>
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= link_to admin_inquiries_path, class: "nav-link" do %>
+                    <svg class="nav-icon" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
                     </svg>
                     お問い合わせ
                     <% end %>
 
-                    <div class="px-6 py-3 mt-auto border-t border-gray-800">
-                        <%= link_to root_path, target: "_blank", class: "flex items-center text-gray-300 hover:text-white transition-colors" do %>
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="nav-footer">
+                        <%= link_to root_path, target: "_blank", class: "nav-footer-link" do %>
+                        <svg class="nav-icon" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                         </svg>
                         公開サイトを見る
@@ -172,44 +517,44 @@
         </div>
 
         <!-- メインコンテンツエリア -->
-        <div class="flex flex-col flex-1 overflow-hidden">
+        <div class="main-container">
             <!-- トップバー -->
-            <header class="flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200">
+            <header class="topbar">
                 <!-- モバイルメニューボタン -->
-                <button id="open-sidebar" class="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="open-sidebar" class="menu-btn">
+                    <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
 
                 <!-- ページタイトル（デスクトップのみ） -->
-                <div class="hidden lg:block">
-                    <h1 class="text-xl font-semibold text-gray-800">
+                <div class="page-title-wrapper">
+                    <h1 class="page-title">
                         <%= content_for(:page_title) || "管理画面" %>
                     </h1>
                 </div>
 
                 <!-- ユーザーメニュー -->
-                <div class="flex items-center space-x-4">
-                    <span class="text-sm text-gray-600 hidden md:block">
+                <div class="user-menu">
+                    <span class="user-name">
                         <%= current_admin_user&.login_id %>
                     </span>
-                    <%= button_to admin_logout_path, method: :delete, class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" do %>
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <%= button_to admin_logout_path, method: :delete, class: "logout-btn" do %>
+                    <svg class="logout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
-                    <span class="hidden sm:inline">ログアウト</span>
+                    <span class="logout-text">ログアウト</span>
                     <% end %>
                 </div>
             </header>
 
             <!-- メインコンテンツ -->
-            <main class="flex-1 overflow-y-auto bg-gray-100 p-4 md:p-6 lg:p-8">
+            <main class="main-content">
                 <!-- フラッシュメッセージ -->
                 <% if notice %>
-                <div class="mb-6 bg-green-50 border-l-4 border-green-500 text-green-800 px-4 py-3 rounded" role="alert">
-                    <div class="flex items-start">
-                        <svg class="w-5 h-5 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <div class="flash-message flash-success" role="alert">
+                    <div class="flash-content">
+                        <svg class="flash-icon" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                         </svg>
                         <span><%= notice %></span>
@@ -218,9 +563,9 @@
                 <% end %>
 
                 <% if alert %>
-                <div class="mb-6 bg-red-50 border-l-4 border-red-500 text-red-800 px-4 py-3 rounded" role="alert">
-                    <div class="flex items-start">
-                        <svg class="w-5 h-5 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <div class="flash-message flash-error" role="alert">
+                    <div class="flash-content">
+                        <svg class="flash-icon" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                         </svg>
                         <span><%= alert %></span>
@@ -244,20 +589,20 @@
         function openSidebar() {
             mobileSidebar.classList.remove('hidden');
             setTimeout(() => {
-                sidebarContent.classList.remove('-translate-x-full');
+                sidebarContent.classList.add('show');
             }, 10);
         }
 
         function closeSidebar() {
-            sidebarContent.classList.add('-translate-x-full');
+            sidebarContent.classList.remove('show');
             setTimeout(() => {
                 mobileSidebar.classList.add('hidden');
             }, 300);
         }
 
-        openSidebarBtn?.addEventListener('click', openSidebar);
-        closeSidebarBtn?.addEventListener('click', closeSidebar);
-        sidebarOverlay?.addEventListener('click', closeSidebar);
+        if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
+        if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
     </script>
     <% else %>
     <!-- ログインページ用のシンプルなレイアウト -->
