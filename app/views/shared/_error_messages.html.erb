@@ -1,4 +1,65 @@
-<% if object.errors.any? %>
+<% if object && object.errors.any? %>
+<% if style == 'simple' %>
+<!-- シンプルスタイル（admin/products用） -->
+<div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+    <h3 class="text-sm font-medium text-red-800 mb-2">
+        <%= pluralize(object.errors.count, "件") %>のエラーがあります
+    </h3>
+    <ul class="list-disc list-inside text-sm text-red-700">
+        <% object.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+        <% end %>
+    </ul>
+</div>
+
+<% elsif style == 'admin' %>
+<!-- 管理画面用スタイル（SVGアイコン付き） -->
+<div class="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl mb-6" role="alert">
+    <div class="flex items-start">
+        <svg class="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        </svg>
+        <div>
+            <h3 class="font-bold mb-2">
+                <%= pluralize(object.errors.count, "件") %>のエラーがあります
+            </h3>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <% object.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<% elsif style == 'inquiry' %>
+<!-- お問い合わせ用スタイル -->
+<div class="inquiry-error-box">
+    <p class="inquiry-error-title">入力内容にエラーがあります</p>
+    <ul class="inquiry-error-list">
+        <% object.errors.full_messages.each do |message| %>
+        <li>・<%= message %></li>
+        <% end %>
+    </ul>
+</div>
+
+<% elsif style == 'order' %>
+<!-- 注文用スタイル（リンク付き） -->
+<div class="error-messages">
+    <h3><%= object.errors.count %>個のエラーがあります。内容を確認してください。</h3>
+    <ul>
+        <% object.errors.each do |error| %>
+        <li>
+            <a href="#<%= object.class.name.underscore %>_<%= error.attribute %>" onclick="scrollToField(event, '<%= object.class.name.underscore %>_<%= error.attribute %>')">
+                <%= error.message %>
+            </a>
+        </li>
+        <% end %>
+    </ul>
+</div>
+
+<% else %>
+<!-- デフォルトスタイル -->
 <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 mb-8" role="alert">
     <div class="flex items-start">
         <div class="flex-shrink-0">
@@ -18,4 +79,5 @@
         </div>
     </div>
 </div>
+<% end %>
 <% end %>

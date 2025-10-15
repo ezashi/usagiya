@@ -1,22 +1,6 @@
 <%= form_with model: [:admin, calendar_event], class: "space-y-6" do |f| %>
 <!-- エラーメッセージ -->
-<% if calendar_event.errors.any? %>
-<div class="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl" role="alert">
-    <div class="flex items-start">
-        <svg class="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-        </svg>
-        <div>
-            <h3 class="font-bold mb-2"><%= pluralize(calendar_event.errors.count, "件") %>のエラーがあります</h3>
-            <ul class="list-disc list-inside space-y-1 text-sm">
-                <% calendar_event.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-                <% end %>
-            </ul>
-        </div>
-    </div>
-</div>
-<% end %>
+<%= render 'shared/error_messages', object: calendar_event, style: 'admin' %>
 
 <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
     <div class="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">

@@ -576,20 +576,7 @@
 
         <%= form_with model: @order, url: orders_path, method: :post, data: { turbo: false } do |f| %>
         <!-- エラーメッセージ表示 -->
-        <% if @order.errors.any? %>
-        <div class="error-messages">
-            <h3><%= @order.errors.count %>個のエラーがあります。内容を確認してください。</h3>
-            <ul>
-                <% @order.errors.each do |error| %>
-                <li>
-                    <a href="#order_<%= error.attribute %>" onclick="scrollToField(event, 'order_<%= error.attribute %>')">
-                        <%= error.message %>
-                    </a>
-                </li>
-                <% end %>
-            </ul>
-        </div>
-        <% end %>
+        <%= render 'shared/error_messages', object: @order, style: 'order' %>
 
         <!-- ご注文者様情報 -->
         <div class="form-group">

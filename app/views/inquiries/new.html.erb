@@ -225,16 +225,7 @@
             <!-- お問い合わせフォーム -->
             <%= form_with model: @inquiry, url: inquiries_path, local: true do |f| %>
             <!-- エラーメッセージ -->
-            <% if @inquiry.errors.any? %>
-            <div class="inquiry-error-box">
-                <p class="inquiry-error-title">入力内容にエラーがあります</p>
-                <ul class="inquiry-error-list">
-                    <% @inquiry.errors.full_messages.each do |message| %>
-                    <li>・<%= message %></li>
-                    <% end %>
-                </ul>
-            </div>
-            <% end %>
+            <%= render 'shared/error_messages', object: @inquiry, style: 'inquiry' %>
 
             <!-- フォームカード -->
             <div class="inquiry-form-card">
