@@ -1,6 +1,5 @@
 class Admin::SessionsController < ApplicationController
   layout "application"
-  skip_before_action :require_admin_login, only: [ :new, :create ]
 
   # GET /admin/login
   def new
@@ -36,11 +35,5 @@ class Admin::SessionsController < ApplicationController
   def destroy
     session[:admin_user_id] = nil
     redirect_to admin_login_path, notice: "ログアウトしました"
-  end
-
-  private
-
-  def require_admin_login
-    # このコントローラーではスキップされるので空実装
   end
 end

@@ -192,7 +192,7 @@
                 <!-- ユーザーメニュー -->
                 <div class="flex items-center space-x-4">
                     <span class="text-sm text-gray-600 hidden md:block">
-                        <%= current_admin_user&.email %>
+                        <%= current_admin_user&.login_id %>
                     </span>
                     <%= button_to admin_logout_path, method: :delete, class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" do %>
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
