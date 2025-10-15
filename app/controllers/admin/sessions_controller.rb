@@ -2,7 +2,7 @@ class Admin::SessionsController < ApplicationController
   layout "application"
 
   # GET /admin/login
-  def new
+  def index
     redirect_to admin_root_path if admin_logged_in?
   end
 
