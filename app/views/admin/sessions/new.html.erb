@@ -1,27 +1,139 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="max-w-md w-full bg-white shadow-md rounded-lg px-8 pt-6 pb-8">
-        <h1 class="text-2xl font-bold text-center mb-8">管理者ログイン</h1>
+<style>
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f3f4f6;
+    }
+
+    .login-box {
+        max-width: 28rem;
+        width: 100%;
+        background-color: white;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        border-radius: 0.5rem;
+        padding: 1.5rem 2rem 2rem 2rem;
+    }
+
+    .login-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .error-box {
+        background-color: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+        margin-bottom: 1rem;
+    }
+
+    .error-content {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .error-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.5rem;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        display: block;
+        color: #374151;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        appearance: none;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        color: #374151;
+        line-height: 1.5;
+    }
+
+    .form-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        border-color: #3b82f6;
+    }
+
+    .form-hint {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+
+    .submit-button {
+        width: 100%;
+        background-color: #dc2626;
+        color: white;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        border: none;
+        transition: background-color 0.2s;
+    }
+
+    .submit-button:hover {
+        background-color: #b91c1c;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-box">
+        <h1 class="login-title">管理者ログイン</h1>
 
         <% if flash[:alert] %>
-        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-            <%= flash[:alert] %>
+        <div class="error-box">
+            <div class="error-content">
+                <svg class="error-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+                <div>
+                    <%= flash[:alert] %>
+                </div>
+            </div>
         </div>
         <% end %>
 
-        <%= form_with url: admin_login_path, method: :post, local: true, html: { novalidate: true, class: "space-y-6" } do |f| %>
-        <div>
-            <%= label_tag :login_id, "管理者ユーザーID", class: "block text-gray-700 font-bold mb-2" %>
-            <%= text_field_tag :login_id, params[:login_id], class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", required: true, autofocus: true %>
+        <%= form_with url: admin_login_path, method: :post, local: true, class: "login-form" do |f| %>
+        <div class="form-group">
+            <%= label_tag :login_id, "管理者ユーザーID", class: "form-label" %>
+            <%= text_field_tag :login_id, params[:login_id], class: "form-input", autofocus: true, placeholder: "管理者ユーザーIDを入力" %>
+        </div>
+
+        <div class="form-group">
+            <%= label_tag :password, "パスワード", class: "form-label" %>
+            <%= password_field_tag :password, nil, class: "form-input", placeholder: "パスワードを入力（7文字以上）" %>
+            <p class="form-hint">※パスワードは7文字以上で入力してください</p>
         </div>
 
         <div>
-            <%= label_tag :password, "パスワード", class: "block text-gray-700 font-bold mb-2" %>
-            <%= password_field_tag :password, nil, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", required: true, minlength: 7 %>
-            <p class="text-xs text-gray-500 mt-1">※パスワードは7文字以上</p>
-        </div>
-
-        <div>
-            <%= submit_tag "ログイン", class: "w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer" %>
+            <%= submit_tag "ログイン", class: "submit-button" %>
         </div>
         <% end %>
     </div>

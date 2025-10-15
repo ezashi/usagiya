@@ -11,6 +11,22 @@ class Admin::SessionsController < ApplicationController
     login_id = params[:login_id]
     password = params[:password]
 
+    # バリデーションチェック
+    errors = []
+    errors << "管理者ユーザーIDを入力してください。" if login_id.blank?
+    errors << "パスワードを入力してください。" if password.blank?
+
+    if password.present? && password.length < 7
+      errors << "パスワードを7文字以上入力してください。"
+    end
+
+    if errors.any?
+      flash.now[:alert] = errors.join("<br>").html_safe
+      render :new
+      return
+    end
+
+    # 認証チェック
     admin_user = AdminUser.authenticate(login_id, password)
 
     if admin_user
@@ -26,7 +42,7 @@ class Admin::SessionsController < ApplicationController
       # ログイン失敗のメール通知
       AdminLoginMailer.failed_login_attempt(login_id).deliver_later if login_id.present?
 
-      flash.now[:alert] = "ログイン情報が正しくありません"
+      flash.now[:alert] = "ログイン情報が登録されていません。"
       render :new
     end
   end
