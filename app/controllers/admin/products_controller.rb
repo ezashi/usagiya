@@ -1,5 +1,5 @@
 class Admin::ProductsController < Admin::AdminController
-  before_action :set_product, only: [ :edit, :update, :destroy, :toggle_visibility ]
+  before_action :set_product, only: [ :show, :edit, :update, :destroy, :toggle_visibility ]
 
   # 商品一覧
   def index
@@ -76,6 +76,10 @@ class Admin::ProductsController < Admin::AdminController
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  # 商品詳細
+  def show
   end
 
   # 編集フォーム

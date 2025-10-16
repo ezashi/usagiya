@@ -381,7 +381,7 @@
 
                 <!-- おすすめ商品 -->
                 <% @featured_products.each do |product| %>
-                <div class="featured-product-card draggable" data-product-id="<%= product.id %>" draggable="true">
+                <div class="featured-product-card draggable" data-product-id="<%= product.id %>" draggable="true" ondblclick="window.location.href='<%= admin_product_path(product) %>'">
                     <button class="remove-btn" onclick="removeProduct(<%= product.id %>)">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

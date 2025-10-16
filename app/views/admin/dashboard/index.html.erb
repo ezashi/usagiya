@@ -446,7 +446,7 @@
         <% if @products.any? %>
         <div class="admin-grid admin-grid-5" id="products-grid">
             <% @products.each do |product| %>
-            <div class="admin-product-card" data-product-id="<%= product.id %>" data-featured="<%= product.featured? %>" data-seasonal="<%= product.seasonal? %>" data-visible="<%= product.visible? %>" ondblclick="window.location.href='<%= edit_admin_product_path(product) %>'">
+            <div class="admin-product-card" data-product-id="<%= product.id %>" data-featured="<%= product.featured? %>" data-seasonal="<%= product.seasonal? %>" data-visible="<%= product.visible? %>" ondblclick="window.location.href='<%= admin_product_path(product) %>'">
 
                 <!-- バッジ -->
                 <% if product.featured? %>
