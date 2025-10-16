@@ -1,7 +1,8 @@
-class Admin::DashboardController < Admin::BaseController
+class Admin::DashboardController < Admin::AdminController
   def index
-    @total_products = Product.count
-    @visible_products = Product.where(visible: true).count
-    @featured_products = Product.where(featured: true).count
+    @products = Product.all
+    @featured_count = Product.where(featured: true).count
+    @seasonal_count = Product.where(seasonal: true).count
+    @visible_count = Product.where(visible: true).count
   end
 end

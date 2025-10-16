@@ -1,4 +1,4 @@
-class Admin::NoticesController < Admin::BaseController
+class Admin::NoticesController < Admin::AdminController
   before_action :set_notice, only: [ :show, :edit, :update, :destroy, :publish ]
 
   def index

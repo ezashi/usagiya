@@ -1,4 +1,4 @@
-class Admin::OrdersController < Admin::BaseController
+class Admin::OrdersController < Admin::AdminController
   before_action :set_order, only: [ :show, :update_status ]
 
   def index

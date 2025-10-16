@@ -1,4 +1,4 @@
-class Admin::InquiriesController < Admin::BaseController
+class Admin::InquiriesController < Admin::AdminController
   def index
     @inquiries = Inquiry.order(created_at: :desc).page(params[:page]).per(20)
   end

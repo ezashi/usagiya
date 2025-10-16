@@ -1,4 +1,4 @@
-class Admin::ProductsController < Admin::BaseController
+class Admin::ProductsController < Admin::AdminController
   before_action :set_product, only: [ :edit, :update, :destroy, :toggle_visibility ]
 
   # 商品一覧

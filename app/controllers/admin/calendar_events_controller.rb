@@ -1,4 +1,4 @@
-class Admin::CalendarEventsController < Admin::BaseController
+class Admin::CalendarEventsController < Admin::AdminController
   before_action :set_calendar_event, only: [ :show, :edit, :update, :destroy ]
 
   def index
