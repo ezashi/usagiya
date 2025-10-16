@@ -1,30 +1,590 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">管理画面</h1>
+<% content_for :page_title, "商品一覧" %>
 
-    <!-- 統計情報 -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="text-sm font-medium text-gray-500 mb-2">総商品数</div>
-            <div class="text-3xl font-bold text-gray-900"><%= @total_products %></div>
-        </div>
+<style>
+    /* ダッシュボード固有のスタイル */
+    .admin-dashboard {
+        padding: 2rem;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
 
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="text-sm font-medium text-gray-500 mb-2">表示中の商品</div>
-            <div class="text-3xl font-bold text-green-600"><%= @visible_products %></div>
-        </div>
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
 
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="text-sm font-medium text-gray-500 mb-2">注目商品</div>
-            <div class="text-3xl font-bold text-blue-600"><%= @featured_products %></div>
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .dashboard-title {
+        color: var(--admin-text);
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .dashboard-subtitle {
+        color: var(--admin-text-secondary);
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    /* 統計カード */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, var(--admin-bg-card) 0%, var(--admin-bg-secondary) 100%);
+        border: 1px solid var(--admin-border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--admin-shadow-lg);
+    }
+
+    .stat-icon-wrapper {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat-icon-primary {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%);
+    }
+
+    .stat-icon-warning {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+    }
+
+    .stat-icon-info {
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(2, 132, 199, 0.2) 100%);
+    }
+
+    .stat-icon-success {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+    }
+
+    .stat-icon {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .stat-icon-primary .stat-icon {
+        color: var(--admin-accent);
+    }
+
+    .stat-icon-warning .stat-icon {
+        color: var(--admin-warning);
+    }
+
+    .stat-icon-info .stat-icon {
+        color: #0ea5e9;
+    }
+
+    .stat-icon-success .stat-icon {
+        color: var(--admin-success);
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-label {
+        color: var(--admin-text-secondary);
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+        color: var(--admin-text);
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    /* フィルターセクション */
+    .filters-container {
+        background-color: var(--admin-bg-card);
+        border: 1px solid var(--admin-border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .filters-content {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--admin-text-muted);
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        background-color: var(--admin-bg-secondary);
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        color: var(--admin-text);
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--admin-accent);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        background-color: var(--admin-bg-secondary);
+        border: 1px solid var(--admin-border);
+        border-radius: 6px;
+        color: var(--admin-text-secondary);
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover {
+        background-color: var(--admin-bg-hover);
+        border-color: var(--admin-accent);
+        color: var(--admin-text);
+    }
+
+    .filter-btn.active {
+        background-color: var(--admin-primary);
+        border-color: var(--admin-primary);
+        color: white;
+    }
+
+    /* 商品グリッド */
+    .products-container {
+        margin-bottom: 2rem;
+    }
+
+    .placeholder-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--admin-bg-secondary) 0%, var(--admin-bg-hover) 100%);
+    }
+
+    .placeholder-icon {
+        width: 3rem;
+        height: 3rem;
+        color: var(--admin-text-muted);
+    }
+
+    .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5rem;
+    }
+
+    .product-status {
+        display: flex;
+        align-items: center;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--admin-border);
+    }
+
+    .action-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+        background-color: var(--admin-bg-secondary);
+        border: 1px solid var(--admin-border);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .action-btn-edit {
+        color: var(--admin-accent);
+        border-color: var(--admin-accent);
+    }
+
+    .action-btn-edit:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    .action-btn-visibility {
+        color: var(--admin-success);
+        border-color: var(--admin-success);
+    }
+
+    .action-btn-visibility:hover {
+        background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    .action-btn-delete {
+        color: var(--admin-error);
+        border-color: var(--admin-error);
+    }
+
+    .action-btn-delete:hover {
+        background-color: rgba(239, 68, 68, 0.1);
+    }
+
+    /* 空の状態 */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background-color: var(--admin-bg-card);
+        border: 2px dashed var(--admin-border);
+        border-radius: 12px;
+    }
+
+    .empty-icon {
+        width: 4rem;
+        height: 4rem;
+        color: var(--admin-text-muted);
+        margin: 0 auto 1.5rem;
+    }
+
+    .empty-title {
+        color: var(--admin-text);
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .empty-description {
+        color: var(--admin-text-secondary);
+        margin: 0 0 1.5rem 0;
+    }
+
+    .btn-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+        .admin-dashboard {
+            padding: 1rem;
+        }
+
+        .dashboard-title {
+            font-size: 1.5rem;
+        }
+
+        .header-content {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filters-content {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="admin-dashboard">
+    <!-- ヘッダーセクション -->
+    <div class="dashboard-header">
+        <div class="header-content">
+            <div>
+                <h1 class="dashboard-title">商品一覧</h1>
+                <p class="dashboard-subtitle">全ての商品を管理します</p>
+            </div>
+            <div class="header-actions">
+                <%= link_to new_admin_product_path, class: "admin-btn admin-btn-primary" do %>
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                商品を追加
+                <% end %>
+            </div>
         </div>
     </div>
 
-    <!-- クイックアクセス -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-4">クイックアクセス</h2>
-        <div class="space-y-2">
-            <%= link_to "商品一覧・管理", admin_products_path, class: "block px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition" %>
-            <%= link_to "新規商品登録", new_admin_product_path, class: "block px-4 py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition" %>
+    <!-- 統計カード -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-primary">
+                <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">全商品数</div>
+                <div class="stat-value"><%= @products.count %></div>
+            </div>
         </div>
+
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-warning">
+                <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">おすすめ商品</div>
+                <div class="stat-value"><%= @featured_count %></div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-info">
+                <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">季節限定商品</div>
+                <div class="stat-value"><%= @seasonal_count %></div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-success">
+                <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">公開中</div>
+                <div class="stat-value"><%= @visible_count %></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- フィルターとソート -->
+    <div class="filters-container">
+        <div class="filters-content">
+            <div class="search-box">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="product-search" class="search-input" placeholder="商品名で検索..." />
+            </div>
+
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">
+                    全て
+                </button>
+                <button class="filter-btn" data-filter="featured">
+                    おすすめ
+                </button>
+                <button class="filter-btn" data-filter="seasonal">
+                    季節限定
+                </button>
+                <button class="filter-btn" data-filter="visible">
+                    公開中
+                </button>
+                <button class="filter-btn" data-filter="hidden">
+                    非公開
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 商品グリッド -->
+    <div class="products-container">
+        <% if @products.any? %>
+        <div class="admin-grid admin-grid-5" id="products-grid">
+            <% @products.each do |product| %>
+            <div class="admin-product-card" data-product-id="<%= product.id %>" data-featured="<%= product.featured? %>" data-seasonal="<%= product.seasonal? %>" data-visible="<%= product.visible? %>" ondblclick="window.location.href='<%= edit_admin_product_path(product) %>'">
+
+                <!-- バッジ -->
+                <% if product.featured? %>
+                <span class="admin-product-card-badge featured">おすすめ</span>
+                <% elsif product.seasonal? %>
+                <span class="admin-product-card-badge seasonal">季節限定</span>
+                <% end %>
+
+                <!-- 商品画像 -->
+                <% if product.image.attached? %>
+                <%= image_tag product.image, class: "admin-product-card-image", alt: product.name %>
+                <% else %>
+                <div class="admin-product-card-image placeholder-image">
+                    <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <% end %>
+
+                <!-- 商品情報 -->
+                <div class="admin-product-card-content">
+                    <h3 class="admin-product-card-title"><%= product.name %></h3>
+                    <div class="product-meta">
+                        <span class="admin-product-card-price">¥<%= number_with_delimiter(product.price) %></span>
+                        <span class="product-status">
+                            <% if product.visible? %>
+                            <span class="admin-status-dot" style="background-color: var(--admin-success);"></span>
+                            <% else %>
+                            <span class="admin-status-dot" style="background-color: var(--admin-text-muted);"></span>
+                            <% end %>
+                        </span>
+                    </div>
+
+                    <!-- アクションボタン -->
+                    <div class="product-actions">
+                        <%= link_to edit_admin_product_path(product), class: "action-btn action-btn-edit" do %>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        <% end %>
+
+                        <%= button_to toggle_visibility_admin_product_path(product), 
+                              method: :patch, 
+                              class: "action-btn action-btn-visibility",
+                              title: product.visible? ? "非公開にする" : "公開する" do %>
+                        <% if product.visible? %>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        <% else %>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                        </svg>
+                        <% end %>
+                        <% end %>
+
+                        <%= button_to admin_product_path(product), 
+                              method: :delete,
+                              class: "action-btn action-btn-delete",
+                              data: { confirm: "本当に削除しますか？\nこの操作は取り消せません。" } do %>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+            <% end %>
+        </div>
+        <% else %>
+        <div class="empty-state">
+            <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+            <h3 class="empty-title">商品がまだ登録されていません</h3>
+            <p class="empty-description">最初の商品を追加して、お客様に素敵な和菓子をご紹介しましょう。</p>
+            <%= link_to new_admin_product_path, class: "admin-btn admin-btn-primary" do %>
+            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            最初の商品を追加
+            <% end %>
+        </div>
+        <% end %>
     </div>
 </div>
+
+
+<script>
+    // 検索機能
+    document.getElementById('product-search')?.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const products = document.querySelectorAll('.admin-product-card');
+
+        products.forEach(product => {
+            const productName = product.querySelector('.admin-product-card-title').textContent.toLowerCase();
+            if (productName.includes(searchTerm)) {
+                product.style.display = '';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    });
+
+    // フィルター機能
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // アクティブ状態を切り替え
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const filter = this.dataset.filter;
+            const products = document.querySelectorAll('.admin-product-card');
+
+            products.forEach(product => {
+                let shouldShow = false;
+
+                switch (filter) {
+                    case 'all':
+                        shouldShow = true;
+                        break;
+                    case 'featured':
+                        shouldShow = product.dataset.featured === 'true';
+                        break;
+                    case 'seasonal':
+                        shouldShow = product.dataset.seasonal === 'true';
+                        break;
+                    case 'visible':
+                        shouldShow = product.dataset.visible === 'true';
+                        break;
+                    case 'hidden':
+                        shouldShow = product.dataset.visible === 'false';
+                        break;
+                }
+
+                product.style.display = shouldShow ? '' : 'none';
+            });
+        });
+    });
+</script>

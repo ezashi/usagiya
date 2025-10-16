@@ -1,556 +1,613 @@
-<% content_for(:page_title, '季節限定商品管理') %>
+<% content_for :page_title, "季節限定商品管理" %>
 
 <style>
-    /* 基本レイアウト */
-    .seasonal-container {
-        max-width: 1400px;
+    /* 季節限定商品管理画面のスタイル - おすすめ商品の青からシアン/水色に変更 */
+    .admin-seasonal-products {
+        padding: 2rem;
+        max-width: 1600px;
         margin: 0 auto;
     }
 
-    .page-header {
+    .seasonal-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1.5rem;
     }
 
-    .page-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #111827;
+    .seasonal-title {
+        color: var(--admin-text);
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
     }
 
-    .action-buttons {
+    .seasonal-subtitle {
+        color: var(--admin-text-secondary);
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .header-actions {
         display: flex;
         gap: 0.75rem;
     }
 
-    .btn {
-        padding: 0.5rem 1rem;
-        border-radius: 0.375rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-        border: none;
-        text-decoration: none;
-        display: inline-block;
+    .seasonal-badge {
+        background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
     }
 
-    .btn-primary {
-        background-color: #3b82f6;
-        color: white;
+    /* 情報パネル - シアン系 */
+    .info-panel.seasonal-info {
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+        border-color: rgba(14, 165, 233, 0.3);
     }
 
-    .btn-primary:hover {
-        background-color: #2563eb;
+    .seasonal-info .info-icon {
+        color: #0ea5e9;
     }
 
-    .btn-success {
-        background-color: #10b981;
-        color: white;
+    /* カードヘッダー - シアン系グラデーション */
+    .seasonal-card-header {
+        background: linear-gradient(135deg, #0c4a6e 0%, #0e7490 100%);
     }
 
-    .btn-success:hover {
-        background-color: #059669;
-    }
-
-    .btn-secondary {
-        background-color: #6b7280;
-        color: white;
-    }
-
-    .btn-secondary:hover {
-        background-color: #4b5563;
-    }
-
-    /* 商品グリッド */
-    .products-grid {
+    /* 季節限定商品グリッド */
+    .seasonal-products-grid {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 1rem;
-        margin-bottom: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.5rem;
+        min-height: 400px;
     }
 
-    @media (max-width: 1280px) {
-        .products-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
+    /* 追加ボタンカード - シアン系 */
+    .add-product-card.seasonal-add:hover {
+        border-color: #0ea5e9;
+        background: linear-gradient(135deg, var(--admin-bg-card) 0%, rgba(14, 165, 233, 0.05) 100%);
+        color: #0ea5e9;
     }
 
-    @media (max-width: 1024px) {
-        .products-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (max-width: 768px) {
-        .products-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    /* 商品カード */
-    .product-card {
-        position: relative;
-        background-color: white;
-        border-radius: 0.5rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* 季節限定商品カード */
+    .seasonal-product-card {
+        background-color: var(--admin-bg-card);
+        border: 2px solid var(--admin-border);
+        border-radius: 12px;
         overflow: hidden;
+        position: relative;
+        transition: all 0.3s ease;
         cursor: move;
-        transition: all 0.2s;
     }
 
-    .product-card:hover {
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    .seasonal-product-card:hover {
+        border-color: #0ea5e9;
+        box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.3);
+        transform: translateY(-2px);
     }
 
-    .product-card.dragging {
+    .seasonal-product-card.dragging {
         opacity: 0.5;
+        transform: scale(0.95);
+    }
+
+    .seasonal-badge-overlay {
+        position: absolute;
+        top: 0.5rem;
+        right: 3rem;
+        width: 2rem;
+        height: 2rem;
+        background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        color: white;
     }
 
     .remove-btn {
         position: absolute;
         top: 0.5rem;
-        left: 0.5rem;
+        right: 0.5rem;
         width: 2rem;
         height: 2rem;
-        background-color: rgba(239, 68, 68, 0.9);
-        color: white;
+        background-color: var(--admin-error);
+        border: none;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        border: none;
-        font-size: 1.25rem;
-        line-height: 1;
-        transition: background-color 0.2s;
+        transition: all 0.2s ease;
         z-index: 10;
+        color: white;
     }
 
     .remove-btn:hover {
-        background-color: rgba(220, 38, 38, 1);
+        background-color: #dc2626;
+        transform: scale(1.1);
     }
 
-    .product-image-wrapper {
-        width: 100%;
-        padding-top: 100%;
-        position: relative;
-        background-color: #f3f4f6;
-    }
-
-    .product-image {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .product-info {
-        padding: 0.75rem;
-    }
-
-    .product-name {
-        font-weight: 600;
-        color: #111827;
-        margin-bottom: 0.25rem;
-        font-size: 0.875rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .product-price {
-        color: #6b7280;
-        font-size: 0.875rem;
-    }
-
-    /* 追加ボタン */
-    .add-button-card {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #f9fafb;
-        border: 2px dashed #d1d5db;
-        border-radius: 0.5rem;
-        min-height: 200px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .add-button-card:hover {
-        background-color: #f3f4f6;
-        border-color: #9ca3af;
-    }
-
-    .add-icon {
-        width: 3rem;
-        height: 3rem;
-        color: #9ca3af;
-    }
-
-    /* モーダル */
-    .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 50;
-    }
-
-    .modal-overlay.show {
-        display: flex;
-    }
-
-    .modal-content {
-        background-color: white;
-        border-radius: 0.5rem;
-        max-width: 60rem;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        padding: 1.5rem;
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .modal-title {
-        font-size: 1.25rem;
-        font-weight: bold;
-        color: #111827;
-    }
-
-    .modal-close {
-        color: #6b7280;
-        cursor: pointer;
-        background: none;
-        border: none;
-        padding: 0;
-    }
-
-    .modal-close:hover {
-        color: #111827;
-    }
-
-    .search-box {
-        margin-bottom: 1.5rem;
-    }
-
-    .search-input {
-        width: 100%;
-        padding: 0.5rem 1rem;
-        border: 1px solid #d1d5db;
-        border-radius: 0.375rem;
-    }
-
-    .search-input:focus {
-        outline: none;
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .available-products-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-    }
-
-    @media (max-width: 1024px) {
-        .available-products-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (max-width: 768px) {
-        .available-products-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    .available-product-card {
-        position: relative;
-        background-color: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        transition: all 0.2s;
-    }
-
-    .available-product-card:hover {
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .add-product-btn {
+    .drag-handle.seasonal-drag {
         position: absolute;
         top: 0.5rem;
         left: 0.5rem;
         width: 2rem;
         height: 2rem;
-        background-color: rgba(16, 185, 129, 0.9);
-        color: white;
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+        border: 1px solid rgba(14, 165, 233, 0.4);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: move;
+        z-index: 10;
+        color: #0ea5e9;
+    }
+
+    .product-image {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+    }
+
+    .product-image.placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--admin-bg-secondary) 0%, var(--admin-bg-hover) 100%);
+        color: var(--admin-text-muted);
+    }
+
+    .product-info {
+        padding: 1rem;
+    }
+
+    .product-name {
+        color: var(--admin-text);
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .product-price.seasonal-price {
+        color: #0ea5e9;
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    /* モーダル */
+    .close-modal-btn {
+        background: none;
+        border: none;
+        color: var(--admin-text-secondary);
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .close-modal-btn:hover {
+        background-color: var(--admin-bg-hover);
+        color: var(--admin-text);
+    }
+
+    .search-box-modal {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-box-modal .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--admin-text-muted);
+    }
+
+    .search-box-modal .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        background-color: var(--admin-bg-secondary);
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        color: var(--admin-text);
+        font-size: 0.95rem;
+    }
+
+    .search-box-modal .search-input:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    /* 利用可能な商品グリッド */
+    .available-products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+        max-height: 60vh;
+        overflow-y: auto;
+        padding: 0.5rem;
+    }
+
+    .available-product-card {
+        background-color: var(--admin-bg-card);
+        border: 2px solid var(--admin-border);
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .available-product-card:hover {
+        border-color: #0ea5e9;
+        transform: translateY(-2px);
+    }
+
+    .seasonal-add-btn {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        width: 2rem;
+        height: 2rem;
+        background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+        border: none;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        border: none;
-        font-size: 1.25rem;
-        line-height: 1;
-        transition: background-color 0.2s;
+        transition: all 0.2s ease;
         z-index: 10;
+        color: white;
     }
 
-    .add-product-btn:hover {
-        background-color: rgba(5, 150, 105, 1);
+    .seasonal-add-btn:hover {
+        background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
+        transform: scale(1.1);
     }
 
-    /* 空の状態 */
-    .empty-state {
-        text-align: center;
-        padding: 3rem 1rem;
-        color: #6b7280;
-    }
+    @media (max-width: 768px) {
+        .admin-seasonal-products {
+            padding: 1rem;
+        }
 
-    .empty-icon {
-        width: 4rem;
-        height: 4rem;
-        margin: 0 auto 1rem;
-        color: #d1d5db;
-    }
+        .seasonal-title {
+            font-size: 1.5rem;
+        }
 
-    .empty-text {
-        font-size: 1.125rem;
-        margin-bottom: 0.5rem;
-    }
+        .seasonal-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
 
-    .empty-hint {
-        font-size: 0.875rem;
-        color: #9ca3af;
+        .header-actions {
+            flex-wrap: wrap;
+        }
+
+        .seasonal-products-grid,
+        .available-products-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
     }
 </style>
 
-<div class="seasonal-container">
-    <div class="page-header">
-        <h1 class="page-title">季節限定商品管理</h1>
-        <div class="action-buttons">
-            <button class="btn btn-secondary" onclick="previewSeasonal()">プレビュー</button>
-            <button class="btn btn-primary" onclick="saveSeasonal()">保存</button>
-            <button class="btn btn-success" onclick="publishSeasonal()">公開</button>
+<div class="admin-seasonal-products">
+    <!-- ヘッダー -->
+    <div class="seasonal-header">
+        <div>
+            <h1 class="seasonal-title">季節限定商品管理</h1>
+            <p class="seasonal-subtitle">季節に応じた限定商品を選択・並び替えできます</p>
+        </div>
+        <div class="header-actions">
+            <button class="admin-btn admin-btn-secondary" id="preview-btn">
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                プレビュー
+            </button>
+            <button class="admin-btn admin-btn-secondary" id="save-btn">
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                </svg>
+                保存
+            </button>
+            <button class="admin-btn admin-btn-success" id="publish-btn">
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                公開
+            </button>
         </div>
     </div>
 
-    <div id="seasonal-products" class="products-grid">
-        <% if @seasonal_products.any? %>
-        <% @seasonal_products.each do |product| %>
-        <div class="product-card" data-id="<%= product.id %>" draggable="true">
-            <%= button_to "×", remove_from_seasonal_admin_product_path(product), 
-                        method: :delete, 
-                        class: "remove-btn",
-                        data: { confirm: "「#{product.name}」を季節限定商品から削除しますか？" } %>
+    <!-- 情報パネル -->
+    <div class="info-panel seasonal-info">
+        <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+            <p class="info-text">
+                <strong>使い方:</strong> 季節限定商品をドラッグ&ドロップで並び替えできます。「保存」で一時保存、「公開」で一般公開されます。
+            </p>
+        </div>
+    </div>
 
-            <div class="product-image-wrapper">
-                <% if product.image_url %>
-                <img src="<%= product.image_url %>" alt="<%= product.name %>" class="product-image">
-                <% else %>
-                <div class="product-image" style="background-color: #e5e7eb;"></div>
+    <!-- 季節限定商品リスト -->
+    <div class="admin-card">
+        <div class="admin-card-header seasonal-card-header">
+            <h2 class="admin-card-title">
+                選択中の季節限定商品
+                <span class="count-badge seasonal-badge"><%= @seasonal_products.count %>個</span>
+            </h2>
+        </div>
+        <div class="admin-card-body">
+            <div class="seasonal-products-grid" id="seasonal-products-list">
+                <!-- 追加ボタン -->
+                <button class="add-product-card seasonal-add" id="add-product-btn">
+                    <svg class="add-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>商品を追加</span>
+                </button>
+
+                <!-- 季節限定商品 -->
+                <% @seasonal_products.each do |product| %>
+                <div class="seasonal-product-card draggable" data-product-id="<%= product.id %>" draggable="true">
+                    <button class="remove-btn" onclick="removeProduct(<%= product.id %>)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+
+                    <div class="drag-handle seasonal-drag">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
+                        </svg>
+                    </div>
+
+                    <div class="seasonal-badge-overlay">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+
+                    <% if product.image.attached? %>
+                    <%= image_tag product.image, class: "product-image", alt: product.name %>
+                    <% else %>
+                    <div class="product-image placeholder">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="40" height="40">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <% end %>
+
+                    <div class="product-info">
+                        <h3 class="product-name"><%= product.name %></h3>
+                        <p class="product-price seasonal-price">¥<%= number_with_delimiter(product.price) %></p>
+                    </div>
+                </div>
                 <% end %>
             </div>
-
-            <div class="product-info">
-                <div class="product-name" title="<%= product.name %>"><%= product.name %></div>
-                <div class="product-price">¥<%= number_with_delimiter(product.price) %></div>
-            </div>
-        </div>
-        <% end %>
-        <% end %>
-
-        <div class="add-button-card" onclick="openAddModal()">
-            <svg class="add-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
         </div>
     </div>
-
-    <% if @seasonal_products.empty? %>
-    <div class="empty-state">
-        <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-        </svg>
-        <p class="empty-text">季節限定商品が登録されていません</p>
-        <p class="empty-hint">右側の「＋」ボタンから商品を追加してください</p>
-    </div>
-    <% end %>
 </div>
 
 <!-- 商品追加モーダル -->
-<div id="add-modal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title">季節限定商品に追加</h2>
-            <button class="modal-close" onclick="closeAddModal()">
-                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<div id="add-product-modal" class="admin-modal-overlay" style="display: none;">
+    <div class="admin-modal" style="max-width: 1200px; width: 90vw;">
+        <div class="admin-modal-header">
+            <h2 class="admin-modal-title">商品を追加</h2>
+            <button class="close-modal-btn" id="close-modal-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
         </div>
-
-        <div class="search-box">
-            <input type="text" id="product-search" class="search-input" placeholder="商品名で検索..." onkeyup="filterProducts()">
-        </div>
-
-        <div id="available-products" class="available-products-grid">
-            <% @available_products.each do |product| %>
-            <div class="available-product-card" data-name="<%= product.name.downcase %>">
-                <%= button_to "+", add_to_seasonal_admin_product_path(product), 
-                        method: :post, 
-                        class: "add-product-btn" %>
-
-                <div class="product-image-wrapper">
-                    <% if product.image_url %>
-                    <img src="<%= product.image_url %>" alt="<%= product.name %>" class="product-image">
-                    <% else %>
-                    <div class="product-image" style="background-color: #e5e7eb;"></div>
-                    <% end %>
-                </div>
-
-                <div class="product-info">
-                    <div class="product-name" title="<%= product.name %>"><%= product.name %></div>
-                    <div class="product-price">¥<%= number_with_delimiter(product.price) %></div>
-                </div>
+        <div class="admin-modal-body">
+            <!-- 検索ボックス -->
+            <div class="search-box-modal">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="modal-search" class="search-input" placeholder="商品名で検索..." />
             </div>
-            <% end %>
+
+            <!-- 利用可能な商品リスト -->
+            <div class="available-products-grid" id="available-products-list">
+                <% @available_products.each do |product| %>
+                <div class="available-product-card" data-product-name="<%= product.name.downcase %>">
+                    <button class="add-btn seasonal-add-btn" onclick="addProduct(<%= product.id %>)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+
+                    <% if product.image.attached? %>
+                    <%= image_tag product.image, class: "product-image", alt: product.name %>
+                    <% else %>
+                    <div class="product-image placeholder">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="40" height="40">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <% end %>
+
+                    <div class="product-info">
+                        <h3 class="product-name"><%= product.name %></h3>
+                        <p class="product-price">¥<%= number_with_delimiter(product.price) %></p>
+                    </div>
+                </div>
+                <% end %>
+            </div>
         </div>
     </div>
 </div>
 
+
 <script>
-    // モーダル管理
-    function openAddModal() {
-        document.getElementById('add-modal').classList.add('show');
-    }
+    // モーダル開閉
+    document.getElementById('add-product-btn').addEventListener('click', function() {
+        document.getElementById('add-product-modal').style.display = 'flex';
+    });
 
-    function closeAddModal() {
-        document.getElementById('add-modal').classList.remove('show');
-        document.getElementById('product-search').value = '';
-        filterProducts();
-    }
+    document.getElementById('close-modal-btn').addEventListener('click', function() {
+        document.getElementById('add-product-modal').style.display = 'none';
+    });
 
-    // モーダルの外側をクリックしたら閉じる
-    document.getElementById('add-modal').addEventListener('click', function(e) {
+    document.getElementById('add-product-modal').addEventListener('click', function(e) {
         if (e.target === this) {
-            closeAddModal();
+            this.style.display = 'none';
         }
     });
 
-    // 商品検索
-    function filterProducts() {
-        const searchTerm = document.getElementById('product-search').value.toLowerCase();
-        const cards = document.querySelectorAll('.available-product-card');
+    // 商品検索（モーダル内）
+    document.getElementById('modal-search').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const products = document.querySelectorAll('.available-product-card');
 
-        cards.forEach(card => {
-            const name = card.dataset.name;
-            if (name.includes(searchTerm)) {
-                card.style.display = 'block';
+        products.forEach(product => {
+            const productName = product.dataset.productName;
+            if (productName.includes(searchTerm)) {
+                product.style.display = '';
             } else {
-                card.style.display = 'none';
+                product.style.display = 'none';
             }
         });
-    }
+    });
 
     // ドラッグ&ドロップ
     let draggedElement = null;
 
-    const productCards = document.querySelectorAll('.product-card[draggable="true"]');
+    document.querySelectorAll('.draggable').forEach(item => {
+        item.addEventListener('dragstart', function(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+        });
 
-    productCards.forEach(card => {
-        card.addEventListener('dragstart', handleDragStart);
-        card.addEventListener('dragover', handleDragOver);
-        card.addEventListener('drop', handleDrop);
-        card.addEventListener('dragend', handleDragEnd);
+        item.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+        });
+
+        item.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(this.parentElement, e.clientY);
+            if (afterElement == null) {
+                this.parentElement.appendChild(draggedElement);
+            } else {
+                this.parentElement.insertBefore(draggedElement, afterElement);
+            }
+        });
     });
 
-    function handleDragStart(e) {
-        draggedElement = this;
-        this.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-    }
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
 
-    function handleDragOver(e) {
-        if (e.preventDefault) {
-            e.preventDefault();
-        }
-        e.dataTransfer.dropEffect = 'move';
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
 
-        const target = e.target.closest('.product-card[draggable="true"]');
-        if (target && target !== draggedElement) {
-            const container = document.getElementById('seasonal-products');
-            const allCards = [...container.querySelectorAll('.product-card[draggable="true"]')];
-            const draggedIndex = allCards.indexOf(draggedElement);
-            const targetIndex = allCards.indexOf(target);
-
-            if (draggedIndex < targetIndex) {
-                target.parentNode.insertBefore(draggedElement, target.nextSibling);
+            if (offset < 0 && offset > closest.offset) {
+                return {
+                    offset: offset,
+                    element: child
+                };
             } else {
-                target.parentNode.insertBefore(draggedElement, target);
+                return closest;
             }
-        }
-
-        return false;
+        }, {
+            offset: Number.NEGATIVE_INFINITY
+        }).element;
     }
 
-    function handleDrop(e) {
-        if (e.stopPropagation) {
-            e.stopPropagation();
-        }
-        return false;
-    }
-
-    function handleDragEnd(e) {
-        this.classList.remove('dragging');
-    }
-
-    // アクションボタン
-    function previewSeasonal() {
-        window.open('/products/seasonal', '_blank');
-    }
-
-    function saveSeasonal() {
-        saveOrder().then(() => {
-            alert('並び順を保存しました');
-        });
-    }
-
-    function publishSeasonal() {
-        if (confirm('季節限定商品を公開しますか？\n保存されていない変更も同時に保存されます。')) {
-            saveOrder().then(() => {
-                alert('季節限定商品を公開しました');
-            });
-        }
-    }
-
-    function saveOrder() {
-        const container = document.getElementById('seasonal-products');
-        const cards = container.querySelectorAll('.product-card[draggable="true"]');
-        const order = Array.from(cards).map(card => card.dataset.id);
-
-        return fetch('<%= update_seasonal_order_admin_products_path %>', {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({
-                order: order
+    // 商品追加
+    function addProduct(productId) {
+        fetch(`/admin/products/${productId}/add_to_seasonal`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
             })
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
     }
+
+    // 商品削除
+    function removeProduct(productId) {
+        if (confirm('この商品を季節限定商品から削除しますか？')) {
+            fetch(`/admin/products/${productId}/remove_from_seasonal`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+        }
+    }
+
+    // 保存
+    document.getElementById('save-btn').addEventListener('click', function() {
+        saveOrder(false);
+    });
+
+    // 公開
+    document.getElementById('publish-btn').addEventListener('click', function() {
+        if (confirm('季節限定商品を公開しますか？')) {
+            saveOrder(true);
+        }
+    });
+
+    // 順序保存
+    function saveOrder(publish = false) {
+        const products = document.querySelectorAll('.seasonal-product-card');
+        const order = Array.from(products).map((product, index) => ({
+            id: product.dataset.productId,
+            position: index
+        }));
+
+        fetch('/admin/products/seasonal/update_order', {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    order: order,
+                    publish: publish
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(publish ? '公開しました！' : '保存しました！');
+                    if (publish) {
+                        location.reload();
+                    }
+                }
+            });
+    }
+
+    // プレビュー
+    document.getElementById('preview-btn').addEventListener('click', function() {
+        window.open('/products/seasonal', '_blank');
+    });
 </script>

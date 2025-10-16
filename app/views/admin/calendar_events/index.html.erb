@@ -1,199 +1,754 @@
 <% content_for :page_title, "営業カレンダー管理" %>
 
-<div class="space-y-6">
+<style>
+    /* 営業カレンダー管理画面のスタイル */
+    .admin-calendar {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .calendar-title {
+        color: var(--admin-text);
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .calendar-subtitle {
+        color: var(--admin-text-secondary);
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    /* カレンダー凡例 */
+    .calendar-legend {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1rem 1.5rem;
+        background-color: var(--admin-bg-card);
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .legend-color {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 4px;
+        border: 1px solid var(--admin-border);
+    }
+
+    .legend-label {
+        color: var(--admin-text-secondary);
+        font-size: 0.875rem;
+    }
+
+    /* カレンダーグリッド */
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        background-color: var(--admin-border);
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .calendar-weekday {
+        background-color: var(--admin-primary-dark);
+        color: var(--admin-text);
+        padding: 0.75rem;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .calendar-day {
+        background-color: var(--admin-bg-card);
+        padding: 0.75rem;
+        min-height: 120px;
+        position: relative;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .calendar-day:hover {
+        background-color: var(--admin-bg-hover);
+    }
+
+    .calendar-day.other-month {
+        background-color: var(--admin-bg-secondary);
+        opacity: 0.5;
+    }
+
+    .calendar-day.today {
+        background-color: rgba(59, 130, 246, 0.1);
+        border: 2px solid var(--admin-accent);
+    }
+
+    .day-number {
+        color: var(--admin-text);
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .day-events {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .day-event {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        color: white;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .day-event:hover {
+        opacity: 0.9;
+    }
+
+    /* イベントリスト */
+    .events-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .event-item {
+        display: flex;
+        background-color: var(--admin-bg-secondary);
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .event-item:hover {
+        border-color: var(--admin-accent);
+        box-shadow: var(--admin-shadow);
+    }
+
+    .event-color-bar {
+        width: 4px;
+        flex-shrink: 0;
+    }
+
+    .event-content {
+        flex: 1;
+        padding: 1rem;
+    }
+
+    .event-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.5rem;
+    }
+
+    .event-title {
+        color: var(--admin-text);
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .event-date {
+        color: var(--admin-text-secondary);
+        font-size: 0.875rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .event-type-badge {
+        display: inline-block;
+        padding: 0.125rem 0.5rem;
+        background-color: var(--admin-bg-hover);
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .event-description {
+        color: var(--admin-text-secondary);
+        font-size: 0.95rem;
+        margin: 0.5rem 0 0 0;
+        line-height: 1.6;
+    }
+
+    .notice-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.75rem;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+        color: var(--admin-success);
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-top: 0.5rem;
+    }
+
+    .event-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .icon-btn {
+        padding: 0.5rem;
+        background-color: var(--admin-bg-secondary);
+        border: 1px solid var(--admin-border);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .icon-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .edit-btn {
+        color: var(--admin-accent);
+        border-color: var(--admin-accent);
+    }
+
+    .edit-btn:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    .delete-btn {
+        color: var(--admin-error);
+        border-color: var(--admin-error);
+    }
+
+    .delete-btn:hover {
+        background-color: rgba(239, 68, 68, 0.1);
+    }
+
+    /* フォーム */
+    .modal-actions {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
+        margin-top: 1.5rem;
+    }
+
+    .color-input {
+        width: 100px;
+        height: 3rem;
+        cursor: pointer;
+    }
+
+    .toggle-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+    }
+
+    .toggle-checkbox {
+        width: 0;
+        height: 0;
+        opacity: 0;
+        position: absolute;
+    }
+
+    .toggle-slider {
+        position: relative;
+        width: 3rem;
+        height: 1.75rem;
+        background-color: var(--admin-bg-secondary);
+        border: 2px solid var(--admin-border);
+        border-radius: 9999px;
+        transition: 0.3s;
+    }
+
+    .toggle-slider:before {
+        content: "";
+        position: absolute;
+        height: 1.125rem;
+        width: 1.125rem;
+        left: 0.125rem;
+        bottom: 0.125rem;
+        background-color: var(--admin-text-muted);
+        border-radius: 50%;
+        transition: 0.3s;
+    }
+
+    .toggle-checkbox:checked+.toggle-slider {
+        background-color: var(--admin-success);
+        border-color: var(--admin-success);
+    }
+
+    .toggle-checkbox:checked+.toggle-slider:before {
+        transform: translateX(1.25rem);
+        background-color: white;
+    }
+
+    .empty-state-small {
+        text-align: center;
+        padding: 2rem;
+        color: var(--admin-text-muted);
+    }
+
+    @media (max-width: 768px) {
+        .admin-calendar {
+            padding: 1rem;
+        }
+
+        .calendar-title {
+            font-size: 1.5rem;
+        }
+
+        .calendar-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .calendar-day {
+            min-height: 80px;
+        }
+
+        .day-number {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="admin-calendar">
     <!-- ヘッダー -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div class="calendar-header">
         <div>
-            <h1 class="text-3xl font-bold text-gray-800">営業カレンダー管理</h1>
-            <p class="text-gray-600 mt-1">営業日・休業日の管理</p>
+            <h1 class="calendar-title">営業カレンダー管理</h1>
+            <p class="calendar-subtitle">営業日、定休日、イベントを管理します</p>
         </div>
-        <%= link_to new_admin_calendar_event_path, class: "inline-flex items-center justify-center bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg" do %>
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        新規イベント追加
-        <% end %>
+        <div class="header-actions">
+            <button class="admin-btn admin-btn-secondary" id="prev-month-btn">
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                前月
+            </button>
+            <button class="admin-btn admin-btn-secondary" id="today-btn">
+                今月
+            </button>
+            <button class="admin-btn admin-btn-secondary" id="next-month-btn">
+                次月
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+            <button class="admin-btn admin-btn-primary" id="add-event-btn">
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                イベント追加
+            </button>
+        </div>
     </div>
 
-    <!-- カレンダーナビゲーション -->
-    <div class="bg-white rounded-2xl shadow-md p-6">
-        <div class="flex items-center justify-between">
-            <%= link_to admin_calendar_events_path(year: @year, month: @month - 1), class: "flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors" do %>
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-            前月
-            <% end %>
+    <!-- カレンダー凡例 -->
+    <div class="calendar-legend">
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #ef4444;"></span>
+            <span class="legend-label">定休日</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #fca5a5;"></span>
+            <span class="legend-label">休業日</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #f59e0b;"></span>
+            <span class="legend-label">販売開始日</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #3b82f6;"></span>
+            <span class="legend-label">販売終了日</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: var(--admin-text-muted);"></span>
+            <span class="legend-label">その他</span>
+        </div>
+    </div>
 
-            <h2 class="text-2xl font-bold text-gray-800">
-                <%= @year %>年<%= @month %>月
+    <!-- カレンダー -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2 class="admin-card-title" id="current-month">
+                2025年10月
             </h2>
-
-            <%= link_to admin_calendar_events_path(year: @year, month: @month + 1), class: "flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors" do %>
-            次月
-            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <% end %>
         </div>
+        <div class="admin-card-body">
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- 曜日ヘッダー -->
+                <div class="calendar-weekday">日</div>
+                <div class="calendar-weekday">月</div>
+                <div class="calendar-weekday">火</div>
+                <div class="calendar-weekday">水</div>
+                <div class="calendar-weekday">木</div>
+                <div class="calendar-weekday">金</div>
+                <div class="calendar-weekday">土</div>
 
-        <!-- 今月に戻るボタン -->
-        <% unless @year == Date.today.year && @month == Date.today.month %>
-        <div class="mt-4 text-center">
-            <%= link_to admin_calendar_events_path(year: Date.today.year, month: Date.today.month), class: "inline-flex items-center text-pink-600 hover:text-pink-700 font-medium transition-colors" do %>
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-            </svg>
-            今月に戻る
-            <% end %>
-        </div>
-        <% end %>
-    </div>
-
-    <!-- 凡例 -->
-    <div class="bg-white rounded-2xl shadow-md p-6">
-        <h3 class="font-bold text-gray-800 mb-4 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
-            </svg>
-            イベント種類
-        </h3>
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <span class="w-4 h-4 bg-gray-500 rounded mr-2"></span>
-                <span class="text-sm font-medium text-gray-700">定休日</span>
-            </div>
-            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <span class="w-4 h-4 bg-yellow-500 rounded mr-2"></span>
-                <span class="text-sm font-medium text-gray-700">不定休</span>
-            </div>
-            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <span class="w-4 h-4 bg-green-500 rounded mr-2"></span>
-                <span class="text-sm font-medium text-gray-700">販売開始</span>
-            </div>
-            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <span class="w-4 h-4 bg-orange-500 rounded mr-2"></span>
-                <span class="text-sm font-medium text-gray-700">販売終了</span>
-            </div>
-            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <span class="w-4 h-4 bg-blue-500 rounded mr-2"></span>
-                <span class="text-sm font-medium text-gray-700">その他</span>
+                <!-- カレンダーの日付はJavaScriptで動的に生成 -->
             </div>
         </div>
     </div>
 
-    <% if @calendar_events.any? %>
     <!-- イベントリスト -->
-    <div class="space-y-4">
-        <% @calendar_events.group_by { |e| e.event_date.beginning_of_week }.each do |week_start, events| %>
-        <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-            <div class="bg-gray-100 px-6 py-3 border-b">
-                <h3 class="font-bold text-gray-700">
-                    <%= week_start.strftime("%m月%d日") %> 〜 <%= (week_start + 6.days).strftime("%m月%d日") %>の週
-                </h3>
-            </div>
-            <div class="divide-y divide-gray-100">
-                <% events.each do |event| %>
-                <div class="p-6 hover:bg-gray-50 transition-colors">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <!-- イベント情報 -->
-                        <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-3">
-                                <!-- 日付 -->
-                                <div class="bg-pink-100 text-pink-700 px-4 py-2 rounded-lg">
-                                    <div class="text-xs font-medium"><%= event.event_date.strftime("%Y") %></div>
-                                    <div class="text-lg font-bold"><%= event.event_date.strftime("%m/%d") %></div>
-                                    <div class="text-xs"><%= %w[日 月 火 水 木 金 土][event.event_date.wday] %>曜日</div>
-                                </div>
-
-                                <!-- イベント種類バッジ -->
-                                <span class="px-4 py-2 text-sm font-bold rounded-lg <%= event_type_badge_class(event.event_type) %>">
-                                    <%= CalendarEvent.event_type_options.key(event.event_type) %>
-                                </span>
-
-                                <!-- お知らせ自動投稿バッジ -->
-                                <% if event.auto_notice? %>
-                                <span class="px-3 py-1 text-xs font-bold bg-blue-100 text-blue-700 rounded-full flex items-center">
-                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2 class="admin-card-title">イベント一覧</h2>
+        </div>
+        <div class="admin-card-body">
+            <div class="events-list" id="events-list">
+                <% if @calendar_events.any? %>
+                <% @calendar_events.order(event_date: :asc).each do |event| %>
+                <div class="event-item" data-event-id="<%= event.id %>">
+                    <div class="event-color-bar" style="background-color: <%= event.color %>;"></div>
+                    <div class="event-content">
+                        <div class="event-header">
+                            <div>
+                                <h3 class="event-title"><%= event.title %></h3>
+                                <p class="event-date">
+                                    <%= event.event_date.strftime('%Y年%m月%d日') %>
+                                    <% if event.event_type %>
+                                    <span class="event-type-badge"><%= event.event_type_label %></span>
+                                    <% end %>
+                                </p>
+                            </div>
+                            <div class="event-actions">
+                                <button class="icon-btn edit-btn" onclick="editEvent(<%= event.id %>)">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                     </svg>
-                                    自動投稿
-                                </span>
-                                <% end %>
-
-                                <!-- 今日バッジ -->
-                                <% if event.event_date == Date.today %>
-                                <span class="px-3 py-1 text-xs font-bold bg-red-500 text-white rounded-full animate-pulse">
-                                    今日
-                                </span>
+                                </button>
+                                <%= button_to admin_calendar_event_path(event), 
+                                  method: :delete,
+                                  class: "icon-btn delete-btn",
+                                  data: { confirm: "本当に削除しますか？" } do %>
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
                                 <% end %>
                             </div>
-
-                            <% if event.description.present? %>
-                            <p class="text-gray-600 line-clamp-2 leading-relaxed">
-                                <%= event.description %>
-                            </p>
-                            <% else %>
-                            <p class="text-gray-400 italic">説明なし</p>
-                            <% end %>
                         </div>
-
-                        <!-- アクションボタン -->
-                        <div class="flex flex-row md:flex-col gap-2 md:w-32">
-                            <%= link_to edit_admin_calendar_event_path(event), class: "flex-1 md:flex-none flex items-center justify-center bg-blue-50 hover:bg-blue-100 text-blue-600 font-medium py-2 px-4 rounded-lg transition-colors" do %>
-                            <svg class="w-4 h-4 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        <% if event.description.present? %>
+                        <p class="event-description"><%= event.description %></p>
+                        <% end %>
+                        <% if event.show_in_notice? %>
+                        <span class="notice-badge">
+                            <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                             </svg>
-                            <span class="hidden md:inline">編集</span>
-                            <% end %>
-
-                            <%= link_to admin_calendar_event_path(event), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "flex-1 md:flex-none flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-600 font-medium py-2 px-4 rounded-lg transition-colors" do %>
-                            <svg class="w-4 h-4 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                            <span class="hidden md:inline">削除</span>
-                            <% end %>
-                        </div>
+                            お知らせに表示
+                        </span>
+                        <% end %>
                     </div>
+                </div>
+                <% end %>
+                <% else %>
+                <div class="empty-state-small">
+                    <p>イベントがまだ登録されていません</p>
                 </div>
                 <% end %>
             </div>
         </div>
-        <% end %>
     </div>
-
-    <% else %>
-    <!-- イベントがない場合 -->
-    <div class="bg-white rounded-2xl shadow-md p-12 text-center">
-        <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-        </svg>
-        <p class="text-xl text-gray-500 mb-6">この月のイベントが登録されていません</p>
-        <%= link_to new_admin_calendar_event_path, class: "inline-flex items-center bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg" do %>
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        イベントを追加
-        <% end %>
-    </div>
-    <% end %>
 </div>
 
-<style>
-    @keyframes pulse {
+<!-- イベント追加/編集モーダル -->
+<div id="event-modal" class="admin-modal-overlay" style="display: none;">
+    <div class="admin-modal" style="max-width: 600px;">
+        <div class="admin-modal-header">
+            <h2 class="admin-modal-title" id="modal-title">イベントを追加</h2>
+            <button class="close-modal-btn" id="close-modal-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="admin-modal-body">
+            <form id="event-form">
+                <input type="hidden" id="event-id" name="event_id" />
 
-        0%,
-        100% {
-            opacity: 1;
+                <div class="admin-form-group">
+                    <label class="admin-form-label">イベント種類 <span class="required-badge">必須</span></label>
+                    <select id="event-type" name="event_type" class="admin-form-control" required>
+                        <option value="regular_holiday">定休日</option>
+                        <option value="holiday">休業日</option>
+                        <option value="sales_start">販売開始日</option>
+                        <option value="sales_end">販売終了日</option>
+                        <option value="other">その他</option>
+                    </select>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">日付 <span class="required-badge">必須</span></label>
+                    <input type="date" id="event-date" name="event_date" class="admin-form-control" required />
+                </div>
+
+                <div class="admin-form-group" id="title-group" style="display: none;">
+                    <label class="admin-form-label">タイトル</label>
+                    <input type="text" id="event-title" name="title" class="admin-form-control" placeholder="例: 夏季限定商品販売開始" />
+                </div>
+
+                <div class="admin-form-group" id="color-group" style="display: none;">
+                    <label class="admin-form-label">カラー</label>
+                    <input type="color" id="event-color" name="color" class="admin-form-control color-input" />
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">説明文（任意）</label>
+                    <textarea id="event-description" name="description" class="admin-form-control" rows="4" placeholder="イベントの詳細説明..."></textarea>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="show-in-notice" name="show_in_notice" class="toggle-checkbox" />
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-title">お知らせに表示</span>
+                    </label>
+                    <p class="form-hint">チェックすると、お知らせページに自動的に表示されます</p>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="admin-btn admin-btn-secondary" id="cancel-btn">キャンセル</button>
+                    <button type="submit" class="admin-btn admin-btn-success">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    let currentDate = new Date();
+    let selectedEventId = null;
+
+    // イベントタイプの設定
+    const eventTypes = {
+        'regular_holiday': {
+            title: '定休日',
+            color: '#ef4444'
+        },
+        'holiday': {
+            title: '休業日',
+            color: '#fca5a5'
+        },
+        'sales_start': {
+            title: '販売開始日',
+            color: '#f59e0b'
+        },
+        'sales_end': {
+            title: '販売終了日',
+            color: '#3b82f6'
+        },
+        'other': {
+            title: 'その他',
+            color: '#94a3b8'
+        }
+    };
+
+    // カレンダー生成
+    function generateCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        document.getElementById('current-month').textContent = `${year}年${month + 1}月`;
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const prevLastDay = new Date(year, month, 0);
+
+        const grid = document.getElementById('calendar-grid');
+        // 曜日ヘッダー以降をクリア
+        while (grid.children.length > 7) {
+            grid.removeChild(grid.lastChild);
         }
 
-        50% {
-            opacity: .5;
+        // 前月の日付
+        const prevDays = firstDay.getDay();
+        for (let i = prevDays - 1; i >= 0; i--) {
+            const day = prevLastDay.getDate() - i;
+            const dayElement = createDayElement(day, true, false);
+            grid.appendChild(dayElement);
+        }
+
+        // 当月の日付
+        for (let day = 1; day <= lastDay.getDate(); day++) {
+            const date = new Date(year, month, day);
+            const isToday = date.toDateString() === new Date().toDateString();
+            const dayElement = createDayElement(day, false, isToday, date);
+            grid.appendChild(dayElement);
+        }
+
+        // 次月の日付
+        const remainingDays = 42 - grid.children.length + 7;
+        for (let day = 1; day <= remainingDays; day++) {
+            const dayElement = createDayElement(day, true, false);
+            grid.appendChild(dayElement);
         }
     }
 
-    .animate-pulse {
-        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    function createDayElement(day, isOtherMonth, isToday, date = null) {
+        const dayElement = document.createElement('div');
+        dayElement.className = `calendar-day${isOtherMonth ? ' other-month' : ''}${isToday ? ' today' : ''}`;
+
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'day-number';
+        dayNumber.textContent = day;
+        dayElement.appendChild(dayNumber);
+
+        if (date && !isOtherMonth) {
+            const eventsContainer = document.createElement('div');
+            eventsContainer.className = 'day-events';
+            // ここでイベントデータがあれば表示
+            dayElement.appendChild(eventsContainer);
+
+            dayElement.addEventListener('click', () => {
+                document.getElementById('event-date').value = date.toISOString().split('T')[0];
+                openModal();
+            });
+        }
+
+        return dayElement;
     }
-</style>
+
+    // モーダル開閉
+    function openModal(eventId = null) {
+        selectedEventId = eventId;
+        document.getElementById('modal-title').textContent = eventId ? 'イベントを編集' : 'イベントを追加';
+        document.getElementById('event-modal').style.display = 'flex';
+
+        if (!eventId) {
+            document.getElementById('event-form').reset();
+            updateFormFields();
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('event-modal').style.display = 'none';
+        selectedEventId = null;
+    }
+
+    // フォームフィールドの更新
+    function updateFormFields() {
+        const eventType = document.getElementById('event-type').value;
+        const config = eventTypes[eventType];
+
+        const titleGroup = document.getElementById('title-group');
+        const colorGroup = document.getElementById('color-group');
+
+        if (eventType === 'sales_start' || eventType === 'sales_end' || eventType === 'other') {
+            titleGroup.style.display = 'block';
+        } else {
+            titleGroup.style.display = 'none';
+            document.getElementById('event-title').value = '';
+        }
+
+        if (eventType === 'other') {
+            colorGroup.style.display = 'block';
+        } else {
+            colorGroup.style.display = 'none';
+            document.getElementById('event-color').value = config.color;
+        }
+    }
+
+    // イベントリスナー
+    document.getElementById('add-event-btn').addEventListener('click', () => openModal());
+    document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+    document.getElementById('cancel-btn').addEventListener('click', closeModal);
+    document.getElementById('event-type').addEventListener('change', updateFormFields);
+
+    document.getElementById('event-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    document.getElementById('prev-month-btn').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        generateCalendar();
+    });
+
+    document.getElementById('next-month-btn').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        generateCalendar();
+    });
+
+    document.getElementById('today-btn').addEventListener('click', () => {
+        currentDate = new Date();
+        generateCalendar();
+    });
+
+    // フォーム送信
+    document.getElementById('event-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const url = selectedEventId ? `/admin/calendar_events/${selectedEventId}` : '/admin/calendar_events';
+        const method = selectedEventId ? 'PATCH' : 'POST';
+
+        fetch(url, {
+                method: method,
+                headers: {
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(Object.fromEntries(formData))
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('保存しました！');
+                    location.reload();
+                }
+            });
+    });
+
+    function editEvent(eventId) {
+        // イベント編集の実装
+        alert('イベント編集機能は実装中です');
+    }
+
+    // 初期化
+    document.addEventListener('DOMContentLoaded', () => {
+        generateCalendar();
+        updateFormFields();
+    });
+</script>
