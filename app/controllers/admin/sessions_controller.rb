@@ -22,7 +22,7 @@ class Admin::SessionsController < ApplicationController
 
     if errors.any?
       flash.now[:alert] = errors.join("<br>").html_safe
-      render :new
+      render :index, status: :unprocessable_entity
       return
     end
 
@@ -43,7 +43,7 @@ class Admin::SessionsController < ApplicationController
       AdminLoginMailer.failed_login_attempt(login_id).deliver_later if login_id.present?
 
       flash.now[:alert] = "ログイン情報が登録されていません。"
-      render :new
+      render :index, status: :unprocessable_entity
     end
   end
 
