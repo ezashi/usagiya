@@ -3,20 +3,30 @@ class Admin::DashboardController < ApplicationController
   before_action :authenticate_admin!
 
   def index
+    # 今日の日付
+    today = Date.today
+
+    # 今週の範囲
+    week_start = today.beginning_of_week(:sunday)
+    week_end = today.end_of_week(:sunday)
+
+    # 今月の範囲
+    month_start = today.beginning_of_month
+    month_end = today.end_of_month
+
     # 統計データの取得
-    @total_products = Product.count
-    @monthly_orders = Order.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month).count
-    @monthly_inquiries = Inquiry.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month).count
-    @monthly_revenue = Order.where(
-      created_at: Time.current.beginning_of_month..Time.current.end_of_month,
-      status: [ "completed", "shipped" ]
-    ).sum(:total_amount)
+    @today_orders = Order.where(created_at: today.beginning_of_day..today.end_of_day).count
+    @week_orders = Order.where(created_at: week_start.beginning_of_day..week_end.end_of_day).count
+    @monthly_orders = Order.where(created_at: month_start..month_end).count
+
+    @weekly_inquiries = Inquiry.where(created_at: week_start.beginning_of_day..week_end.end_of_day).count
+    @monthly_inquiries = Inquiry.where(created_at: month_start..month_end).count
 
     # カレンダーの設定
     if params[:month].present?
       @current_date = Date.parse(params[:month])
     else
-      @current_date = Date.today
+      @current_date = today
     end
 
     @prev_month = (@current_date - 1.month).strftime("%Y-%m-01")
@@ -43,15 +53,15 @@ class Admin::DashboardController < ApplicationController
     end
 
     # 日別の注文数とお問い合わせ数を取得
-    month_start = @current_date.beginning_of_month
-    month_end = @current_date.end_of_month
+    calendar_month_start = @current_date.beginning_of_month
+    calendar_month_end = @current_date.end_of_month
 
-    @daily_orders = Order.where(created_at: month_start..month_end)
+    @daily_orders = Order.where(created_at: calendar_month_start..calendar_month_end)
                          .group("DATE(created_at)")
                          .count
                          .transform_keys { |key| Date.parse(key) }
 
-    @daily_inquiries = Inquiry.where(created_at: month_start..month_end)
+    @daily_inquiries = Inquiry.where(created_at: calendar_month_start..calendar_month_end)
                               .group("DATE(created_at)")
                               .count
                               .transform_keys { |key| Date.parse(key) }

@@ -224,57 +224,6 @@
         font-size: 18px;
     }
 
-    /* クイックアクション */
-    .quick-actions h3 {
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--admin-dark);
-        margin-bottom: 16px;
-    }
-
-    .action-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 16px;
-    }
-
-    .action-card {
-        background-color: var(--admin-white);
-        border: 1px solid var(--admin-border);
-        border-radius: 12px;
-        padding: 24px;
-        text-align: center;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .action-card:hover {
-        border-color: var(--admin-primary);
-        box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
-        transform: translateY(-2px);
-    }
-
-    .action-icon {
-        font-size: 40px;
-        width: 70px;
-        height: 70px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: var(--admin-light);
-        border-radius: 12px;
-    }
-
-    .action-text {
-        font-size: 15px;
-        font-weight: 600;
-        color: var(--admin-text);
-    }
-
     @media (max-width: 768px) {
         .stats-grid {
             grid-template-columns: 1fr;
@@ -284,10 +233,6 @@
         .calendar-day {
             padding: 8px;
             font-size: 12px;
-        }
-
-        .action-grid {
-            grid-template-columns: repeat(2, 1fr);
         }
     }
 </style>
@@ -325,7 +270,7 @@
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">💰</div>
+            <div class="stat-icon">💬</div>
             <div class="stat-content">
                 <p class="stat-label">今週のお問い合わせ数</p>
                 <p class="stat-value"><%= @weekly_inquiries %></p>
@@ -409,32 +354,6 @@
                 <span class="legend-icon">✉️</span>
                 <span>お問い合わせ</span>
             </div>
-        </div>
-    </div>
-
-    <!-- クイックアクションセクション -->
-    <div class="quick-actions">
-        <h3>クイックアクション</h3>
-        <div class="action-grid">
-            <%= link_to new_admin_product_path, class: "action-card" do %>
-            <div class="action-icon">➕</div>
-            <div class="action-text">商品を追加</div>
-            <% end %>
-
-            <%= link_to admin_orders_path, class: "action-card" do %>
-            <div class="action-icon">📋</div>
-            <div class="action-text">注文を確認</div>
-            <% end %>
-
-            <%= link_to admin_news_index_path, class: "action-card" do %>
-            <div class="action-icon">📢</div>
-            <div class="action-text">お知らせを作成</div>
-            <% end %>
-
-            <%= link_to admin_calendar_path, class: "action-card" do %>
-            <div class="action-icon">📅</div>
-            <div class="action-text">営業カレンダー</div>
-            <% end %>
         </div>
     </div>
 </div>

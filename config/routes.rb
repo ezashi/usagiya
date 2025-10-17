@@ -36,13 +36,12 @@ Rails.application.routes.draw do
   end
 
   # 管理者向けルート
-  # 管理者認証
-  devise_for :admins, controllers: {
-    sessions: "admin/sessions"
-  }
-
-  # 管理者画面
   namespace :admin do
+    # 管理者認証
+    get "login", to: "sessions#index", as: "login"
+    post "login", to: "sessions#create"
+    delete "logout", to: "sessions#destroy", as: "logout"
+
     root to: "dashboard#index"
     get "dashboard", to: "dashboard#index", as: "dashboard"
 
@@ -80,7 +79,7 @@ Rails.application.routes.draw do
     end
 
     # お知らせ管理
-    resources :news, only: [ :index, :new, :create, :edit, :update, :destroy ] do
+    resources :notices, only: [ :index, :new, :create, :edit, :update, :destroy ] do
       member do
         post :save_draft
         post :publish
@@ -89,10 +88,10 @@ Rails.application.routes.draw do
     end
 
     # 営業カレンダー管理
-    get "calendar", to: "calendar#index"
-    post "calendar/events", to: "calendar#create_event"
-    patch "calendar/events/:id", to: "calendar#update_event"
-    delete "calendar/events/:id", to: "calendar#destroy_event"
+    get "calendar", to: "calendar_events#index", as: "calendar"
+    post "calendar/events", to: "calendar_events#create"
+    patch "calendar/events/:id", to: "calendar_events#update"
+    delete "calendar/events/:id", to: "calendar_events#destroy"
 
     # お問い合わせ管理
     resources :inquiries, only: [ :index, :show ] do

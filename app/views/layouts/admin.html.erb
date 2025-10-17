@@ -7,8 +7,429 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <style>
+        :root {
+            --admin-primary: #2563eb;
+            --admin-primary-hover: #1d4ed8;
+            --admin-secondary: #3b82f6;
+            --admin-dark: #1e40af;
+            --admin-darker: #1e3a8a;
+            --admin-light: #f9fafb;
+            --admin-white: #ffffff;
+            --admin-border: #e5e7eb;
+            --admin-text: #374151;
+            --admin-text-light: #6b7280;
+            --sidebar-width: 260px;
+            --topbar-height: 64px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .admin-body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif;
+            color: var(--admin-text);
+            background-color: var(--admin-light);
+            min-height: 100vh;
+        }
+
+        /* サイドバー */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, #2563eb 0%, #1e40af 100%);
+            color: var(--admin-white);
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+            padding-bottom: 80px;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 12px 0;
+        }
+
+        .sidebar-nav li {
+            margin: 4px 12px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--admin-white);
+        }
+
+        .nav-link.active {
+            background-color: var(--admin-primary);
+            color: var(--admin-white);
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-text {
+            flex: 1;
+        }
+
+        /* サイドバー下部のボタン */
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 16px 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            background: #1e40af;
+        }
+
+        .view-site-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--admin-primary);
+            color: var(--admin-white);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .view-site-btn:hover {
+            background-color: var(--admin-primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .view-site-btn .icon {
+            font-size: 18px;
+        }
+
+        /* メインラッパー */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* トップバー */
+        .topbar {
+            position: sticky;
+            top: 0;
+            height: var(--topbar-height);
+            background-color: var(--admin-white);
+            border-bottom: 1px solid var(--admin-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 90;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .topbar-left {
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--admin-dark);
+            margin: 0;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: var(--admin-white);
+            color: var(--admin-text);
+            border: 1px solid var(--admin-border);
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--admin-light);
+            border-color: var(--admin-text-light);
+        }
+
+        /* ハンバーガーボタン */
+        .hamburger-btn {
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+
+        .hamburger-btn:hover {
+            background-color: var(--admin-light);
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background-color: var(--admin-dark);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* ハンバーガーメニュー（オーバーレイ） */
+        .hamburger-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .hamburger-menu.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .hamburger-menu-content {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 320px;
+            max-width: 85vw;
+            height: 100vh;
+            background-color: var(--admin-white);
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+            overflow-y: auto;
+            padding: 20px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .hamburger-menu.active .hamburger-menu-content {
+            transform: translateX(0);
+        }
+
+        .close-menu-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--admin-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+
+        .close-menu-btn:hover {
+            background-color: var(--admin-light);
+        }
+
+        .hamburger-nav {
+            margin-top: 60px;
+        }
+
+        .hamburger-nav ul {
+            list-style: none;
+        }
+
+        .hamburger-nav li {
+            margin-bottom: 4px;
+        }
+
+        .hamburger-link {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            color: var(--admin-text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .hamburger-link:hover {
+            background-color: var(--admin-light);
+            color: var(--admin-primary);
+        }
+
+        .hamburger-link .nav-icon {
+            font-size: 22px;
+            margin-right: 12px;
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* アラート */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            :root {
+                --sidebar-width: 0px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .page-title {
+                font-size: 18px;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .hamburger-menu-content {
+                width: 280px;
+            }
+        }
+
+        /* スクロールバーのスタイリング */
+        .sidebar::-webkit-scrollbar,
+        .hamburger-menu-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .hamburger-menu-content::-webkit-scrollbar-track {
+            background: var(--admin-light);
+        }
+
+        .hamburger-menu-content::-webkit-scrollbar-thumb {
+            background: var(--admin-border);
+            border-radius: 3px;
+        }
+
+        .hamburger-menu-content::-webkit-scrollbar-thumb:hover {
+            background: var(--admin-text-light);
+        }
+    </style>
 </head>
 
 <body class="admin-body">
@@ -28,31 +449,32 @@
                     <% end %>
                 </li>
                 <li>
-                    <%= link_to admin_products_path, class: "nav-link #{'active' if current_page?(admin_products_path)}" do %>
-                    <span class="nav-icon">📦</span>
-                    <span class="nav-text">商品一覧</span>
-                    <% end %>
-                </li>
-                <li>
                     <%= link_to new_admin_product_path, class: "nav-link #{'active' if current_page?(new_admin_product_path)}" do %>
                     <span class="nav-icon">➕</span>
                     <span class="nav-text">商品を追加</span>
                     <% end %>
                 </li>
                 <li>
-                    <%= link_to admin_orders_path, class: "nav-link #{'active' if current_page?(admin_orders_path)}" do %>
-                    <span class="nav-icon">📋</span>
-                    <span class="nav-text">注文管理</span>
-                    <% end %>
-                </li>
-                <li>
-                    <%= link_to admin_news_index_path, class: "nav-link #{'active' if controller_name == 'news'}" do %>
+                    <%= link_to admin_notices_path, class: "nav-link #{'active' if controller_name == 'notices'}" do %>
                     <span class="nav-icon">📢</span>
                     <span class="nav-text">お知らせ</span>
                     <% end %>
                 </li>
+                <li>
+                    <%= link_to admin_calendar_path, class: "nav-link #{'active' if controller_name == 'calendar_events'}" do %>
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-text">営業カレンダー</span>
+                    <% end %>
+                </li>
             </ul>
         </nav>
+
+        <div class="sidebar-footer">
+            <%= link_to root_path, target: "_blank", class: "view-site-btn" do %>
+            <span class="icon">🌐</span>
+            <span>一般ユーザーサイトを表示</span>
+            <% end %>
+        </div>
     </aside>
 
     <!-- メインコンテンツエリア -->
@@ -64,7 +486,7 @@
             </div>
 
             <div class="topbar-right">
-                <%= button_to "ログアウト", destroy_admin_session_path, method: :delete, class: "logout-btn", data: { confirm: "ログアウトしますか?" } %>
+                <%= button_to "ログアウト", admin_logout_path, method: :delete, class: "logout-btn", data: { confirm: "ログアウトしますか?" } %>
 
                 <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニュー">
                     <span class="hamburger-line"></span>
@@ -81,12 +503,6 @@
 
                 <nav class="hamburger-nav">
                     <ul>
-                        <li>
-                            <%= link_to admin_dashboard_path, class: "hamburger-link" do %>
-                            <span class="nav-icon">🏠</span>
-                            <span>ホーム</span>
-                            <% end %>
-                        </li>
                         <li>
                             <%= link_to admin_products_path, class: "hamburger-link" do %>
                             <span class="nav-icon">📦</span>
@@ -112,7 +528,7 @@
                             <% end %>
                         </li>
                         <li>
-                            <%= link_to admin_news_index_path, class: "hamburger-link" do %>
+                            <%= link_to admin_notices_path, class: "hamburger-link" do %>
                             <span class="nav-icon">📢</span>
                             <span>お知らせ</span>
                             <% end %>
@@ -121,6 +537,12 @@
                             <%= link_to admin_calendar_path, class: "hamburger-link" do %>
                             <span class="nav-icon">📅</span>
                             <span>営業カレンダー</span>
+                            <% end %>
+                        </li>
+                        <li>
+                            <%= link_to admin_orders_path, class: "hamburger-link" do %>
+                            <span class="nav-icon">📋</span>
+                            <span>注文管理</span>
                             <% end %>
                         </li>
                         <li>

@@ -1,3 +1,9 @@
+/*
+ * 注意: このファイルは現在使用されていません
+ * CSSは app/views/layouts/admin.html.erb に直接埋め込まれています
+ * このファイルはバックアップ/参照用として保持しています
+ */
+
 :root {
   --admin-primary: #1e3a8a;
   --admin-secondary: #3b82f6;

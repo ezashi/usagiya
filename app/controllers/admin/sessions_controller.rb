@@ -1,55 +1,66 @@
 class Admin::SessionsController < ApplicationController
-  layout "application"
+  layout false  # レイアウトを使用しない
 
-  # GET /admin/login
   def index
-    redirect_to admin_root_path if admin_logged_in?
+    # すでにログイン済みの場合はダッシュボードへリダイレクト
+    if admin_logged_in?
+      redirect_to admin_dashboard_path
+      nil
+    end
   end
 
-  # POST /admin/login
   def create
-    login_id = params[:login_id]
-    password = params[:password]
+    # バリデーション
+    @errors = []
 
-    # バリデーションチェック
-    errors = []
-    errors << "管理者ユーザーIDを入力してください。" if login_id.blank?
-    errors << "パスワードを入力してください。" if password.blank?
-
-    if password.present? && password.length < 7
-      errors << "パスワードを7文字以上入力してください。"
+    if params[:login_id].blank?
+      @errors << "管理者ユーザーIDを入力してください"
     end
 
-    if errors.any?
-      flash.now[:alert] = errors.join("<br>").html_safe
+    if params[:password].blank?
+      @errors << "パスワードを入力してください"
+    elsif params[:password].length < 7
+      @errors << "パスワードは7文字以上入力してください"
+    end
+
+    # バリデーションエラーがあれば再表示
+    if @errors.any?
+      flash.now[:alert] = @errors
       render :index, status: :unprocessable_entity
       return
     end
 
-    # 認証チェック
-    admin_user = AdminUser.authenticate(login_id, password)
+    # ユーザー認証
+    admin = AdminUser.find_by(login_id: params[:login_id])
 
-    if admin_user
-      # ログイン成功
-      session[:admin_user_id] = admin_user.id
+    if admin.nil?
+      @errors << "ユーザー情報が登録されていません"
+      flash.now[:alert] = @errors
+      render :index, status: :unprocessable_entity
+      return
+    end
 
-      # ログイン成功のメール通知
-      AdminLoginMailer.successful_login(admin_user).deliver_later
+    if admin.authenticate(params[:password])
+      session[:admin_user_id] = admin.id
 
-      redirect_to admin_root_path, notice: "ログインしました"
+      # ログイン成功通知メール（オプション）
+      # AdminMailer.login_notification(admin).deliver_later
+
+      redirect_to admin_dashboard_path, notice: "ログインしました"
     else
-      # ログイン失敗
-      # ログイン失敗のメール通知
-      AdminLoginMailer.failed_login_attempt(login_id).deliver_later if login_id.present?
+      @errors << "ログインIDまたはパスワードが正しくありません"
 
-      flash.now[:alert] = "ログイン情報が登録されていません。"
+      # ログイン失敗通知メール（オプション）
+      # AdminMailer.failed_login_attempt(params[:login_id]).deliver_later
+
+      flash.now[:alert] = @errors
       render :index, status: :unprocessable_entity
     end
   end
 
-  # DELETE /admin/logout
   def destroy
-    session[:admin_user_id] = nil
+    session.delete(:admin_user_id)
+    @current_admin = nil
     redirect_to admin_login_path, notice: "ログアウトしました"
   end
 end

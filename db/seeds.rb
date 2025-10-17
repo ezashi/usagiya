@@ -164,8 +164,8 @@ AdminUser.destroy_all
 # デフォルトの管理者ユーザーを作成
 admin = AdminUser.create!(
   login_id: "admin",
-  password: "usagiya2024",
-  password_confirmation: "usagiya2024"
+  password: "1234567",
+  password_confirmation: "1234567"
 )
 
 puts "✓ 管理者ユーザーを作成しました"
