@@ -36,51 +36,70 @@ Rails.application.routes.draw do
   end
 
   # 管理者向けルート
-  namespace :admin do
-    # 管理者認証
-    get "login", to: "sessions#index", as: "login"
-    post "login", to: "sessions#create"
-    delete "logout", to: "sessions#destroy", as: "logout"
+  # 管理者認証
+  devise_for :admins, controllers: {
+    sessions: "admin/sessions"
+  }
 
-    # ダッシュボード
+  # 管理者画面
+  namespace :admin do
     root to: "dashboard#index"
+    get "dashboard", to: "dashboard#index", as: "dashboard"
 
     # 商品管理
     resources :products do
       member do
-        patch :toggle_visibility
-        post :add_to_featured
-        delete :remove_from_featured
-        post :add_to_seasonal
-        delete :remove_from_seasonal
+        patch :toggle_recommended
+        patch :toggle_seasonal
       end
+    end
+
+    # おすすめ商品管理
+    get "recommended_products", to: "recommended_products#index"
+    post "recommended_products/:id/add", to: "recommended_products#add", as: "add_recommended_product"
+    delete "recommended_products/:id/remove", to: "recommended_products#remove", as: "remove_recommended_product"
+    patch "recommended_products/reorder", to: "recommended_products#reorder"
+    post "recommended_products/save", to: "recommended_products#save"
+    post "recommended_products/publish", to: "recommended_products#publish"
+    get "recommended_products/preview", to: "recommended_products#preview"
+
+    # 季節限定商品管理
+    get "seasonal_products", to: "seasonal_products#index"
+    post "seasonal_products/:id/add", to: "seasonal_products#add", as: "add_seasonal_product"
+    delete "seasonal_products/:id/remove", to: "seasonal_products#remove", as: "remove_seasonal_product"
+    patch "seasonal_products/reorder", to: "seasonal_products#reorder"
+    post "seasonal_products/save", to: "seasonal_products#save"
+    post "seasonal_products/publish", to: "seasonal_products#publish"
+    get "seasonal_products/preview", to: "seasonal_products#preview"
+
+    # 注文管理
+    resources :orders, only: [ :index, :show ] do
       collection do
-        get :featured
-        get :seasonal
-        patch :update_featured_order
-        patch :update_seasonal_order
+        get :filter
       end
     end
 
     # お知らせ管理
-    resources :notices do
+    resources :news, only: [ :index, :new, :create, :edit, :update, :destroy ] do
       member do
-        patch :publish  # 公開/非公開切り替え
+        post :save_draft
+        post :publish
+        get :preview
       end
     end
 
     # 営業カレンダー管理
-    resources :calendar_events
-
-    # 注文管理
-    resources :orders, only: [ :index, :show ] do
-    member do
-      patch :update_status  # この行を追加
-    end
-  end
+    get "calendar", to: "calendar#index"
+    post "calendar/events", to: "calendar#create_event"
+    patch "calendar/events/:id", to: "calendar#update_event"
+    delete "calendar/events/:id", to: "calendar#destroy_event"
 
     # お問い合わせ管理
-    resources :inquiries, only: [ :index, :show ]
+    resources :inquiries, only: [ :index, :show ] do
+      collection do
+        get :filter
+      end
+    end
   end
 
   # Health check

@@ -1,606 +1,184 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 
 <head>
-    <title><%= content_for(:title) || "管理画面" %> - うさぎや</title>
+    <title>御菓子処うさぎや - 管理者ページ</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+
+    <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-
-    <style>
-        /* ========== 基本設定 ========== */
-        body.admin-body {
-            background-color: #f3f4f6;
-        }
-
-        /* ========== レイアウト ========== */
-        .admin-layout {
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* ========== サイドバー（デスクトップ） ========== */
-        .sidebar-desktop {
-            display: none;
-            flex-shrink: 0;
-        }
-
-        @media (min-width: 1024px) {
-            .sidebar-desktop {
-                display: flex;
-            }
-        }
-
-        .sidebar-wrapper {
-            display: flex;
-            flex-direction: column;
-            width: 16rem;
-            background-color: #111827;
-        }
-
-        /* ロゴエリア */
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 4rem;
-            padding: 0 1rem;
-            background-color: #1f2937;
-        }
-
-        .sidebar-logo a {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo-box {
-            border: 2px solid white;
-            padding: 0.5rem 1rem;
-            font-weight: bold;
-            color: white;
-            letter-spacing: 0.1em;
-        }
-
-        /* ナビゲーション */
-        .sidebar-nav {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            padding: 1rem 0;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            color: #d1d5db;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .nav-link:hover {
-            background-color: #1f2937;
-            color: white;
-        }
-
-        .nav-link.active {
-            background-color: #1f2937;
-            color: white;
-            border-left: 4px solid #ec4899;
-        }
-
-        .nav-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-            margin-right: 0.75rem;
-            fill: none;
-            stroke: currentColor;
-        }
-
-        .nav-footer {
-            padding: 0.75rem 1.5rem;
-            margin-top: auto;
-            border-top: 1px solid #1f2937;
-        }
-
-        .nav-footer-link {
-            display: flex;
-            align-items: center;
-            color: #d1d5db;
-            transition: color 0.2s;
-            text-decoration: none;
-        }
-
-        .nav-footer-link:hover {
-            color: white;
-        }
-
-        /* ========== モバイルサイドバー ========== */
-        .mobile-sidebar {
-            position: fixed;
-            inset: 0;
-            z-index: 40;
-        }
-
-        @media (min-width: 1024px) {
-            .mobile-sidebar {
-                display: none !important;
-            }
-        }
-
-        .mobile-sidebar.hidden {
-            display: none;
-        }
-
-        .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(75, 85, 99, 0.75);
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        .sidebar-content {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            display: flex;
-            flex-direction: column;
-            width: 16rem;
-            background-color: #111827;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .sidebar-content.show {
-            transform: translateX(0);
-        }
-
-        .mobile-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 4rem;
-            padding: 0 1rem;
-            background-color: #1f2937;
-        }
-
-        .mobile-header a {
-            display: flex;
-            align-items: center;
-        }
-
-        .mobile-logo-box {
-            border: 2px solid white;
-            padding: 0.5rem 1rem;
-            font-weight: bold;
-            color: white;
-            letter-spacing: 0.1em;
-            font-size: 0.875rem;
-        }
-
-        .close-btn {
-            color: #d1d5db;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .close-btn:hover {
-            color: white;
-        }
-
-        .close-icon {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
-
-        /* ========== メインコンテンツエリア ========== */
-        .main-container {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        /* トップバー */
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 4rem;
-            padding: 0 1rem;
-            background-color: white;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .menu-btn {
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            color: #4b5563;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .menu-btn:hover {
-            color: #111827;
-            background-color: #f3f4f6;
-        }
-
-        @media (min-width: 1024px) {
-            .menu-btn {
-                display: none;
-            }
-        }
-
-        .menu-icon {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
-
-        .page-title-wrapper {
-            display: none;
-        }
-
-        @media (min-width: 1024px) {
-            .page-title-wrapper {
-                display: block;
-            }
-        }
-
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1f2937;
-        }
-
-        /* ユーザーメニュー */
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-name {
-            font-size: 0.875rem;
-            color: #4b5563;
-            display: none;
-        }
-
-        @media (min-width: 768px) {
-            .user-name {
-                display: block;
-            }
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            color: #374151;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .logout-btn:hover {
-            background-color: #f3f4f6;
-        }
-
-        .logout-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-            margin-right: 0.5rem;
-        }
-
-        .logout-text {
-            display: none;
-        }
-
-        @media (min-width: 640px) {
-            .logout-text {
-                display: inline;
-            }
-        }
-
-        /* ========== メインコンテンツ ========== */
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            background-color: #f3f4f6;
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .main-content {
-                padding: 1.5rem;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .main-content {
-                padding: 2rem;
-            }
-        }
-
-        /* フラッシュメッセージ */
-        .flash-message {
-            margin-bottom: 1.5rem;
-            padding: 0.75rem 1rem;
-            border-radius: 0.25rem;
-        }
-
-        .flash-success {
-            background-color: #f0fdf4;
-            border-left: 4px solid #10b981;
-            color: #065f46;
-        }
-
-        .flash-error {
-            background-color: #fef2f2;
-            border-left: 4px solid #ef4444;
-            color: #991b1b;
-        }
-
-        .flash-content {
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .flash-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-            margin-right: 0.75rem;
-            flex-shrink: 0;
-            margin-top: 0.125rem;
-            fill: currentColor;
-        }
-    </style>
 </head>
 
 <body class="admin-body">
-    <% if current_admin_user %>
-    <div class="admin-layout">
-        <!-- サイドバー（デスクトップ） -->
-        <aside class="sidebar-desktop">
-            <div class="sidebar-wrapper">
-                <!-- ロゴ -->
-                <div class="sidebar-logo">
-                    <%= link_to admin_root_path do %>
-                    <div class="logo-box">
-                        うさぎや
-                    </div>
-                    <% end %>
-                </div>
-
-                <!-- ナビゲーション -->
-                <nav class="sidebar-nav">
-                    <%= link_to admin_root_path, class: "nav-link #{current_page?(admin_root_path) ? 'active' : ''}" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                    </svg>
-                    ダッシュボード
-                    <% end %>
-
-                    <%= link_to admin_products_path, class: "nav-link #{current_page?(admin_products_path) || current_page?(new_admin_product_path) || (controller_name == 'products' && action_name == 'edit') ? 'active' : ''}" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
-                    商品管理
-                    <% end %>
-
-                    <%= link_to admin_notices_path, class: "nav-link #{current_page?(admin_notices_path) || current_page?(new_admin_notice_path) || (controller_name == 'notices' && action_name == 'edit') ? 'active' : ''}" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                    </svg>
-                    お知らせ管理
-                    <% end %>
-
-                    <%= link_to admin_calendar_events_path, class: "nav-link #{current_page?(admin_calendar_events_path) || current_page?(new_admin_calendar_event_path) || (controller_name == 'calendar_events' && action_name == 'edit') ? 'active' : ''}" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    営業カレンダー
-                    <% end %>
-
-                    <%= link_to admin_orders_path, class: "nav-link #{current_page?(admin_orders_path) || (controller_name == 'orders' && action_name == 'show') ? 'active' : ''}" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                    注文管理
-                    <% end %>
-
-                    <%= link_to admin_inquiries_path, class: "nav-link #{current_page?(admin_inquiries_path) || (controller_name == 'inquiries' && action_name == 'show') ? 'active' : ''}" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
-                    </svg>
-                    お問い合わせ
-                    <% end %>
-
-                    <div class="nav-footer">
-                        <%= link_to root_path, target: "_blank", class: "nav-footer-link" do %>
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                        </svg>
-                        公開サイトを見る
-                        <% end %>
-                    </div>
-                </nav>
-            </div>
-        </aside>
-
-        <!-- モバイルサイドバー -->
-        <div id="mobile-sidebar" class="mobile-sidebar hidden">
-            <!-- オーバーレイ -->
-            <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-            <!-- サイドバーコンテンツ -->
-            <div class="sidebar-content" id="sidebar-content">
-                <!-- ロゴとクローズボタン -->
-                <div class="mobile-header">
-                    <%= link_to admin_root_path do %>
-                    <div class="mobile-logo-box">
-                        うさぎや
-                    </div>
-                    <% end %>
-                    <button id="close-sidebar" class="close-btn">
-                        <svg class="close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- ナビゲーション -->
-                <nav class="sidebar-nav">
-                    <%= link_to admin_root_path, class: "nav-link #{current_page?(admin_root_path) ? 'active' : ''}" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                    </svg>
-                    ダッシュボード
-                    <% end %>
-
-                    <%= link_to admin_products_path, class: "nav-link" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
-                    商品管理
-                    <% end %>
-
-                    <%= link_to admin_notices_path, class: "nav-link" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                    </svg>
-                    お知らせ管理
-                    <% end %>
-
-                    <%= link_to admin_calendar_events_path, class: "nav-link" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    営業カレンダー
-                    <% end %>
-
-                    <%= link_to admin_orders_path, class: "nav-link" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                    注文管理
-                    <% end %>
-
-                    <%= link_to admin_inquiries_path, class: "nav-link" do %>
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
-                    </svg>
-                    お問い合わせ
-                    <% end %>
-
-                    <div class="nav-footer">
-                        <%= link_to root_path, target: "_blank", class: "nav-footer-link" do %>
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                        </svg>
-                        公開サイトを見る
-                        <% end %>
-                    </div>
-                </nav>
-            </div>
+    <!-- サイドバー -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>御菓子処うさぎや</h2>
+            <p class="sidebar-subtitle">管理者ページ</p>
         </div>
 
-        <!-- メインコンテンツエリア -->
-        <div class="main-container">
-            <!-- トップバー -->
-            <header class="topbar">
-                <!-- モバイルメニューボタン -->
-                <button id="open-sidebar" class="menu-btn">
-                    <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <%= link_to admin_dashboard_path, class: "nav-link #{'active' if current_page?(admin_dashboard_path)}" do %>
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">ホーム</span>
+                    <% end %>
+                </li>
+                <li>
+                    <%= link_to admin_products_path, class: "nav-link #{'active' if current_page?(admin_products_path)}" do %>
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">商品一覧</span>
+                    <% end %>
+                </li>
+                <li>
+                    <%= link_to new_admin_product_path, class: "nav-link #{'active' if current_page?(new_admin_product_path)}" do %>
+                    <span class="nav-icon">➕</span>
+                    <span class="nav-text">商品を追加</span>
+                    <% end %>
+                </li>
+                <li>
+                    <%= link_to admin_orders_path, class: "nav-link #{'active' if current_page?(admin_orders_path)}" do %>
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">注文管理</span>
+                    <% end %>
+                </li>
+                <li>
+                    <%= link_to admin_news_index_path, class: "nav-link #{'active' if controller_name == 'news'}" do %>
+                    <span class="nav-icon">📢</span>
+                    <span class="nav-text">お知らせ</span>
+                    <% end %>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- メインコンテンツエリア -->
+    <div class="main-wrapper">
+        <!-- トップバー -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 class="page-title"><%= yield :page_title %></h1>
+            </div>
+
+            <div class="topbar-right">
+                <%= button_to "ログアウト", destroy_admin_session_path, method: :delete, class: "logout-btn", data: { confirm: "ログアウトしますか?" } %>
+
+                <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニュー">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
                 </button>
+            </div>
+        </header>
 
-                <!-- ページタイトル（デスクトップのみ） -->
-                <div class="page-title-wrapper">
-                    <h1 class="page-title">
-                        <%= content_for(:page_title) || "管理画面" %>
-                    </h1>
-                </div>
+        <!-- ハンバーガーメニュー（オーバーレイ） -->
+        <div class="hamburger-menu" id="hamburgerMenu">
+            <div class="hamburger-menu-content">
+                <button class="close-menu-btn" id="closeMenuBtn" aria-label="閉じる">✕</button>
 
-                <!-- ユーザーメニュー -->
-                <div class="user-menu">
-                    <span class="user-name">
-                        <%= current_admin_user&.login_id %>
-                    </span>
-                    <%= button_to admin_logout_path, method: :delete, class: "logout-btn" do %>
-                    <svg class="logout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                    </svg>
-                    <span class="logout-text">ログアウト</span>
-                    <% end %>
-                </div>
-            </header>
-
-            <!-- メインコンテンツ -->
-            <main class="main-content">
-                <!-- フラッシュメッセージ -->
-                <% if notice %>
-                <div class="flash-message flash-success" role="alert">
-                    <div class="flash-content">
-                        <svg class="flash-icon" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span><%= notice %></span>
-                    </div>
-                </div>
-                <% end %>
-
-                <% if alert %>
-                <div class="flash-message flash-error" role="alert">
-                    <div class="flash-content">
-                        <svg class="flash-icon" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span><%= alert %></span>
-                    </div>
-                </div>
-                <% end %>
-
-                <%= yield %>
-            </main>
+                <nav class="hamburger-nav">
+                    <ul>
+                        <li>
+                            <%= link_to admin_dashboard_path, class: "hamburger-link" do %>
+                            <span class="nav-icon">🏠</span>
+                            <span>ホーム</span>
+                            <% end %>
+                        </li>
+                        <li>
+                            <%= link_to admin_products_path, class: "hamburger-link" do %>
+                            <span class="nav-icon">📦</span>
+                            <span>商品一覧</span>
+                            <% end %>
+                        </li>
+                        <li>
+                            <%= link_to new_admin_product_path, class: "hamburger-link" do %>
+                            <span class="nav-icon">➕</span>
+                            <span>商品を追加</span>
+                            <% end %>
+                        </li>
+                        <li>
+                            <%= link_to admin_recommended_products_path, class: "hamburger-link" do %>
+                            <span class="nav-icon">⭐</span>
+                            <span>おすすめ商品</span>
+                            <% end %>
+                        </li>
+                        <li>
+                            <%= link_to admin_seasonal_products_path, class: "hamburger-link" do %>
+                            <span class="nav-icon">🌸</span>
+                            <span>季節限定商品</span>
+                            <% end %>
+                        </li>
+                        <li>
+                            <%= link_to admin_news_index_path, class: "hamburger-link" do %>
+                            <span class="nav-icon">📢</span>
+                            <span>お知らせ</span>
+                            <% end %>
+                        </li>
+                        <li>
+                            <%= link_to admin_calendar_path, class: "hamburger-link" do %>
+                            <span class="nav-icon">📅</span>
+                            <span>営業カレンダー</span>
+                            <% end %>
+                        </li>
+                        <li>
+                            <%= link_to admin_inquiries_path, class: "hamburger-link" do %>
+                            <span class="nav-icon">✉️</span>
+                            <span>お問い合わせ</span>
+                            <% end %>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
+
+        <!-- メインコンテンツ -->
+        <main class="main-content">
+            <% if notice %>
+            <div class="alert alert-success"><%= notice %></div>
+            <% end %>
+            <% if alert %>
+            <div class="alert alert-danger"><%= alert %></div>
+            <% end %>
+
+            <%= yield %>
+        </main>
     </div>
 
     <script>
+        // ハンバーガーメニューの開閉
         document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.getElementById('mobile-menu-toggle');
-            const sidebar = document.getElementById('mobile-sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
 
-            if (menuToggle && sidebar && overlay) {
-                menuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('open');
-                    overlay.classList.toggle('active');
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function() {
+                    hamburgerMenu.classList.add('active');
+                    document.body.style.overflow = 'hidden';
                 });
+            }
 
-                overlay.addEventListener('click', function() {
-                    sidebar.classList.remove('open');
-                    overlay.classList.remove('active');
+            if (closeMenuBtn) {
+                closeMenuBtn.addEventListener('click', function() {
+                    hamburgerMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            // メニュー外をクリックしたら閉じる
+            if (hamburgerMenu) {
+                hamburgerMenu.addEventListener('click', function(e) {
+                    if (e.target === hamburgerMenu) {
+                        hamburgerMenu.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
                 });
             }
         });
     </script>
-    <% else %>
-    <!-- ログインページ用のシンプルなレイアウト -->
-    <%= yield %>
-    <% end %>
 </body>
 
 </html>
