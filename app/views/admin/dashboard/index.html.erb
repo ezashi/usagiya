@@ -1,7 +1,7 @@
 <% content_for :page_title, "ダッシュボード" %>
 
 <style>
-    /* ダッシュボード固有のスタイル */
+    /* ダッシュボード基本スタイル */
     .admin-dashboard {
         padding: 2rem;
         max-width: 1600px;
@@ -33,28 +33,22 @@
         margin: 0;
     }
 
-    .header-actions {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-    }
-
     /* 統計カード */
     .stats-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
 
     .stat-card {
-        background: linear-gradient(135deg, var(--admin-bg-card) 0%, var(--admin-bg-secondary) 100%);
+        background: linear-gradient(135deg, var(--admin-bg-card) 0%, #f8f9fa 100%);
         border: 1px solid var(--admin-border);
         border-radius: 12px;
         padding: 1.5rem;
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem;
         transition: all 0.3s ease;
     }
 
@@ -70,22 +64,23 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
     }
 
     .stat-icon-primary {
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%);
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.15) 100%);
     }
 
     .stat-icon-warning {
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.15) 100%);
     }
 
     .stat-icon-info {
-        background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(2, 132, 199, 0.2) 100%);
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(2, 132, 199, 0.15) 100%);
     }
 
     .stat-icon-success {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
     }
 
     .stat-icon {
@@ -117,166 +112,162 @@
         color: var(--admin-text-secondary);
         font-size: 0.875rem;
         margin: 0 0 0.25rem 0;
+        font-weight: 500;
     }
 
     .stat-value {
         color: var(--admin-text);
-        font-size: 1.75rem;
+        font-size: 1.875rem;
         font-weight: 700;
         margin: 0;
+        line-height: 1;
     }
 
-    /* 商品グリッド */
-    .products-section {
+    /* カレンダーセクション */
+    .calendar-section {
         background: var(--admin-bg-card);
         border: 1px solid var(--admin-border);
         border-radius: 12px;
-        padding: 1.5rem;
+        padding: 2rem;
         margin-bottom: 2rem;
     }
 
-    .section-header {
+    .calendar-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
     }
 
-    .section-title {
+    .calendar-title {
         color: var(--admin-text);
         font-size: 1.5rem;
         font-weight: 600;
         margin: 0;
     }
 
-    .products-grid {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 1.5rem;
+    .calendar-nav {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
     }
 
-    .product-card {
+    .calendar-nav-btn {
         background: var(--admin-bg-secondary);
         border: 1px solid var(--admin-border);
-        border-radius: 8px;
-        overflow: hidden;
-        transition: all 0.3s ease;
+        color: var(--admin-text);
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
         cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         text-decoration: none;
-        color: inherit;
-        display: block;
     }
 
-    .product-card:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--admin-shadow-lg);
+    .calendar-nav-btn:hover {
+        background: var(--admin-bg);
         border-color: var(--admin-primary);
     }
 
-    .product-image {
-        width: 100%;
-        aspect-ratio: 1;
-        object-fit: cover;
-        background: #f3f4f6;
+    .calendar-nav-btn svg {
+        width: 1.25rem;
+        height: 1.25rem;
     }
 
-    .product-info {
-        padding: 1rem;
-    }
-
-    .product-name {
+    .current-month {
         color: var(--admin-text);
-        font-size: 0.875rem;
+        font-size: 1.125rem;
         font-weight: 600;
-        margin: 0 0 0.5rem 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        min-width: 150px;
+        text-align: center;
     }
 
-    .product-price {
-        color: var(--admin-primary);
+    /* カレンダーグリッド */
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.5rem;
+    }
+
+    .calendar-weekday {
+        background: var(--admin-bg-secondary);
+        padding: 0.75rem;
+        text-align: center;
+        font-weight: 600;
+        color: var(--admin-text-secondary);
+        border-radius: 6px;
+        font-size: 0.875rem;
+    }
+
+    .calendar-day {
+        background: var(--admin-bg-secondary);
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        padding: 0.75rem;
+        min-height: 120px;
+        transition: all 0.2s;
+    }
+
+    .calendar-day.other-month {
+        opacity: 0.3;
+        cursor: default;
+    }
+
+    .calendar-day.today {
+        border-color: var(--admin-primary);
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    .calendar-day-number {
+        color: var(--admin-text);
+        font-weight: 600;
         font-size: 1rem;
-        font-weight: 700;
-        margin: 0 0 0.5rem 0;
+        margin-bottom: 0.5rem;
     }
 
-    .product-badges {
+    .calendar-day-content {
         display: flex;
-        gap: 0.25rem;
-        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 0.375rem;
     }
 
-    .badge {
+    .calendar-badge {
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
         font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
     }
 
-    .badge-featured {
+    .calendar-badge:hover {
+        opacity: 0.8;
+        transform: translateX(2px);
+    }
+
+    .calendar-badge-orders {
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+    }
+
+    .calendar-badge-inquiries {
         background: rgba(245, 158, 11, 0.1);
         color: #f59e0b;
     }
 
-    .badge-seasonal {
-        background: rgba(14, 165, 233, 0.1);
-        color: #0ea5e9;
-    }
-
-    .badge-hidden {
-        background: rgba(107, 114, 128, 0.1);
-        color: #6b7280;
-    }
-
-    /* ペジネーション */
-    .pagination-wrapper {
-        display: flex;
-        justify-content: center;
-        margin-top: 2rem;
-    }
-
-    /* 空の状態 */
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        background: var(--admin-bg-secondary);
-        border: 2px dashed var(--admin-border);
-        border-radius: 12px;
-    }
-
-    .empty-icon {
-        width: 4rem;
-        height: 4rem;
-        color: var(--admin-text-muted);
-        margin: 0 auto 1.5rem;
-    }
-
-    .empty-title {
-        color: var(--admin-text);
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin: 0 0 0.5rem 0;
-    }
-
-    .empty-description {
-        color: var(--admin-text-secondary);
-        margin: 0 0 1.5rem 0;
+    .calendar-badge-icon {
+        width: 0.875rem;
+        height: 0.875rem;
     }
 
     /* レスポンシブデザイン */
-    @media (max-width: 1400px) {
-        .products-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-
     @media (max-width: 1024px) {
-        .products-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
         .stats-container {
             grid-template-columns: repeat(2, 1fr);
         }
@@ -291,23 +282,29 @@
             font-size: 1.5rem;
         }
 
-        .header-content {
-            flex-direction: column;
-            align-items: stretch;
+        .calendar-section {
+            padding: 1rem;
         }
 
-        .products-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+        .calendar-grid {
+            gap: 0.25rem;
+        }
+
+        .calendar-day {
+            min-height: 80px;
+            padding: 0.5rem;
+        }
+
+        .calendar-day-number {
+            font-size: 0.875rem;
+        }
+
+        .calendar-badge {
+            font-size: 0.625rem;
+            padding: 0.125rem 0.375rem;
         }
 
         .stats-container {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .products-grid {
             grid-template-columns: 1fr;
         }
     }
@@ -318,22 +315,8 @@
     <div class="dashboard-header">
         <div class="header-content">
             <div>
-                <h1 class="dashboard-title">商品管理ダッシュボード</h1>
-                <p class="dashboard-subtitle">全ての商品を一覧で確認・管理します</p>
-            </div>
-            <div class="header-actions">
-                <%= link_to new_admin_product_path, class: "admin-btn admin-btn-primary" do %>
-                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                商品を追加
-                <% end %>
-                <%= link_to featured_admin_products_path, class: "admin-btn admin-btn-secondary" do %>
-                おすすめ商品管理
-                <% end %>
-                <%= link_to seasonal_admin_products_path, class: "admin-btn admin-btn-secondary" do %>
-                季節限定商品管理
-                <% end %>
+                <h1 class="dashboard-title">ダッシュボード</h1>
+                <p class="dashboard-subtitle">注文とお問い合わせの状況を確認できます</p>
             </div>
         </div>
     </div>
@@ -343,104 +326,118 @@
         <div class="stat-card">
             <div class="stat-icon-wrapper stat-icon-primary">
                 <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                 </svg>
             </div>
             <div class="stat-content">
-                <p class="stat-label">全商品数</p>
-                <p class="stat-value"><%= @total_products %></p>
+                <p class="stat-label">今週の注文数</p>
+                <p class="stat-value"><%= @this_week_orders_count %></p>
             </div>
         </div>
 
         <div class="stat-card">
             <div class="stat-icon-wrapper stat-icon-warning">
                 <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
             <div class="stat-content">
-                <p class="stat-label">おすすめ商品</p>
-                <p class="stat-value"><%= @featured_products_count %></p>
+                <p class="stat-label">本日の注文数</p>
+                <p class="stat-value"><%= @today_orders_count %></p>
             </div>
         </div>
 
         <div class="stat-card">
             <div class="stat-icon-wrapper stat-icon-info">
                 <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
                 </svg>
             </div>
             <div class="stat-content">
-                <p class="stat-label">季節限定商品</p>
-                <p class="stat-value"><%= @seasonal_products_count %></p>
+                <p class="stat-label">今月のお問い合わせ数</p>
+                <p class="stat-value"><%= @this_month_inquiries_count %></p>
             </div>
         </div>
 
         <div class="stat-card">
             <div class="stat-icon-wrapper stat-icon-success">
                 <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
             </div>
             <div class="stat-content">
-                <p class="stat-label">表示中の商品</p>
-                <p class="stat-value"><%= @visible_products_count %></p>
+                <p class="stat-label">今週のお問い合わせ数</p>
+                <p class="stat-value"><%= @this_week_inquiries_count %></p>
             </div>
         </div>
     </div>
 
-    <!-- 商品一覧セクション -->
-    <div class="products-section">
-        <div class="section-header">
-            <h2 class="section-title">商品一覧</h2>
-            <div class="header-actions">
-                <%= link_to admin_products_path, class: "admin-btn admin-btn-secondary" do %>
-                詳細な商品管理画面
+    <!-- カレンダーセクション -->
+    <div class="calendar-section">
+        <div class="calendar-header">
+            <h2 class="calendar-title">注文・お問い合わせカレンダー</h2>
+            <div class="calendar-nav">
+                <%= link_to admin_root_path(month: @current_month.prev_month.strftime('%Y-%m-01')), class: "calendar-nav-btn" do %>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                <% end %>
+                <span class="current-month"><%= @current_month.strftime('%Y年%-m月') %></span>
+                <%= link_to admin_root_path(month: @current_month.next_month.strftime('%Y-%m-01')), class: "calendar-nav-btn" do %>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
                 <% end %>
             </div>
         </div>
 
-        <% if @products.any? %>
-        <div class="products-grid">
-            <% @products.each do |product| %>
-            <%= link_to [:admin, product], class: "product-card" do %>
-            <%= image_tag product.image_path, class: "product-image", alt: product.name %>
-            <div class="product-info">
-                <h3 class="product-name"><%= product.name %></h3>
-                <p class="product-price">¥<%= number_with_delimiter(product.price) %></p>
-                <div class="product-badges">
-                    <% if product.featured? %>
-                    <span class="badge badge-featured">おすすめ</span>
+        <div class="calendar-grid">
+            <!-- 曜日ヘッダー -->
+            <div class="calendar-weekday">日</div>
+            <div class="calendar-weekday">月</div>
+            <div class="calendar-weekday">火</div>
+            <div class="calendar-weekday">水</div>
+            <div class="calendar-weekday">木</div>
+            <div class="calendar-weekday">金</div>
+            <div class="calendar-weekday">土</div>
+
+            <!-- カレンダーの日付 -->
+            <% 
+            month_start = @current_month.beginning_of_month
+            month_end = @current_month.end_of_month
+            calendar_start = month_start.beginning_of_week(:sunday)
+            calendar_end = month_end.end_of_week(:sunday)
+            
+            (calendar_start..calendar_end).each do |date|
+              is_current_month = date.month == @current_month.month
+              is_today = date == Date.today
+              day_data = @calendar_data[date.day] if is_current_month
+            %>
+            <div class="calendar-day <%= 'other-month' unless is_current_month %> <%= 'today' if is_today %>" data-date="<%= date.strftime('%Y-%m-%d') %>">
+                <div class="calendar-day-number"><%= date.day %></div>
+                <% if is_current_month && day_data %>
+                <div class="calendar-day-content">
+                    <% if day_data[:orders_count] > 0 %>
+                    <%= link_to admin_orders_path(date: date.strftime('%Y-%m-%d')), class: "calendar-badge calendar-badge-orders", 
+                           title: day_data[:order_products].map { |item| "#{item[:name]} x#{item[:quantity]}" }.join(', ') do %>
+                    <svg class="calendar-badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                    </svg>
+                    注文 <%= day_data[:orders_count] %>件
                     <% end %>
-                    <% if product.seasonal? %>
-                    <span class="badge badge-seasonal">季節限定</span>
                     <% end %>
-                    <% unless product.visible? %>
-                    <span class="badge badge-hidden">非表示</span>
+                    <% if day_data[:inquiries_count] > 0 %>
+                    <%= link_to admin_inquiries_path(date: date.strftime('%Y-%m-%d')), class: "calendar-badge calendar-badge-inquiries" do %>
+                    <svg class="calendar-badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                    </svg>
+                    問合せ <%= day_data[:inquiries_count] %>件
+                    <% end %>
                     <% end %>
                 </div>
+                <% end %>
             </div>
             <% end %>
-            <% end %>
         </div>
-
-        <!-- ペジネーション -->
-        <% if @products.total_pages > 1 %>
-        <div class="pagination-wrapper">
-            <%= paginate @products %>
-        </div>
-        <% end %>
-        <% else %>
-        <!-- 空の状態 -->
-        <div class="empty-state">
-            <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-            </svg>
-            <h3 class="empty-title">商品がまだ登録されていません</h3>
-            <p class="empty-description">最初の商品を追加して、商品管理を始めましょう。</p>
-            <%= link_to "商品を追加", new_admin_product_path, class: "admin-btn admin-btn-primary" %>
-        </div>
-        <% end %>
     </div>
 </div>

@@ -579,30 +579,23 @@
     </div>
 
     <script>
-        // モバイルサイドバーの開閉
-        const openSidebarBtn = document.getElementById('open-sidebar');
-        const closeSidebarBtn = document.getElementById('close-sidebar');
-        const mobileSidebar = document.getElementById('mobile-sidebar');
-        const sidebarContent = document.getElementById('sidebar-content');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('mobile-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
 
-        function openSidebar() {
-            mobileSidebar.classList.remove('hidden');
-            setTimeout(() => {
-                sidebarContent.classList.add('show');
-            }, 10);
-        }
+            if (menuToggle && sidebar && overlay) {
+                menuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('active');
+                });
 
-        function closeSidebar() {
-            sidebarContent.classList.remove('show');
-            setTimeout(() => {
-                mobileSidebar.classList.add('hidden');
-            }, 300);
-        }
-
-        if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
-        if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
-        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('active');
+                });
+            }
+        });
     </script>
     <% else %>
     <!-- ログインページ用のシンプルなレイアウト -->

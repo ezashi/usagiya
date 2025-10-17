@@ -26,10 +26,10 @@ class OrdersController < ApplicationController
 
     if @order.save
       # 注文者への確認メール送信
-      # OrderMailer.customer_confirmation(@order).deliver_later
+      OrderMailer.customer_confirmation(@order).deliver_later
 
       # 店舗への通知メール送信
-      # OrderMailer.shop_notification(@order).deliver_later
+      OrderMailer.shop_notification(@order).deliver_later
 
       redirect_to complete_orders_path, notice: "ご注文ありがとうございます。確認メールをお送りしました。"
     else
