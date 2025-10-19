@@ -29,11 +29,36 @@ class Product < ApplicationRecord
 
   # Instance methods
   def publish!
-    update(visible: true, published_at: Time.current)
+    update(visible: true, published_at: Time.current, draft_saved_at: nil)
   end
 
   def unpublish!
     update(visible: false)
+  end
+
+  # 下書き保存されているかを判定（非公開の場合）
+  def draft?
+    !visible
+  end
+
+  # 公開中かを判定
+  def published?
+    visible
+  end
+
+  # 編集中（下書き保存あり）かを判定
+  def editing?
+    draft_saved_at.present?
+  end
+
+  # 下書き保存としてマーク
+  def mark_as_draft
+    update_column(:draft_saved_at, Time.current)
+  end
+
+  # 下書き保存をクリア
+  def clear_draft
+    update_column(:draft_saved_at, nil)
   end
 
   def add_to_featured

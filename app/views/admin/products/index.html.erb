@@ -83,6 +83,12 @@
         color: white;
     }
 
+    .status-editing {
+        background-color: rgba(245, 158, 11, 0.9);
+        color: white;
+        margin-left: 0.25rem;
+    }
+
     .product-tags {
         position: absolute;
         bottom: 0.5rem;
@@ -238,6 +244,13 @@
                     <%= product.visible? ? '公開中' : '下書き' %>
                 </span>
 
+                <!-- 編集中バッジ（公開中で下書き保存がある場合） -->
+                <% if product.visible? && product.editing? %>
+                <span class="product-status-badge status-editing">
+                    編集中
+                </span>
+                <% end %>
+
                 <!-- カテゴリータグ -->
                 <div class="product-tags">
                     <% if product.featured? %>
@@ -281,7 +294,7 @@
 </div>
 
 <script>
-    // ダブルクリックのヒントをツールチップで表示
+    // クリックのヒントをツールチップで表示
     document.querySelectorAll('.product-card').forEach(card => {
         card.setAttribute('title', 'クリックで詳細を表示');
     });

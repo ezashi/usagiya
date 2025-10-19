@@ -32,10 +32,10 @@ products_data.each_with_index do |data, index|
     display_order: index + 1,
     published_at: Time.current
   )
-  
+
   # ActionText用のdescriptionを設定
   product.description = data[:description]
-  
+
   # バリデーションをスキップして保存（seeds用）
   product.save(validate: false)
 
