@@ -857,8 +857,12 @@
 
     // 公開状態トグルの即座更新
     document.getElementById('visible-toggle')?.addEventListener('change', function(e) {
-        const productId = window.location.pathname.split('/').filter(Boolean).pop();
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        const productId = pathParts[pathParts.length - 2]; // /admin/products/123/edit → 123
         const isVisible = e.target.checked;
+
+        console.log('Product ID:', productId);
+        console.log('Is Visible:', isVisible);
 
         // 確認ダイアログ
         const message = isVisible ?
@@ -873,7 +877,17 @@
         // AJAX でvisibleを更新
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
-        fetch(`/admin/products/${productId}/toggle_visibility`, {
+        if (!csrfToken) {
+            console.error('CSRF token not found');
+            alert('エラー: CSRF トークンが見つかりません');
+            e.target.checked = !isVisible;
+            return;
+        }
+
+        const url = `/admin/products/${productId}/toggle_visibility`;
+        console.log('Request URL:', url);
+
+        fetch(url, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -883,20 +897,34 @@
                     visible: isVisible
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        console.error('Response text:', text);
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('Response data:', data);
                 if (data.success) {
                     const statusText = isVisible ? '公開' : '非公開';
                     alert(`商品を${statusText}にしました`);
                 } else {
-                    alert('更新に失敗しました');
+                    console.error('Update failed:', data);
+                    alert('更新に失敗しました: ' + (data.errors ? data.errors.join(', ') : '不明なエラー'));
                     e.target.checked = !isVisible; // 元に戻す
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('エラーが発生しました');
+                alert('エラーが発生しました: ' + error.message);
                 e.target.checked = !isVisible; // 元に戻す
             });
+    });
+    e.target.checked = !isVisible; // 元に戻す
+    });
     });
 </script>

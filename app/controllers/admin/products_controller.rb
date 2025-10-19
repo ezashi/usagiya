@@ -1,5 +1,5 @@
 class Admin::ProductsController < Admin::AdminController
-  before_action :set_product, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_product, only: [ :show, :edit, :update, :destroy, :toggle_visibility ]
 
   # 商品一覧
   def index
@@ -249,14 +249,29 @@ class Admin::ProductsController < Admin::AdminController
 
   # 公開状態の即座切り替え
   def toggle_visibility
-    @product = Product.find(params[:id])
+    Rails.logger.debug "=== toggle_visibility DEBUG ==="
+    Rails.logger.debug "params: #{params.inspect}"
+    Rails.logger.debug "params[:id]: #{params[:id]}"
+    Rails.logger.debug "params[:visible]: #{params[:visible]}"
+
+    # @product は before_action :set_product で設定済み
     visible = params[:visible] == true || params[:visible] == "true"
 
+    Rails.logger.debug "Product found: #{@product.name}"
+    Rails.logger.debug "Current visible: #{@product.visible}"
+    Rails.logger.debug "New visible: #{visible}"
+
     if @product.update(visible: visible)
+      Rails.logger.debug "Update successful"
       render json: { success: true, visible: visible }
     else
+      Rails.logger.error "Update failed: #{@product.errors.full_messages}"
       render json: { success: false, errors: @product.errors.full_messages }, status: :unprocessable_entity
     end
+  rescue StandardError => e
+    Rails.logger.error "Exception in toggle_visibility: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { success: false, errors: [ e.message ] }, status: :internal_server_error
   end
 
   private
