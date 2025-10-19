@@ -130,6 +130,23 @@ class Admin::ProductsController < Admin::AdminController
 
   # 編集フォーム
   def edit
+    # 下書き内容がある場合は、表示用に下書き内容を優先
+    if @product.has_draft?
+      @draft_mode = true
+      # 下書き内容を一時的に表示用の変数に格納
+      @display_name = @product.draft_name || @product.name
+      @display_price = @product.draft_price || @product.price
+      @display_description = @product.draft_description || @product.description
+      @display_featured = @product.draft_featured
+      @display_seasonal = @product.draft_seasonal
+    else
+      @draft_mode = false
+      @display_name = @product.name
+      @display_price = @product.price
+      @display_description = @product.description
+      @display_featured = @product.featured
+      @display_seasonal = @product.seasonal
+    end
   end
 
   # 商品更新
@@ -140,44 +157,82 @@ class Admin::ProductsController < Admin::AdminController
     Rails.logger.debug "params[:publish]: #{params[:publish].inspect}"
     Rails.logger.debug "params[:product][:visible]: #{params[:product][:visible].inspect}"
     Rails.logger.debug "Before update - visible: #{@product.visible}"
-    
+
     # 画像削除フラグの処理
     if params[:product][:remove_image] == "true"
       @product.image.purge if @product.image.attached?
     end
 
     # 下書き保存か公開かを判定
-    # params[:draft] が存在すれば下書き、params[:publish] が存在すれば公開
     if params[:draft].present?
-      # 下書き保存（常に非公開にし、draft_saved_atを設定）
-      update_params = product_params.except(:visible, :remove_image).merge(
-        visible: false,
-        draft_saved_at: Time.current
-      )
-      Rails.logger.debug "下書き保存 - update_params: #{update_params.inspect}"
-      Rails.logger.debug "下書き保存 - visible: false, draft_saved_at を設定"
-      
-      if @product.update(update_params)
-        Rails.logger.debug "保存後の visible: #{@product.reload.visible}, draft_saved_at: #{@product.draft_saved_at}"
-        redirect_to edit_admin_product_path(@product), notice: "変更を下書き保存しました"
+      # 下書き保存
+      if @product.visible?
+        # 公開中の商品の場合: 下書き内容として保存（本体は変更しない）
+        Rails.logger.debug "公開中の商品の下書き保存 - 本体は変更せず、下書き内容を保存"
+
+        draft_params = product_params.except(:visible, :remove_image, :image)
+        Rails.logger.debug "draft_params: #{draft_params.inspect}"
+        Rails.logger.debug "draft_params[:name]: #{draft_params[:name].inspect}"
+        Rails.logger.debug "draft_params[:price]: #{draft_params[:price].inspect}"
+
+        @product.save_as_draft(draft_params)
+
+        # 画像の処理（新しい画像がアップロードされた場合）
+        if params[:product][:image].present?
+          # 下書き用の画像として添付（後で実装）
+          @product.image.attach(params[:product][:image])
+        end
+
+        Rails.logger.debug "下書き保存完了 - draft_name: #{@product.draft_name}, draft_price: #{@product.draft_price}"
+        redirect_to edit_admin_product_path(@product), notice: "変更を下書き保存しました（公開中の内容はそのままです）"
       else
-        render :edit, status: :unprocessable_entity
+        # 非公開の商品の場合: 通常通り本体を更新
+        Rails.logger.debug "非公開商品の下書き保存 - 本体を更新"
+
+        update_params = product_params.except(:visible, :remove_image).merge(
+          draft_saved_at: Time.current
+        )
+
+        if @product.update(update_params)
+          Rails.logger.debug "保存後の visible: #{@product.reload.visible}"
+          redirect_to edit_admin_product_path(@product), notice: "変更を下書き保存しました"
+        else
+          render :edit, status: :unprocessable_entity
+        end
       end
     elsif params[:publish].present?
-      # 公開（visible: trueを強制設定、draft_saved_atをクリア）
-      update_params = product_params.except(:visible, :remove_image).merge(
-        visible: true,
-        draft_saved_at: nil
-      )
-      Rails.logger.debug "公開 - update_params: #{update_params.inspect}"
-      Rails.logger.debug "公開 - visible: true, draft_saved_at をクリア"
-      
-      if @product.update(update_params)
-        Rails.logger.debug "保存後の visible: #{@product.reload.visible}, draft_saved_at: #{@product.draft_saved_at}"
-        @product.update(published_at: Time.current) unless @product.published_at
-        redirect_to admin_products_path, notice: "変更を公開しました"
+      # 公開
+      if @product.has_draft?
+        # 下書き内容がある場合: 下書き内容を本体に反映
+        Rails.logger.debug "下書き内容を公開"
+
+        # 画像の処理
+        if params[:product][:image].present?
+          @product.image.attach(params[:product][:image])
+        end
+
+        if @product.publish_draft
+          Rails.logger.debug "公開完了 - visible: #{@product.visible}, draft_saved_at: #{@product.draft_saved_at}"
+          redirect_to admin_products_path, notice: "変更を公開しました"
+        else
+          render :edit, status: :unprocessable_entity
+        end
       else
-        render :edit, status: :unprocessable_entity
+        # 下書き内容がない場合: 通常の更新
+        Rails.logger.debug "通常の公開更新"
+
+        update_params = product_params.except(:visible, :remove_image).merge(
+          visible: true,
+          draft_saved_at: nil
+        )
+
+        if @product.update(update_params)
+          @product.update(published_at: Time.current) unless @product.published_at
+          Rails.logger.debug "公開完了 - visible: #{@product.visible}"
+          redirect_to admin_products_path, notice: "変更を公開しました"
+        else
+          render :edit, status: :unprocessable_entity
+        end
       end
     else
       # どちらも押されていない場合（通常は発生しない）
@@ -190,6 +245,18 @@ class Admin::ProductsController < Admin::AdminController
   def destroy
     @product.destroy
     redirect_to admin_products_path, notice: "商品を削除しました"
+  end
+
+  # 公開状態の即座切り替え
+  def toggle_visibility
+    @product = Product.find(params[:id])
+    visible = params[:visible] == true || params[:visible] == "true"
+
+    if @product.update(visible: visible)
+      render json: { success: true, visible: visible }
+    else
+      render json: { success: false, errors: @product.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private

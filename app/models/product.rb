@@ -48,17 +48,71 @@ class Product < ApplicationRecord
 
   # 編集中（下書き保存あり）かを判定
   def editing?
-    draft_saved_at.present?
+    draft_saved_at.present? || has_draft?
   end
 
-  # 下書き保存としてマーク
-  def mark_as_draft
-    update_column(:draft_saved_at, Time.current)
+  # 下書き内容があるかを判定
+  def has_draft?
+    draft_name.present? || draft_price.present? || draft_description.present?
   end
 
-  # 下書き保存をクリア
-  def clear_draft
-    update_column(:draft_saved_at, nil)
+  # 下書き内容を保存
+  def save_as_draft(params)
+    Rails.logger.debug "=== save_as_draft DEBUG ==="
+    Rails.logger.debug "params: #{params.inspect}"
+    Rails.logger.debug "params[:name]: #{params[:name].inspect}"
+    Rails.logger.debug "params[:price]: #{params[:price].inspect}"
+
+    update_columns(
+      draft_name: params[:name],
+      draft_price: params[:price].to_i,
+      draft_description: params[:description],
+      draft_featured: params[:featured].to_s == "1" || params[:featured] == true,
+      draft_seasonal: params[:seasonal].to_s == "1" || params[:seasonal] == true,
+      draft_saved_at: Time.current
+    )
+
+    Rails.logger.debug "保存後 - draft_name: #{draft_name}, draft_price: #{draft_price}"
+  end
+
+  # 下書き内容を公開（本体にコピー）
+  def publish_draft
+    Rails.logger.debug "=== publish_draft DEBUG ==="
+    Rails.logger.debug "has_draft?: #{has_draft?}"
+    Rails.logger.debug "draft_name: #{draft_name.inspect}"
+    Rails.logger.debug "draft_price: #{draft_price.inspect}"
+
+    if has_draft?
+      Rails.logger.debug "下書き内容を本体にコピー"
+      result = update(
+        name: draft_name || name,
+        price: draft_price || price,
+        description: draft_description || description,
+        featured: draft_featured,
+        seasonal: draft_seasonal,
+        visible: true,
+        published_at: Time.current,
+        draft_saved_at: nil
+      )
+      Rails.logger.debug "更新結果: #{result}"
+      Rails.logger.debug "更新後 - name: #{name}, price: #{price}"
+      clear_draft_content
+    else
+      Rails.logger.debug "下書き内容なし - 通常の公開"
+      update(visible: true, published_at: Time.current, draft_saved_at: nil)
+    end
+  end
+
+  # 下書き内容をクリア
+  def clear_draft_content
+    update_columns(
+      draft_name: nil,
+      draft_price: nil,
+      draft_description: nil,
+      draft_featured: false,
+      draft_seasonal: false,
+      draft_saved_at: nil
+    )
   end
 
   def add_to_featured

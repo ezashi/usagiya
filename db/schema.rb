@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_19_095103) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_19_120758) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -137,6 +137,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_19_095103) do
     t.integer "seasonal_order"
     t.datetime "published_at"
     t.datetime "draft_saved_at"
+    t.string "draft_name"
+    t.integer "draft_price"
+    t.text "draft_description"
+    t.boolean "draft_featured", default: false
+    t.boolean "draft_seasonal", default: false
     t.index ["category"], name: "index_products_on_category"
     t.index ["display_order"], name: "index_products_on_display_order"
     t.index ["draft_saved_at"], name: "index_products_on_draft_saved_at"

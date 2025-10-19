@@ -563,6 +563,7 @@
                         商品名 <span class="required-badge">必須</span>
                         <% end %>
                         <%= f.text_field :name, 
+                               value: @display_name,
                                class: "admin-form-control", 
                                placeholder: "例: もちパイ（6個入り）",
                                required: true %>
@@ -575,6 +576,7 @@
                         <div class="price-input-wrapper">
                             <span class="currency-symbol">¥</span>
                             <%= f.number_field :price, 
+                                   value: @display_price,
                                    class: "admin-form-control price-input", 
                                    placeholder: "1000",
                                    min: 0,
@@ -637,7 +639,10 @@
                             <label class="toggle-label">
                                 <span class="toggle-title">おすすめ商品</span>
                                 <div class="toggle-switch">
-                                    <%= f.check_box :featured, class: "toggle-checkbox", id: "featured-toggle" %>
+                                    <%= f.check_box :featured, 
+                                           checked: @display_featured,
+                                           class: "toggle-checkbox", 
+                                           id: "featured-toggle" %>
                                     <span class="toggle-slider"></span>
                                 </div>
                             </label>
@@ -648,7 +653,10 @@
                             <label class="toggle-label">
                                 <span class="toggle-title">季節限定商品</span>
                                 <div class="toggle-switch">
-                                    <%= f.check_box :seasonal, class: "toggle-checkbox", id: "seasonal-toggle" %>
+                                    <%= f.check_box :seasonal, 
+                                           checked: @display_seasonal,
+                                           class: "toggle-checkbox", 
+                                           id: "seasonal-toggle" %>
                                     <span class="toggle-slider"></span>
                                 </div>
                             </label>
@@ -845,5 +853,50 @@
     // プレビューボタン
     document.getElementById('preview-btn')?.addEventListener('click', function() {
         openPreviewModal();
+    });
+
+    // 公開状態トグルの即座更新
+    document.getElementById('visible-toggle')?.addEventListener('change', function(e) {
+        const productId = window.location.pathname.split('/').filter(Boolean).pop();
+        const isVisible = e.target.checked;
+
+        // 確認ダイアログ
+        const message = isVisible ?
+            '商品を公開します。一般ユーザーに表示されますがよろしいですか？' :
+            '商品を非公開にします。一般ユーザーに表示されなくなりますがよろしいですか？';
+
+        if (!confirm(message)) {
+            e.target.checked = !isVisible; // 元に戻す
+            return;
+        }
+
+        // AJAX でvisibleを更新
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+        fetch(`/admin/products/${productId}/toggle_visibility`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken
+                },
+                body: JSON.stringify({
+                    visible: isVisible
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const statusText = isVisible ? '公開' : '非公開';
+                    alert(`商品を${statusText}にしました`);
+                } else {
+                    alert('更新に失敗しました');
+                    e.target.checked = !isVisible; // 元に戻す
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('エラーが発生しました');
+                e.target.checked = !isVisible; // 元に戻す
+            });
     });
 </script>
