@@ -314,6 +314,159 @@
             font-size: 1.5rem;
         }
     }
+
+    /* モーダルウィンドウ */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.75);
+        z-index: 9998;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-container {
+        background: white;
+        border-radius: 12px;
+        max-width: 900px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        animation: slideUp 0.3s ease;
+        position: relative;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+        background: white;
+        border-radius: 12px 12px 0 0;
+        z-index: 10;
+    }
+
+    .modal-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0;
+    }
+
+    .preview-badge-modal {
+        display: inline-block;
+        background: #fbbf24;
+        color: #78350f;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 0.5rem;
+        line-height: 1;
+        transition: color 0.2s ease;
+    }
+
+    .modal-close:hover {
+        color: #1f2937;
+    }
+
+    .modal-body {
+        padding: 2rem;
+    }
+
+    .preview-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .preview-image-container {
+        text-align: center;
+    }
+
+    .preview-image-large {
+        max-width: 100%;
+        max-height: 400px;
+        width: auto;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .preview-product-name {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0;
+    }
+
+    .preview-product-price {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #059669;
+        margin: 0.5rem 0;
+    }
+
+    .preview-product-description {
+        color: #374151;
+        line-height: 1.8;
+        font-size: 1rem;
+    }
+
+    .preview-section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 1.5rem 0 0.75rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
 </style>
 
 <div class="admin-product-form">
@@ -530,6 +683,34 @@
     <% end %>
 </div>
 
+<!-- プレビューモーダル -->
+<div class="modal-overlay" id="preview-modal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <span class="preview-badge-modal">🔍 プレビュー</span>
+                <span id="modal-product-name"></span>
+            </h2>
+            <button class="modal-close" onclick="closePreviewModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="preview-content">
+                <div class="preview-image-container">
+                    <img id="modal-product-image" class="preview-image-large" alt="商品画像">
+                </div>
+                <div>
+                    <h1 class="preview-product-name" id="modal-product-name-large"></h1>
+                    <div class="preview-product-price" id="modal-product-price"></div>
+                </div>
+                <div>
+                    <h3 class="preview-section-title">商品説明</h3>
+                    <div class="preview-product-description" id="modal-product-description"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     // 画像プレビュー
     function previewImage(event) {
@@ -560,8 +741,94 @@
         }
     }
 
+    // プレビューモーダルを開く
+    function openPreviewModal() {
+        const form = document.querySelector('.product-form');
+        const formData = new FormData(form);
+
+        // 必須項目のバリデーション
+        const name = formData.get('product[name]');
+        const price = formData.get('product[price]');
+        const image = formData.get('product[image]');
+        const removeImageFlag = document.getElementById('remove-image-flag')?.value;
+
+        let errors = [];
+
+        if (!name || name.trim() === '') {
+            errors.push('商品名を入力してください。');
+        }
+
+        if (!price || price === '') {
+            errors.push('価格を入力してください。');
+        }
+
+        // 既存の画像と新しい画像のチェック
+        const hasExistingImage = document.querySelector('#preview-img');
+        const hasNewImage = image && image.size > 0;
+        const imageWillBeRemoved = removeImageFlag === 'true';
+
+        if (!hasExistingImage && !hasNewImage) {
+            errors.push('画像を選択してください。');
+        } else if (imageWillBeRemoved && !hasNewImage) {
+            errors.push('画像を削除する場合は、新しい画像を選択してください。');
+        }
+
+        // エラーがある場合はアラート表示
+        if (errors.length > 0) {
+            alert('プレビューを表示するには以下の項目を確認してください:\n\n' + errors.join('\n'));
+            return;
+        }
+
+        // モーダルに商品情報を設定
+        document.getElementById('modal-product-name').textContent = name;
+        document.getElementById('modal-product-name-large').textContent = name;
+        document.getElementById('modal-product-price').textContent = '¥' + parseInt(price).toLocaleString();
+
+        // 説明文の取得（Trix Editorの内容）
+        const trixEditor = document.querySelector('trix-editor');
+        const description = trixEditor ? trixEditor.innerHTML : '説明はまだ入力されていません。';
+        document.getElementById('modal-product-description').innerHTML = description;
+
+        // 画像の読み込み
+        if (hasNewImage) {
+            // 新しい画像が選択されている場合
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('modal-product-image').src = e.target.result;
+            };
+            reader.readAsDataURL(image);
+        } else if (hasExistingImage && !imageWillBeRemoved) {
+            // 既存の画像を使用
+            document.getElementById('modal-product-image').src = hasExistingImage.src;
+        }
+
+        // モーダルを表示
+        document.getElementById('preview-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // プレビューモーダルを閉じる
+    function closePreviewModal() {
+        document.getElementById('preview-modal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // モーダルの背景クリックで閉じる
+    document.getElementById('preview-modal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePreviewModal();
+        }
+    });
+
+    // Escapeキーで閉じる
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closePreviewModal();
+        }
+    });
+
     // プレビューボタン
     document.getElementById('preview-btn')?.addEventListener('click', function() {
-        window.open('<%= admin_product_path(@product) %>', '_blank');
+        openPreviewModal();
     });
 </script>
