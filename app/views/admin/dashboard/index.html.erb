@@ -184,6 +184,9 @@
         padding: 4px 8px;
         border-radius: 6px;
         font-size: 12px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
     }
 
     .activity-badge.orders {
@@ -191,9 +194,21 @@
         color: #1e40af;
     }
 
+    .activity-badge.orders:hover {
+        background-color: #bfdbfe;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+    }
+
     .activity-badge.inquiries {
         background-color: #fef3c7;
         color: #92400e;
+    }
+
+    .activity-badge.inquiries:hover {
+        background-color: #fde68a;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(146, 64, 14, 0.2);
     }
 
     .badge-icon {
@@ -320,17 +335,17 @@
                             <% if has_activity %>
                             <div class="day-activities">
                                 <% if orders_count > 0 %>
-                                <div class="activity-badge orders">
-                                    <span class="badge-icon">📋</span>
-                                    <span class="badge-count"><%= orders_count %></span>
-                                </div>
+                                <%= link_to admin_orders_path(date: day.strftime('%Y-%m-%d')), class: "activity-badge orders" do %>
+                                <span class="badge-icon">📋</span>
+                                <span class="badge-count"><%= orders_count %></span>
+                                <% end %>
                                 <% end %>
 
                                 <% if inquiries_count > 0 %>
-                                <div class="activity-badge inquiries">
-                                    <span class="badge-icon">✉️</span>
-                                    <span class="badge-count"><%= inquiries_count %></span>
-                                </div>
+                                <%= link_to admin_inquiries_path(date: day.strftime('%Y-%m-%d')), class: "activity-badge inquiries" do %>
+                                <span class="badge-icon">✉️</span>
+                                <span class="badge-count"><%= inquiries_count %></span>
+                                <% end %>
                                 <% end %>
                             </div>
                             <% end %>

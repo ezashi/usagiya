@@ -3,10 +3,11 @@ class Admin::DashboardController < ApplicationController
   before_action :authenticate_admin!
 
   def index
-    # 今日の日付
-    today = Date.today
+    # 日本時間の今日の日付を取得
+    jst = ActiveSupport::TimeZone["Tokyo"]
+    today = Time.current.in_time_zone(jst).to_date
 
-    # 今週の範囲
+    # 今週の範囲（日本時間）
     week_start = today.beginning_of_week(:sunday)
     week_end = today.end_of_week(:sunday)
 
@@ -14,13 +15,26 @@ class Admin::DashboardController < ApplicationController
     month_start = today.beginning_of_month
     month_end = today.end_of_month
 
-    # 統計データの取得
-    @today_orders = Order.where(created_at: today.beginning_of_day..today.end_of_day).count
-    @week_orders = Order.where(created_at: week_start.beginning_of_day..week_end.end_of_day).count
-    @monthly_orders = Order.where(created_at: month_start..month_end).count
+    # 統計データの取得（日本時間で計算）
+    @today_orders = Order.where(
+      created_at: jst.local(today.year, today.month, today.day, 0, 0, 0)..jst.local(today.year, today.month, today.day, 23, 59, 59)
+    ).count
 
-    @weekly_inquiries = Inquiry.where(created_at: week_start.beginning_of_day..week_end.end_of_day).count
-    @monthly_inquiries = Inquiry.where(created_at: month_start..month_end).count
+    @week_orders = Order.where(
+      created_at: jst.local(week_start.year, week_start.month, week_start.day, 0, 0, 0)..jst.local(week_end.year, week_end.month, week_end.day, 23, 59, 59)
+    ).count
+
+    @monthly_orders = Order.where(
+      created_at: jst.local(month_start.year, month_start.month, month_start.day, 0, 0, 0)..jst.local(month_end.year, month_end.month, month_end.day, 23, 59, 59)
+    ).count
+
+    @weekly_inquiries = Inquiry.where(
+      created_at: jst.local(week_start.year, week_start.month, week_start.day, 0, 0, 0)..jst.local(week_end.year, week_end.month, week_end.day, 23, 59, 59)
+    ).count
+
+    @monthly_inquiries = Inquiry.where(
+      created_at: jst.local(month_start.year, month_start.month, month_start.day, 0, 0, 0)..jst.local(month_end.year, month_end.month, month_end.day, 23, 59, 59)
+    ).count
 
     # カレンダーの設定
     if params[:month].present?
@@ -52,18 +66,27 @@ class Admin::DashboardController < ApplicationController
       @calendar_weeks << week
     end
 
-    # 日別の注文数とお問い合わせ数を取得
-    calendar_month_start = @current_date.beginning_of_month
-    calendar_month_end = @current_date.end_of_month
+    # 日別の注文数とお問い合わせ数を取得（日本時間で集計）
+    calendar_month_start = jst.local(@current_date.beginning_of_month.year, @current_date.beginning_of_month.month, @current_date.beginning_of_month.day, 0, 0, 0)
+    calendar_month_end = jst.local(@current_date.end_of_month.year, @current_date.end_of_month.month, @current_date.end_of_month.day, 23, 59, 59)
 
-    @daily_orders = Order.where(created_at: calendar_month_start..calendar_month_end)
-                         .group("DATE(created_at)")
-                         .count
-                         .transform_keys { |key| Date.parse(key) }
+    # 日本時間でグループ化
+    daily_orders_raw = Order.where(created_at: calendar_month_start..calendar_month_end)
+                            .select("DATE((created_at AT TIME ZONE 'UTC') AT TIME ZONE 'Asia/Tokyo') as order_date, COUNT(*) as count")
+                            .group("order_date")
+                            .to_a
 
-    @daily_inquiries = Inquiry.where(created_at: calendar_month_start..calendar_month_end)
-                              .group("DATE(created_at)")
-                              .count
-                              .transform_keys { |key| Date.parse(key) }
+    @daily_orders = daily_orders_raw.each_with_object({}) do |record, hash|
+      hash[Date.parse(record.order_date.to_s)] = record.count
+    end
+
+    daily_inquiries_raw = Inquiry.where(created_at: calendar_month_start..calendar_month_end)
+                                 .select("DATE((created_at AT TIME ZONE 'UTC') AT TIME ZONE 'Asia/Tokyo') as inquiry_date, COUNT(*) as count")
+                                 .group("inquiry_date")
+                                 .to_a
+
+    @daily_inquiries = daily_inquiries_raw.each_with_object({}) do |record, hash|
+      hash[Date.parse(record.inquiry_date.to_s)] = record.count
+    end
   end
 end
