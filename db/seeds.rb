@@ -22,10 +22,9 @@ products_data = [
 ]
 
 products_data.each_with_index do |data, index|
-  product = Product.create!(
+  product = Product.new(
     name: data[:name],
     price: data[:price],
-    description: data[:description],
     featured: data[:featured] || false,
     seasonal: data[:seasonal] || false,
     featured_order: data[:featured] ? index + 1 : nil,
@@ -34,6 +33,11 @@ products_data.each_with_index do |data, index|
     display_order: index + 1,
     published_at: Time.current
   )
+
+  # ActionText用のdescriptionを設定
+  product.description = data[:description]
+
+  product.save!
 
   puts "✓ #{product.name} を作成しました"
 end

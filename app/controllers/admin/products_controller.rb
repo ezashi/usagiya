@@ -1,5 +1,5 @@
 class Admin::ProductsController < Admin::AdminController
-  before_action :set_product, only: [ :show, :edit, :update, :destroy, :toggle_visibility ]
+  before_action :set_product, only: [ :show, :edit, :update, :destroy ]
 
   # 商品一覧
   def index
@@ -70,16 +70,37 @@ class Admin::ProductsController < Admin::AdminController
   # 商品作成
   def create
     @product = Product.new(product_params)
+    @product.display_order = Product.next_display_order
 
-    if @product.save
-      redirect_to admin_products_path, notice: "商品を登録しました"
+    # 画像削除フラグの処理
+    if params[:product][:remove_image] == "true"
+      @product.image.purge if @product.image.attached?
+    end
+
+    # 下書き保存か公開かを判定
+    if params[:commit] == "draft" || params[:draft]
+      # 下書き保存（visible: false）
+      @product.visible = false
+      if @product.save
+        redirect_to admin_products_path, notice: "商品を下書き保存しました"
+      else
+        render :new, status: :unprocessable_entity
+      end
     else
-      render :new, status: :unprocessable_entity
+      # 公開
+      @product.visible = true
+      if @product.save
+        @product.update(published_at: Time.current)
+        redirect_to admin_products_path, notice: "商品を公開しました"
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 
   # 商品詳細
   def show
+    # 商品詳細画面を表示（編集・削除ボタン付き）
   end
 
   # 編集フォーム
@@ -88,10 +109,28 @@ class Admin::ProductsController < Admin::AdminController
 
   # 商品更新
   def update
-    if @product.update(product_params)
-      redirect_to admin_products_path, notice: "商品を更新しました"
+    # 画像削除フラグの処理
+    if params[:product][:remove_image] == "true"
+      @product.image.purge if @product.image.attached?
+    end
+
+    # 下書き保存か公開かを判定
+    if params[:commit] == "保存" || params[:draft]
+      # 下書き保存
+      if @product.update(product_params.except(:visible))
+        redirect_to edit_admin_product_path(@product), notice: "変更を保存しました"
+      else
+        render :edit, status: :unprocessable_entity
+      end
     else
-      render :edit, status: :unprocessable_entity
+      # 公開
+      updated_params = product_params.merge(visible: true)
+      if @product.update(updated_params)
+        @product.update(published_at: Time.current) unless @product.published_at
+        redirect_to admin_products_path, notice: "変更を公開しました"
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 
@@ -99,12 +138,6 @@ class Admin::ProductsController < Admin::AdminController
   def destroy
     @product.destroy
     redirect_to admin_products_path, notice: "商品を削除しました"
-  end
-
-  # 表示/非表示の切り替え
-  def toggle_visibility
-    @product.update(visible: !@product.visible)
-    redirect_to admin_products_path, notice: "商品を#{@product.visible? ? '表示' : '非表示'}に設定しました"
   end
 
   private
