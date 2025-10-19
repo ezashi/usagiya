@@ -49,6 +49,16 @@
         flex-wrap: wrap;
     }
 
+    .header-actions form {
+        margin: 0;
+    }
+
+    .header-actions .admin-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
     .product-layout {
         display: grid;
         grid-template-columns: 400px 1fr;
@@ -265,9 +275,9 @@
             編集
             <% end %>
 
-            <%= link_to admin_product_path(@product), 
+            <%= button_to admin_product_path(@product), 
                   method: :delete, 
-                  data: { confirm: "「#{@product.name}」を削除してもよろしいですか？\n\n※この操作は取り消せません。商品一覧からも完全に削除されます。" },
+                  form: { data: { turbo_confirm: "「#{@product.name}」を削除してもよろしいですか？\n\n※この操作は取り消せません。商品一覧からも完全に削除されます。" } },
                   class: "admin-btn admin-btn-danger" do %>
             <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -322,19 +332,11 @@
 
             <!-- 基本情報 -->
             <div class="admin-card">
-                <div class="admin-card-header">
-                    <h2 class="admin-card-title">基本情報</h2>
-                </div>
                 <div class="admin-card-body">
                     <div class="info-grid">
                         <div class="info-item">
                             <div class="info-label">価格</div>
                             <div class="price-value">¥<%= number_with_delimiter(@product.price) %></div>
-                        </div>
-
-                        <div class="info-item">
-                            <div class="info-label">商品ID</div>
-                            <div class="info-value">#<%= @product.id %></div>
                         </div>
 
                         <div class="info-item">

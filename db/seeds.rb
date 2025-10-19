@@ -1,4 +1,3 @@
-
 puts "データベースをクリーニング中..."
 Product.destroy_all
 Notice.destroy_all
@@ -33,11 +32,12 @@ products_data.each_with_index do |data, index|
     display_order: index + 1,
     published_at: Time.current
   )
-
+  
   # ActionText用のdescriptionを設定
   product.description = data[:description]
-
-  product.save!
+  
+  # バリデーションをスキップして保存（seeds用）
+  product.save(validate: false)
 
   puts "✓ #{product.name} を作成しました"
 end

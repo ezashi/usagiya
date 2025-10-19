@@ -77,6 +77,13 @@ class Admin::ProductsController < Admin::AdminController
       @product.image.purge if @product.image.attached?
     end
 
+    # 新規作成時は画像必須チェック
+    if !@product.image.attached? && params[:product][:image].blank?
+      @product.errors.add(:image, "を選択してください")
+      render :new, status: :unprocessable_entity
+      return
+    end
+
     # 下書き保存か公開かを判定
     if params[:commit] == "draft" || params[:draft]
       # 下書き保存（visible: false）

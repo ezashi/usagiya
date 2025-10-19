@@ -324,12 +324,6 @@
 
 <div class="admin-product-form">
     <div class="form-header">
-        <%= link_to admin_root_path, class: "back-link" do %>
-        <svg class="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        商品一覧に戻る
-        <% end %>
         <h1 class="form-title"><%= @product.new_record? ? "商品を追加" : "商品を編集" %></h1>
     </div>
 
@@ -374,7 +368,7 @@
                         </div>
 
                         <div class="upload-controls">
-                            <%= f.file_field :image, 
+                            <%= f.file_field :image,
                                  accept: "image/*", 
                                  class: "file-input", 
                                  id: "image-input",

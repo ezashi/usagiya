@@ -220,7 +220,7 @@
     <div class="products-grid">
         <% if @products.any? %>
         <% @products.each do |product| %>
-        <div class="product-card" ondblclick="location.href='<%= admin_product_path(product) %>'">
+        <div class="product-card" onclick="location.href='<%= admin_product_path(product) %>'" style="cursor: pointer;">
             <div class="product-image-wrapper">
                 <% if product.image.attached? %>
                 <%= image_tag product.image, class: "product-image", alt: product.name %>
@@ -283,6 +283,6 @@
 <script>
     // ダブルクリックのヒントをツールチップで表示
     document.querySelectorAll('.product-card').forEach(card => {
-        card.setAttribute('title', 'ダブルクリックで詳細を表示');
+        card.setAttribute('title', 'クリックで詳細を表示');
     });
 </script>
