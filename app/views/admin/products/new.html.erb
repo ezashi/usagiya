@@ -677,7 +677,7 @@
         <div class="modal-header">
             <h2 class="modal-title">
                 <span class="preview-badge-modal">🔍 プレビュー</span>
-                <span id="modal-product-name"></span>
+                <span id="modal-category-name"></span>
             </h2>
             <button class="modal-close" onclick="closePreviewModal()">&times;</button>
         </div>
@@ -687,7 +687,7 @@
                     <img id="modal-product-image" class="preview-image-large" alt="商品画像">
                 </div>
                 <div>
-                    <h1 class="preview-product-name" id="modal-product-name-large"></h1>
+                    <h1 class="preview-product-name" id="modal-product-name"></h1>
                     <div class="preview-product-price" id="modal-product-price"></div>
                 </div>
                 <div>
@@ -744,9 +744,24 @@
             return;
         }
 
+        // カテゴリー名の取得
+        const isFeatured = document.getElementById('featured-toggle')?.checked;
+        const isSeasonal = document.getElementById('seasonal-toggle')?.checked;
+
+        let categoryName = '';
+        if (isFeatured && isSeasonal) {
+            categoryName = 'おすすめ商品・季節限定商品';
+        } else if (isFeatured) {
+            categoryName = 'おすすめ商品';
+        } else if (isSeasonal) {
+            categoryName = '季節限定商品';
+        } else {
+            categoryName = '通常商品';
+        }
+
         // モーダルに商品情報を設定
+        document.getElementById('modal-category-name').textContent = categoryName;
         document.getElementById('modal-product-name').textContent = name;
-        document.getElementById('modal-product-name-large').textContent = name;
         document.getElementById('modal-product-price').textContent = '¥' + parseInt(price).toLocaleString();
 
         // 説明文の取得（Trix Editorの内容）
