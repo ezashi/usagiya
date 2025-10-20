@@ -29,7 +29,11 @@ class Admin::ProductsController < Admin::AdminController
   def remove_from_featured
     @product = Product.find(params[:id])
     @product.remove_from_featured
-    redirect_to featured_admin_products_path, notice: "「#{@product.name}」をおすすめ商品から削除しました"
+    
+    respond_to do |format|
+      format.html { redirect_to featured_admin_products_path, notice: "「#{@product.name}」をおすすめ商品から削除しました" }
+      format.json { render json: { success: true, message: "「#{@product.name}」をおすすめ商品から削除しました" } }
+    end
   end
 
   # 季節限定商品に追加
@@ -43,7 +47,11 @@ class Admin::ProductsController < Admin::AdminController
   def remove_from_seasonal
     @product = Product.find(params[:id])
     @product.remove_from_seasonal
-    redirect_to seasonal_admin_products_path, notice: "「#{@product.name}」を季節限定商品から削除しました"
+    
+    respond_to do |format|
+      format.html { redirect_to seasonal_admin_products_path, notice: "「#{@product.name}」を季節限定商品から削除しました" }
+      format.json { render json: { success: true, message: "「#{@product.name}」を季節限定商品から削除しました" } }
+    end
   end
 
   # おすすめ商品の並び順を更新

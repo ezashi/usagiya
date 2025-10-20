@@ -133,7 +133,7 @@
         right: 0.5rem;
         width: 2rem;
         height: 2rem;
-        background-color: #ff0000;
+        background-color: var(--admin-error);
         border: none;
         border-radius: 50%;
         display: flex;
@@ -142,12 +142,12 @@
         cursor: pointer;
         transition: all 0.2s ease;
         z-index: 10;
-        color: white;
     }
 
     .remove-btn:hover {
         background-color: #dc2626;
         transform: scale(1.1);
+        color: white;
     }
 
     .drag-handle {
@@ -156,15 +156,23 @@
         left: 0.5rem;
         width: 2rem;
         height: 2rem;
-        background-color: var(--admin-bg-secondary);
-        border: 1px solid var(--admin-border);
+        background-color: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
         border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: move;
+        cursor: pointer;
         z-index: 10;
-        color: var(--admin-text-muted);
+        color: var(--admin-error);
+        transition: all 0.2s ease;
+    }
+
+    .drag-handle:hover {
+        background-color: var(--admin-error);
+        border-color: var(--admin-error);
+        color: white;
+        transform: scale(1.1);
     }
 
     .product-image {
@@ -186,7 +194,6 @@
     }
 
     .product-name {
-        color: var(--admin-text);
         font-size: 1rem;
         font-weight: 600;
         margin: 0 0 0.5rem 0;
@@ -277,7 +284,7 @@
         left: 0.5rem;
         width: 2rem;
         height: 2rem;
-        background-color: var(--admin-success);
+        background-color: #059669;
         border: none;
         border-radius: 50%;
         display: flex;
@@ -290,8 +297,107 @@
     }
 
     .add-btn:hover {
-        background-color: #059669;
         transform: scale(1.1);
+    }
+
+    /* モーダルのスタイル */
+    .admin-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .admin-modal-overlay[style*="display: flex"] {
+        display: flex !important;
+    }
+
+    .admin-modal {
+        background-color: var(--admin-bg-card);
+        border-radius: 12px;
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        color: #fff;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .admin-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--admin-border);
+        flex-shrink: 0;
+    }
+
+    .admin-modal-title {
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .close-modal-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        padding: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .close-modal-btn:hover {
+        background-color: var(--admin-bg-hover);
+        color: #fff;
+    }
+
+    .admin-modal-body {
+        padding: 2rem;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .search-box-modal {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        font-size: 1rem;
+        background-color: var(--admin-bg-secondary);
+        color: #fff;
+        transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--admin-accent);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
     @media (max-width: 768px) {
@@ -315,6 +421,14 @@
         .featured-products-grid,
         .available-products-grid {
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .admin-modal {
+            max-width: 100%;
+        }
+
+        .admin-modal-body {
+            padding: 1rem;
         }
     }
 </style>
@@ -382,17 +496,11 @@
                 <!-- おすすめ商品 -->
                 <% @featured_products.each do |product| %>
                 <div class="featured-product-card draggable" data-product-id="<%= product.id %>" draggable="true" ondblclick="window.location.href='<%= admin_product_path(product) %>'">
-                    <button class="remove-btn" onclick="removeProduct(<%= product.id %>)">
+                    <button class="remove-btn" onclick="event.stopPropagation(); removeProduct(<%= product.id %>)">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
-
-                    <div class="drag-handle">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
-                        </svg>
-                    </div>
 
                     <% if product.image.attached? %>
                     <%= image_tag product.image, class: "product-image", alt: product.name %>
@@ -438,8 +546,8 @@
             <!-- 利用可能な商品リスト -->
             <div class="available-products-grid" id="available-products-list">
                 <% @available_products.each do |product| %>
-                <div class="available-product-card" data-product-name="<%= product.name.downcase %>">
-                    <button class="add-btn" onclick="addProduct(<%= product.id %>)">
+                <div class="available-product-card" data-product-name="<%= product.name.downcase %>" data-product-id="<%= product.id %>" onclick="addProduct(<%= product.id %>)" style="cursor: pointer;">
+                    <button class="add-btn" onclick="event.stopPropagation(); addProduct(<%= product.id %>)">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
@@ -543,60 +651,83 @@
     }
 
     // 商品追加
+    // 商品追加（画面上だけ、保存/公開ボタンを押すまでDBには反映されない）
     function addProduct(productId) {
-        fetch(`/admin/products/${productId}/add_to_featured`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                }
-            });
+        // すでに追加されているか確認
+        const existingCard = document.querySelector(`.featured-product-card[data-product-id="${productId}"]`);
+        if (existingCard) {
+            alert('この商品はすでに追加されています');
+            return;
+        }
+
+        // モーダル内の商品カードから情報を取得
+        const modalCard = document.querySelector(`.available-product-card[data-product-id="${productId}"]`);
+        if (!modalCard) return;
+
+        const img = modalCard.querySelector('img')?.src || '';
+        const name = modalCard.querySelector('.product-name')?.textContent || '';
+        const price = modalCard.querySelector('.product-price')?.textContent || '';
+
+        // 新しい商品カードを作成
+        const newCard = document.createElement('div');
+        newCard.className = 'featured-product-card draggable';
+        newCard.setAttribute('data-product-id', productId);
+        newCard.setAttribute('draggable', 'true');
+        newCard.setAttribute('ondblclick', `window.location.href='/admin/products/${productId}'`);
+
+        newCard.innerHTML = `
+            <button class="remove-btn" onclick="event.stopPropagation(); removeProduct(${productId})">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            ${img ? `<img src="${img}" class="product-image" alt="${name}">` : '<div class="product-image placeholder"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="40" height="40"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>'}
+            <div class="product-info">
+                <h3 class="product-name">${name}</h3>
+                <p class="product-price">${price}</p>
+            </div>
+        `;
+
+        // ドラッグ&ドロップイベントを追加
+        newCard.addEventListener('dragstart', function(e) {
+            this.classList.add('dragging');
+        });
+        newCard.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+        });
+        newCard.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        // グリッドに追加（「商品を追加」ボタンの前に挿入）
+        const grid = document.querySelector('.featured-products-grid');
+        const addButton = document.querySelector('.add-product-card');
+        if (grid && addButton) {
+            grid.insertBefore(newCard, addButton);
+        }
+
+        // モーダルを閉じる
+        document.getElementById('add-product-modal').style.display = 'none';
+
+        alert('商品を追加しました（画面上のみ）\n\n※「保存」または「公開」ボタンを押して確定してください。');
     }
 
-    // 商品削除
+    // 商品削除（画面上だけ、保存/公開ボタンを押すまでDBには反映されない）
     function removeProduct(productId) {
-        if (confirm('この商品をおすすめ商品から削除しますか？')) {
-            fetch(`/admin/products/${productId}/remove_from_featured`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    }
-                });
+        if (confirm('この商品をおすすめ商品から削除しますか？\n\n※商品一覧からは削除されません。\n※「保存」または「公開」ボタンを押すまで確定されません。')) {
+            // 画面上から削除
+            const productCard = document.querySelector(`.featured-product-card[data-product-id="${productId}"]`);
+            if (productCard) {
+                productCard.remove();
+                alert('おすすめ商品から削除しました（画面上のみ）\n\n※「保存」または「公開」ボタンを押して確定してください。');
+            }
         }
     }
 
-    // 保存
+    // 保存（下書き保存のみ）
     document.getElementById('save-btn').addEventListener('click', function() {
-        saveOrder(false);
-    });
-
-    // 公開
-    document.getElementById('publish-btn').addEventListener('click', function() {
-        if (confirm('おすすめ商品を公開しますか？')) {
-            saveOrder(true);
-        }
-    });
-
-    // 順序保存
-    function saveOrder(publish = false) {
         const products = document.querySelectorAll('.featured-product-card');
-        const order = Array.from(products).map((product, index) => ({
-            id: product.dataset.productId,
-            position: index
-        }));
+        const order = Array.from(products).map((product, index) => product.dataset.productId);
 
         fetch('/admin/products/featured/update_order', {
                 method: 'PATCH',
@@ -607,22 +738,113 @@
                 },
                 body: JSON.stringify({
                     order: order,
-                    publish: publish
+                    publish: false
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(publish ? '公開しました！' : '保存しました！');
-                    if (publish) {
+                    alert('下書き保存しました！\n\n※一般ユーザーには公開されていません。公開ボタンを押すと一般ユーザーに表示されます。');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('保存に失敗しました');
+            });
+    });
+
+    // 公開（一般ユーザーに公開）
+    document.getElementById('publish-btn').addEventListener('click', function() {
+        if (confirm('おすすめ商品を公開しますか？\n\n一般ユーザーに表示されるようになります。')) {
+            const products = document.querySelectorAll('.featured-product-card');
+            const order = Array.from(products).map((product, index) => product.dataset.productId);
+
+            fetch('/admin/products/featured/update_order', {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order: order,
+                        publish: true
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('公開しました！\n\n一般ユーザーに表示されています。');
                         location.reload();
                     }
-                }
-            });
-    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('公開に失敗しました');
+                });
+        }
+    });
 
-    // プレビュー
+    // プレビュー（管理者専用のモーダルプレビュー）
     document.getElementById('preview-btn').addEventListener('click', function() {
-        window.open('/products/featured', '_blank');
+        // プレビューモーダルを表示
+        const modal = document.createElement('div');
+        modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
+
+        const content = document.createElement('div');
+        content.style.cssText = 'background: white; border-radius: 12px; max-width: 1200px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative;';
+
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = '✕';
+        closeBtn.style.cssText = 'position: sticky; top: 1rem; right: 1rem; float: right; width: 40px; height: 40px; border-radius: 50%; background: #ef4444; color: white; border: none; font-size: 24px; cursor: pointer; z-index: 10;';
+        closeBtn.onclick = () => modal.remove();
+
+        const title = document.createElement('div');
+        title.style.cssText = 'padding: 2rem; border-bottom: 1px solid #e5e7eb;';
+        title.innerHTML = '<h2 style="margin: 0; font-size: 1.5rem; color: #1f2937;">プレビュー（管理者専用）</h2><p style="margin: 0.5rem 0 0 0; color: #6b7280; font-size: 0.875rem;">※この画面は管理者のみ表示できます。公開ボタンを押すまで一般ユーザーには表示されません。</p>';
+
+        const preview = document.createElement('div');
+        preview.style.cssText = 'padding: 2rem;';
+
+        // おすすめ商品のグリッド表示
+        const products = Array.from(document.querySelectorAll('.featured-product-card')).map(card => {
+            const img = card.querySelector('img')?.src || '';
+            const name = card.querySelector('.product-name')?.textContent || '';
+            const price = card.querySelector('.product-price')?.textContent || '';
+            return {
+                img,
+                name,
+                price
+            };
+        });
+
+        let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem;">';
+        products.forEach(product => {
+            html += `
+                <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+                    <div style="aspect-ratio: 1; background: white;">
+                        ${product.img ? `<img src="${product.img}" style="width: 100%; height: 100%; object-fit: cover;" alt="${product.name}">` : '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #9ca3af;">画像なし</div>'}
+                    </div>
+                    <div style="padding: 1rem;">
+                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem; color: #1f2937;">${product.name}</h3>
+                        <p style="margin: 0; font-size: 1.125rem; font-weight: 600; color: #ec4899;">${product.price}</p>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+
+        preview.innerHTML = html;
+
+        content.appendChild(closeBtn);
+        content.appendChild(title);
+        content.appendChild(preview);
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+
+        // モーダルの背景クリックで閉じる
+        modal.onclick = (e) => {
+            if (e.target === modal) modal.remove();
+        };
     });
 </script>

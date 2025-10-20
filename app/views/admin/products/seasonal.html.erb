@@ -1,7 +1,6 @@
 <% content_for :page_title, "季節限定商品管理" %>
 
 <style>
-    /* 季節限定商品管理画面のスタイル - おすすめ商品の青からシアン/水色に変更 */
     .admin-seasonal-products {
         padding: 2rem;
         max-width: 1600px;
@@ -127,6 +126,7 @@
     .remove-btn:hover {
         background-color: #dc2626;
         transform: scale(1.1);
+        color: white;
     }
 
     .drag-handle.seasonal-drag {
@@ -135,15 +135,23 @@
         left: 0.5rem;
         width: 2rem;
         height: 2rem;
-        background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
-        border: 1px solid rgba(14, 165, 233, 0.4);
+        background-color: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
         border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: move;
+        cursor: pointer;
         z-index: 10;
-        color: #0ea5e9;
+        color: var(--admin-error);
+        transition: all 0.2s ease;
+    }
+
+    .drag-handle.seasonal-drag:hover {
+        background-color: var(--admin-error);
+        border-color: var(--admin-error);
+        color: white;
+        transform: scale(1.1);
     }
 
     .product-image {
@@ -273,6 +281,106 @@
         transform: scale(1.1);
     }
 
+    /* モーダルのスタイル */
+    .admin-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .admin-modal-overlay[style*="display: flex"] {
+        display: flex !important;
+    }
+
+    .admin-modal {
+        background-color: var(--admin-bg-card);
+        border-radius: 12px;
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .admin-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--admin-border);
+        flex-shrink: 0;
+    }
+
+    .admin-modal-title {
+        color: var(--admin-text);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .close-modal-btn {
+        background: none;
+        border: none;
+        color: var(--admin-text-secondary);
+        cursor: pointer;
+        padding: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .close-modal-btn:hover {
+        background-color: var(--admin-bg-hover);
+        color: var(--admin-text);
+    }
+
+    .admin-modal-body {
+        padding: 2rem;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .search-box-modal {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--admin-text-muted);
+        pointer-events: none;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        font-size: 1rem;
+        background-color: var(--admin-bg-secondary);
+        color: var(--admin-text);
+        transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--admin-accent);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
     @media (max-width: 768px) {
         .admin-seasonal-products {
             padding: 1rem;
@@ -294,6 +402,14 @@
         .seasonal-products-grid,
         .available-products-grid {
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .admin-modal {
+            max-width: 100%;
+        }
+
+        .admin-modal-body {
+            padding: 1rem;
         }
     }
 </style>
@@ -360,18 +476,12 @@
 
                 <!-- 季節限定商品 -->
                 <% @seasonal_products.each do |product| %>
-                <div class="seasonal-product-card draggable" data-product-id="<%= product.id %>" draggable="true">
-                    <button class="remove-btn" onclick="removeProduct(<%= product.id %>)">
+                <div class="seasonal-product-card draggable" data-product-id="<%= product.id %>" draggable="true" ondblclick="window.location.href='<%= admin_product_path(product) %>'">
+                    <button class="remove-btn drag-handle seasonal-drag" onclick="event.stopPropagation(); removeProduct(<%= product.id %>)">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
-
-                    <div class="drag-handle seasonal-drag">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
-                        </svg>
-                    </div>
 
                     <div class="seasonal-badge-overlay">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
@@ -423,8 +533,8 @@
             <!-- 利用可能な商品リスト -->
             <div class="available-products-grid" id="available-products-list">
                 <% @available_products.each do |product| %>
-                <div class="available-product-card" data-product-name="<%= product.name.downcase %>">
-                    <button class="add-btn seasonal-add-btn" onclick="addProduct(<%= product.id %>)">
+                <div class="available-product-card" data-product-name="<%= product.name.downcase %>" data-product-id="<%= product.id %>" onclick="addProduct(<%= product.id %>)" style="cursor: pointer;">
+                    <button class="add-btn seasonal-add-btn" onclick="event.stopPropagation(); addProduct(<%= product.id %>)">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
@@ -528,38 +638,81 @@
     }
 
     // 商品追加
+    // 商品追加（画面上だけ、保存/公開ボタンを押すまでDBには反映されない）
     function addProduct(productId) {
-        fetch(`/admin/products/${productId}/add_to_seasonal`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                }
-            });
+        // すでに追加されているか確認
+        const existingCard = document.querySelector(`.seasonal-product-card[data-product-id="${productId}"]`);
+        if (existingCard) {
+            alert('この商品はすでに追加されています');
+            return;
+        }
+
+        // モーダル内の商品カードから情報を取得
+        const modalCard = document.querySelector(`.available-product-card[data-product-id="${productId}"]`);
+        if (!modalCard) return;
+
+        const img = modalCard.querySelector('img')?.src || '';
+        const name = modalCard.querySelector('.product-name')?.textContent || '';
+        const price = modalCard.querySelector('.product-price')?.textContent || '';
+
+        // 新しい商品カードを作成
+        const newCard = document.createElement('div');
+        newCard.className = 'seasonal-product-card draggable';
+        newCard.setAttribute('data-product-id', productId);
+        newCard.setAttribute('draggable', 'true');
+        newCard.setAttribute('ondblclick', `window.location.href='/admin/products/${productId}'`);
+
+        newCard.innerHTML = `
+            <button class="remove-btn drag-handle seasonal-drag" onclick="event.stopPropagation(); removeProduct(${productId})">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <div class="seasonal-badge-overlay">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            ${img ? `<img src="${img}" class="product-image" alt="${name}">` : '<div class="product-image placeholder"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="40" height="40"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>'}
+            <div class="product-info">
+                <h3 class="product-name">${name}</h3>
+                <p class="product-price seasonal-price">${price}</p>
+            </div>
+        `;
+
+        // ドラッグ&ドロップイベントを追加
+        newCard.addEventListener('dragstart', function(e) {
+            this.classList.add('dragging');
+        });
+        newCard.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+        });
+        newCard.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        // グリッドに追加（「商品を追加」ボタンの前に挿入）
+        const grid = document.querySelector('.seasonal-products-grid');
+        const addButton = document.querySelector('.add-product-card.seasonal-add');
+        if (grid && addButton) {
+            grid.insertBefore(newCard, addButton);
+        }
+
+        // モーダルを閉じる
+        document.getElementById('add-product-modal').style.display = 'none';
+
+        alert('商品を追加しました（画面上のみ）\n\n※「保存」または「公開」ボタンを押して確定してください。');
     }
 
-    // 商品削除
+    // 商品削除（画面上だけ、保存/公開ボタンを押すまでDBには反映されない）
     function removeProduct(productId) {
-        if (confirm('この商品を季節限定商品から削除しますか？')) {
-            fetch(`/admin/products/${productId}/remove_from_seasonal`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    }
-                });
+        if (confirm('この商品を季節限定商品から削除しますか？\n\n※商品一覧からは削除されません。\n※「保存」または「公開」ボタンを押すまで確定されません。')) {
+            // 画面上から削除
+            const productCard = document.querySelector(`.seasonal-product-card[data-product-id="${productId}"]`);
+            if (productCard) {
+                productCard.remove();
+                alert('季節限定商品から削除しました（画面上のみ）\n\n※「保存」または「公開」ボタンを押して確定してください。');
+            }
         }
     }
 
