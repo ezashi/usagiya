@@ -232,7 +232,7 @@
     <div class="products-grid">
         <% if @products.any? %>
         <% @products.each do |product| %>
-        <div class="product-card" onclick="location.href='<%= admin_product_path(product) %>'" style="cursor: pointer;">
+        <div class="product-card" onclick="window.location.href='<%= admin_product_path(product) %>'" style="cursor: pointer;">
             <div class="product-image-wrapper">
                 <% if product.image.attached? %>
                 <%= image_tag product.image, class: "product-image", alt: product.name %>

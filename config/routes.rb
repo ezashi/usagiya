@@ -50,26 +50,19 @@ Rails.application.routes.draw do
       member do
         patch :toggle_recommended
         patch :toggle_seasonal
+        patch :toggle_visibility
+      end
+      collection do
+        get :featured
+        post "featured/add/:id", to: "products#add_to_featured", as: "add_to_featured"
+        delete "featured/remove/:id", to: "products#remove_from_featured", as: "remove_from_featured"
+        patch "featured/update_order", to: "products#update_featured_order"
+        get :seasonal
+        post "seasonal/add/:id", to: "products#add_to_seasonal", as: "add_to_seasonal"
+        delete "seasonal/remove/:id", to: "products#remove_from_seasonal", as: "remove_from_seasonal"
+        patch "seasonal/update_order", to: "products#update_seasonal_order"
       end
     end
-
-    # おすすめ商品管理
-    get "recommended_products", to: "recommended_products#index"
-    post "recommended_products/:id/add", to: "recommended_products#add", as: "add_recommended_product"
-    delete "recommended_products/:id/remove", to: "recommended_products#remove", as: "remove_recommended_product"
-    patch "recommended_products/reorder", to: "recommended_products#reorder"
-    post "recommended_products/save", to: "recommended_products#save"
-    post "recommended_products/publish", to: "recommended_products#publish"
-    get "recommended_products/preview", to: "recommended_products#preview"
-
-    # 季節限定商品管理
-    get "seasonal_products", to: "seasonal_products#index"
-    post "seasonal_products/:id/add", to: "seasonal_products#add", as: "add_seasonal_product"
-    delete "seasonal_products/:id/remove", to: "seasonal_products#remove", as: "remove_seasonal_product"
-    patch "seasonal_products/reorder", to: "seasonal_products#reorder"
-    post "seasonal_products/save", to: "seasonal_products#save"
-    post "seasonal_products/publish", to: "seasonal_products#publish"
-    get "seasonal_products/preview", to: "seasonal_products#preview"
 
     # 注文管理
     resources :orders, only: [ :index, :show ] do
