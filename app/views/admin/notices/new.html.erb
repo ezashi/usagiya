@@ -1,19 +1,353 @@
-<% content_for :page_title, "新規お知らせ追加" %>
+<% content_for :page_title, "お知らせを作成" %>
 
-<div class="max-w-4xl mx-auto">
-    <!-- ページヘッダー -->
-    <div class="mb-8">
-        <div class="flex items-center text-sm text-gray-600 mb-4">
-            <%= link_to admin_notices_path, class: "hover:text-blue-600 transition-colors" do %>
-            お知らせ管理
-            <% end %>
-            <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="text-gray-800 font-medium">新規お知らせ追加</span>
-        </div>
-        <h1 class="text-3xl font-bold text-gray-800">新規お知らせ追加</h1>
+<style>
+    /* お知らせフォームのスタイル */
+    .admin-notice-form {
+        padding: 2rem;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        margin-bottom: 2rem;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--admin-text-secondary);
+        text-decoration: none;
+        margin-bottom: 1rem;
+        transition: color 0.2s ease;
+    }
+
+    .back-link:hover {
+        color: var(--admin-accent);
+    }
+
+    .back-icon {
+        transition: transform 0.2s ease;
+    }
+
+    .back-link:hover .back-icon {
+        transform: translateX(-3px);
+    }
+
+    .form-title {
+        color: var(--admin-text);
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .notice-form {
+        display: block;
+    }
+
+    .form-layout {
+        display: grid;
+        grid-template-columns: 1fr 260px;
+        gap: 1rem;
+    }
+
+    .form-main {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .form-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .required-badge {
+        display: inline-block;
+        padding: 0.125rem 0.5rem;
+        background-color: var(--admin-error);
+        color: #ff0000;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 4px;
+        margin-left: 0.5rem;
+    }
+
+    /* タイトル入力 */
+    .title-input {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    /* リッチテキストエディタ */
+    .admin-rich-text {
+        min-height: 400px;
+    }
+
+    trix-toolbar {
+        background-color: var(--admin-bg-secondary);
+        border: 1px solid var(--admin-border);
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+        padding: 0.75rem;
+    }
+
+    trix-toolbar .trix-button-group {
+        background-color: var(--admin-bg-card);
+        border: 1px solid var(--admin-border);
+        border-radius: 6px;
+        margin-right: 0.5rem;
+    }
+
+    trix-toolbar .trix-button {
+        border: none;
+        background-color: transparent;
+        color: var(--admin-text-secondary);
+        transition: all 0.2s ease;
+    }
+
+    trix-toolbar .trix-button:hover {
+        background-color: var(--admin-bg-hover);
+        color: var(--admin-text);
+    }
+
+    trix-toolbar .trix-button.trix-active {
+        background-color: var(--admin-primary);
+        color: white;
+    }
+
+    trix-editor {
+        background-color: var(--admin-bg-secondary);
+        border: 1px solid var(--admin-border);
+        border-radius: 0 0 8px 8px;
+        color: var(--admin-text);
+        padding: 1.5rem;
+        min-height: 400px;
+    }
+
+    trix-editor:focus {
+        outline: none;
+        border-color: var(--admin-accent);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* アクションボタン */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .action-buttons .admin-btn {
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* プレビューモーダル */
+    .modal-preview-container {
+        background-color: white;
+        color: #333;
+        border-radius: 8px;
+        padding: 2rem;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .preview-header {
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .preview-title {
+        color: #333;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .preview-date {
+        color: #666;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    .preview-content {
+        color: #333;
+        line-height: 1.8;
+    }
+
+    .close-modal-btn {
+        background: none;
+        border: none;
+        color: var(--admin-text-secondary);
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .close-modal-btn:hover {
+        background-color: var(--admin-bg-hover);
+        color: var(--admin-text);
+    }
+
+    @media (max-width: 1024px) {
+        .form-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .form-sidebar {
+            order: -1;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-notice-form {
+            padding: 1rem;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="admin-notice-form">
+    <div class="form-header">
+        <%= link_to admin_notices_path, class: "back-link" do %>
+        <svg class="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        お知らせ一覧に戻る
+        <% end %>
+        <h1 class="form-title">お知らせを作成</h1>
     </div>
 
-    <%= render 'form', notice: @notice %>
+    <%= form_with model: [:admin, @notice], local: true, class: "notice-form" do |f| %>
+    <% if @notice.errors.any? %>
+    <div class="admin-alert admin-alert-error">
+        <strong><%= pluralize(@notice.errors.count, "件") %>のエラーがあります:</strong>
+        <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+            <% @notice.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+            <% end %>
+        </ul>
+    </div>
+    <% end %>
+
+    <div class="form-layout">
+        <!-- メインコンテンツ -->
+        <div class="form-main">
+            <!-- タイトル -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h2 class="admin-card-title">
+                        <svg style="width: 1.5rem; height: 1.5rem; display: inline-block; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                        </svg>
+                        タイトル <span class="required-badge">必須</span>
+                    </h2>
+                </div>
+                <div class="admin-card-body">
+                    <%= f.text_field :title, 
+                             class: "admin-form-control title-input", 
+                             placeholder: "例: 年末年始の営業についてのお知らせ",
+                             required: true %>
+                </div>
+            </div>
+
+            <!-- 本文 -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h2 class="admin-card-title">
+                        <svg style="width: 1.5rem; height: 1.5rem; display: inline-block; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+                        </svg>
+                        本文 <span class="required-badge">必須</span>
+                    </h2>
+                </div>
+                <div class="admin-card-body">
+                    <%= f.rich_text_area :content, 
+                                 class: "admin-rich-text",
+                                 placeholder: "お知らせの内容を入力してください..." %>
+                </div>
+            </div>
+        </div>
+
+        <!-- サイドバー -->
+        <div class="form-sidebar">
+            <!-- アクションボタン -->
+            <div class="action-buttons">
+                <button type="button" class="admin-btn admin-btn-secondary" id="preview-btn">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    プレビュー
+                </button>
+
+                <%= f.submit "下書き保存",
+                       class: "admin-btn admin-btn-secondary" %>
+
+                <%= f.submit "公開",
+                       class: "admin-btn admin-btn-success",
+                       data: { confirm: "お知らせを公開しますか？\n一般ユーザーに表示されるようになります。" } %>
+            </div>
+        </div>
+    </div>
+    <% end %>
 </div>
+
+<!-- プレビューモーダル -->
+<div id="preview-modal" class="admin-modal-overlay" style="display: none;">
+    <div class="admin-modal" style="max-width: 800px;">
+        <div class="admin-modal-header">
+            <h2 class="admin-modal-title">プレビュー</h2>
+            <button class="close-modal-btn" id="close-preview-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="admin-modal-body">
+            <div class="modal-preview-container" id="modal-preview-content">
+                <!-- プレビュー内容がJavaScriptで挿入されます -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // プレビューモーダル
+    document.getElementById('preview-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const title = document.querySelector('input[name="notice[title]"]').value;
+        const content = document.querySelector('trix-editor').innerHTML;
+
+        const previewHTML = `
+    <div class="preview-header">
+      <h3 class="preview-title">${title || '（タイトル未入力）'}</h3>
+      <p class="preview-date">${new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+    </div>
+    <div class="preview-content">
+      ${content || '（本文未入力）'}
+    </div>
+  `;
+
+        document.getElementById('modal-preview-content').innerHTML = previewHTML;
+        document.getElementById('preview-modal').style.display = 'flex';
+    });
+
+    document.getElementById('close-preview-btn').addEventListener('click', function() {
+        document.getElementById('preview-modal').style.display = 'none';
+    });
+
+    document.getElementById('preview-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    });
+</script>

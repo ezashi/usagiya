@@ -1,5 +1,5 @@
 class Admin::NoticesController < Admin::AdminController
-  before_action :set_notice, only: [ :show, :edit, :update, :destroy, :publish ]
+  before_action :set_notice, only: [ :edit, :update, :destroy, :publish ]
 
   def index
     @notices = Notice.all.recent
@@ -35,13 +35,16 @@ class Admin::NoticesController < Admin::AdminController
     # params[:commit]で押されたボタンを判定
     if params[:commit] == "公開"
       @notice.published_at = Time.current
+    else
+      # 下書き保存の場合はpublished_atをnilにする
+      @notice.published_at = nil
     end
 
     if @notice.update(notice_params)
       if params[:commit] == "公開"
         redirect_to admin_notices_path, notice: "お知らせを公開しました"
       else
-        redirect_to edit_admin_notice_path(@notice), notice: "お知らせを保存しました"
+        redirect_to edit_admin_notice_path(@notice), notice: "お知らせを下書き保存しました（一般ユーザーには非公開）"
       end
     else
       render :edit, status: :unprocessable_entity
