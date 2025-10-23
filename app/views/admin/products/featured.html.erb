@@ -123,8 +123,9 @@
     }
 
     .featured-product-card.dragging {
-        opacity: 0.5;
+        opacity: 0.4;
         transform: scale(0.95);
+        border: 2px dashed var(--admin-accent);
     }
 
     .remove-btn {
@@ -606,51 +607,86 @@
         });
     });
 
-    // ドラッグ&ドロップ
+    // ドラッグ&ドロップ（グリッドレイアウト完全対応版 + 追加ボタン固定）
     let draggedElement = null;
+    const container = document.getElementById('featured-products-list');
 
+    // 各アイテムにイベントを設定
     document.querySelectorAll('.draggable').forEach(item => {
         item.addEventListener('dragstart', function(e) {
             draggedElement = this;
             this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
         });
 
         item.addEventListener('dragend', function() {
             this.classList.remove('dragging');
+            // ドラッグ終了後も「商品を追加」ボタンを最初に保つ
+            ensureAddButtonFirst();
         });
 
         item.addEventListener('dragover', function(e) {
             e.preventDefault();
-            const afterElement = getDragAfterElement(this.parentElement, e.clientY);
-            if (afterElement == null) {
-                this.parentElement.appendChild(draggedElement);
-            } else {
-                this.parentElement.insertBefore(draggedElement, afterElement);
+            e.dataTransfer.dropEffect = 'move';
+
+            if (e.target.classList.contains('draggable') && e.target !== draggedElement) {
+                // ドラッグ中の要素を取得
+                const dragging = document.querySelector('.dragging');
+                if (!dragging) return;
+
+                // マウスカーソルの位置を取得
+                const rect = e.target.getBoundingClientRect();
+                const midX = rect.left + rect.width / 2;
+                const midY = rect.top + rect.height / 2;
+
+                // 同じ行かどうかを判定
+                const targetTop = Math.floor(rect.top);
+                const dragTop = Math.floor(dragging.getBoundingClientRect().top);
+                const sameRow = Math.abs(targetTop - dragTop) < rect.height / 2;
+
+                if (sameRow) {
+                    // 同じ行：X座標で判定
+                    if (e.clientX > midX) {
+                        // カーソルが要素の右半分 → 要素の後ろに挿入
+                        e.target.parentNode.insertBefore(dragging, e.target.nextSibling);
+                    } else {
+                        // カーソルが要素の左半分 → 要素の前に挿入
+                        e.target.parentNode.insertBefore(dragging, e.target);
+                    }
+                } else {
+                    // 異なる行：Y座標で判定
+                    if (e.clientY > midY) {
+                        // カーソルが要素の下半分 → 要素の後ろに挿入
+                        e.target.parentNode.insertBefore(dragging, e.target.nextSibling);
+                    } else {
+                        // カーソルが要素の上半分 → 要素の前に挿入
+                        e.target.parentNode.insertBefore(dragging, e.target);
+                    }
+                }
             }
         });
     });
 
-    function getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
+    // コンテナにもdragoverを設定（空白部分へのドロップ対応）
+    container.addEventListener('dragover', function(e) {
+        e.preventDefault();
+    });
 
-        return draggableElements.reduce((closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = y - box.top - box.height / 2;
+    container.addEventListener('drop', function(e) {
+        e.preventDefault();
+        // ドロップ後も「商品を追加」ボタンを最初に保つ
+        ensureAddButtonFirst();
+    });
 
-            if (offset < 0 && offset > closest.offset) {
-                return {
-                    offset: offset,
-                    element: child
-                };
-            } else {
-                return closest;
-            }
-        }, {
-            offset: Number.NEGATIVE_INFINITY
-        }).element;
+    // 「商品を追加」ボタンが常に最初にあることを保証する関数
+    function ensureAddButtonFirst() {
+        const addButton = container.querySelector('.add-product-card');
+        if (addButton && container.firstElementChild !== addButton) {
+            // 「商品を追加」ボタンが最初でない場合、最初に移動
+            container.insertBefore(addButton, container.firstElementChild);
+        }
     }
 
-    // 商品追加
     // 商品追加（画面上だけ、保存/公開ボタンを押すまでDBには反映されない）
     function addProduct(productId) {
         // すでに追加されているか確認
@@ -690,20 +726,52 @@
 
         // ドラッグ&ドロップイベントを追加
         newCard.addEventListener('dragstart', function(e) {
+            draggedElement = this;
             this.classList.add('dragging');
-        });
-        newCard.addEventListener('dragend', function() {
-            this.classList.remove('dragging');
-        });
-        newCard.addEventListener('dragover', function(e) {
-            e.preventDefault();
+            e.dataTransfer.effectAllowed = 'move';
         });
 
-        // グリッドに追加（「商品を追加」ボタンの前に挿入）
-        const grid = document.querySelector('.featured-products-grid');
+        newCard.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+            ensureAddButtonFirst();
+        });
+
+        newCard.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+
+            if (e.target.classList.contains('draggable') && e.target !== draggedElement) {
+                const dragging = document.querySelector('.dragging');
+                if (!dragging) return;
+
+                const rect = e.target.getBoundingClientRect();
+                const midX = rect.left + rect.width / 2;
+                const midY = rect.top + rect.height / 2;
+
+                const targetTop = Math.floor(rect.top);
+                const dragTop = Math.floor(dragging.getBoundingClientRect().top);
+                const sameRow = Math.abs(targetTop - dragTop) < rect.height / 2;
+
+                if (sameRow) {
+                    if (e.clientX > midX) {
+                        e.target.parentNode.insertBefore(dragging, e.target.nextSibling);
+                    } else {
+                        e.target.parentNode.insertBefore(dragging, e.target);
+                    }
+                } else {
+                    if (e.clientY > midY) {
+                        e.target.parentNode.insertBefore(dragging, e.target.nextSibling);
+                    } else {
+                        e.target.parentNode.insertBefore(dragging, e.target);
+                    }
+                }
+            }
+        });
+
+        // グリッドに追加（「商品を追加」ボタンの直後に挿入）
         const addButton = document.querySelector('.add-product-card');
-        if (grid && addButton) {
-            grid.insertBefore(newCard, addButton);
+        if (addButton) {
+            addButton.parentNode.insertBefore(newCard, addButton.nextSibling);
         }
 
         // モーダルを閉じる
@@ -726,8 +794,13 @@
 
     // 保存（下書き保存のみ）
     document.getElementById('save-btn').addEventListener('click', function() {
-        const products = document.querySelectorAll('.featured-product-card');
-        const order = Array.from(products).map((product, index) => product.dataset.productId);
+        // 「商品を追加」ボタンを除外して商品のみ取得
+        const products = document.querySelectorAll('.featured-product-card.draggable');
+        const order = Array.from(products).map(product => product.dataset.productId);
+
+        console.log('=== 保存処理開始 ===');
+        console.log('商品ID配列:', order);
+        console.log('商品数:', order.length);
 
         fetch('/admin/products/featured/update_order', {
                 method: 'PATCH',
@@ -741,23 +814,35 @@
                     publish: false
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('レスポンスステータス:', response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log('保存レスポンス:', data);
                 if (data.success) {
                     alert('下書き保存しました！\n\n※一般ユーザーには公開されていません。公開ボタンを押すと一般ユーザーに表示されます。');
+                } else {
+                    console.error('保存失敗:', data);
+                    alert('保存に失敗しました: ' + (data.errors ? data.errors.join(', ') : '不明なエラー'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('保存に失敗しました');
+                alert('保存に失敗しました: ' + error.message);
             });
     });
 
     // 公開（一般ユーザーに公開）
     document.getElementById('publish-btn').addEventListener('click', function() {
         if (confirm('おすすめ商品を公開しますか？\n\n一般ユーザーに表示されるようになります。')) {
-            const products = document.querySelectorAll('.featured-product-card');
-            const order = Array.from(products).map((product, index) => product.dataset.productId);
+            // 「商品を追加」ボタンを除外して商品のみ取得
+            const products = document.querySelectorAll('.featured-product-card.draggable');
+            const order = Array.from(products).map(product => product.dataset.productId);
+
+            console.log('=== 公開処理開始 ===');
+            console.log('商品ID配列:', order);
+            console.log('商品数:', order.length);
 
             fetch('/admin/products/featured/update_order', {
                     method: 'PATCH',
@@ -771,16 +856,23 @@
                         publish: true
                     })
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log('レスポンスステータス:', response.status);
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('公開レスポンス:', data);
                     if (data.success) {
                         alert('公開しました！\n\n一般ユーザーに表示されています。');
                         location.reload();
+                    } else {
+                        console.error('公開失敗:', data);
+                        alert('公開に失敗しました: ' + (data.errors ? data.errors.join(', ') : '不明なエラー'));
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('公開に失敗しました');
+                    alert('公開に失敗しました: ' + error.message);
                 });
         }
     });
@@ -806,8 +898,8 @@
         const preview = document.createElement('div');
         preview.style.cssText = 'padding: 2rem;';
 
-        // おすすめ商品のグリッド表示
-        const products = Array.from(document.querySelectorAll('.featured-product-card')).map(card => {
+        // おすすめ商品のグリッド表示（「商品を追加」ボタンを除外）
+        const products = Array.from(document.querySelectorAll('.featured-product-card.draggable')).map(card => {
             const img = card.querySelector('img')?.src || '';
             const name = card.querySelector('.product-name')?.textContent || '';
             const price = card.querySelector('.product-price')?.textContent || '';

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_19_120758) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_22_031246) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -142,9 +142,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_19_120758) do
     t.text "draft_description"
     t.boolean "draft_featured", default: false
     t.boolean "draft_seasonal", default: false
+    t.integer "draft_featured_order"
+    t.integer "draft_seasonal_order"
     t.index ["category"], name: "index_products_on_category"
     t.index ["display_order"], name: "index_products_on_display_order"
+    t.index ["draft_featured_order"], name: "index_products_on_draft_featured_order"
     t.index ["draft_saved_at"], name: "index_products_on_draft_saved_at"
+    t.index ["draft_seasonal_order"], name: "index_products_on_draft_seasonal_order"
     t.index ["featured"], name: "index_products_on_featured"
     t.index ["featured_order"], name: "index_products_on_featured_order"
     t.index ["seasonal"], name: "index_products_on_seasonal"

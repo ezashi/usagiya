@@ -13,6 +13,8 @@ class Product < ApplicationRecord
   scope :featured, -> { where(featured: true).order(:featured_order, :display_order) }
   scope :seasonal, -> { where(seasonal: true).order(:seasonal_order, :display_order) }
   scope :ordered_by_display, -> { order(:display_order) }
+  scope :draft_featured, -> { where(draft_featured: true).order(:draft_featured_order) }
+  scope :draft_seasonal, -> { where(draft_seasonal: true).order(:draft_seasonal_order) }
 
   # Class methods
   def self.next_featured_order
@@ -53,10 +55,14 @@ class Product < ApplicationRecord
 
   # 下書き内容があるかを判定
   def has_draft?
-    draft_name.present? || draft_price.present? || draft_description.present?
+    draft_name.present? ||
+    draft_price.present? ||
+    draft_description.present? ||
+    draft_featured_order.present? ||
+    draft_seasonal_order.present?
   end
 
-  # 下書き内容を保存
+  # 下書き内容を保存（商品詳細の編集用）
   def save_as_draft(params)
     Rails.logger.debug "=== save_as_draft DEBUG ==="
     Rails.logger.debug "params: #{params.inspect}"
@@ -111,10 +117,13 @@ class Product < ApplicationRecord
       draft_description: nil,
       draft_featured: false,
       draft_seasonal: false,
+      draft_featured_order: nil,
+      draft_seasonal_order: nil,
       draft_saved_at: nil
     )
   end
 
+  # おすすめ商品に追加
   def add_to_featured
     return if featured
 
@@ -124,6 +133,7 @@ class Product < ApplicationRecord
     )
   end
 
+  # おすすめ商品から削除
   def remove_from_featured
     return unless featured
 
@@ -131,6 +141,7 @@ class Product < ApplicationRecord
     reorder_featured_products
   end
 
+  # 季節限定商品に追加
   def add_to_seasonal
     return if seasonal
 
@@ -140,6 +151,7 @@ class Product < ApplicationRecord
     )
   end
 
+  # 季節限定商品から削除
   def remove_from_seasonal
     return unless seasonal
 
@@ -147,6 +159,67 @@ class Product < ApplicationRecord
     reorder_seasonal_products
   end
 
+  # おすすめ商品の下書き保存（並び替え用）
+  def save_featured_draft(order_position)
+    update_columns(
+      draft_featured: true,
+      draft_featured_order: order_position,
+      draft_saved_at: Time.current
+    )
+  end
+
+  # 季節限定商品の下書き保存（並び替え用）
+  def save_seasonal_draft(order_position)
+    update_columns(
+      draft_seasonal: true,
+      draft_seasonal_order: order_position,
+      draft_saved_at: Time.current
+    )
+  end
+
+  # おすすめ商品の下書きを公開
+  def publish_featured_draft
+    if draft_featured && draft_featured_order.present?
+      update(
+        featured: true,
+        featured_order: draft_featured_order,
+        draft_featured: false,
+        draft_featured_order: nil,
+        draft_saved_at: nil
+      )
+    end
+  end
+
+  # 季節限定商品の下書きを公開
+  def publish_seasonal_draft
+    if draft_seasonal && draft_seasonal_order.present?
+      update(
+        seasonal: true,
+        seasonal_order: draft_seasonal_order,
+        draft_seasonal: false,
+        draft_seasonal_order: nil,
+        draft_saved_at: nil
+      )
+    end
+  end
+
+  # おすすめ商品の下書きをクリア
+  def clear_featured_draft
+    update_columns(
+      draft_featured: false,
+      draft_featured_order: nil
+    )
+  end
+
+  # 季節限定商品の下書きをクリア
+  def clear_seasonal_draft
+    update_columns(
+      draft_seasonal: false,
+      draft_seasonal_order: nil
+    )
+  end
+
+  # 画像URLを取得
   def image_url
     if image.attached?
       Rails.application.routes.url_helpers.rails_blob_url(image, only_path: true)
@@ -160,12 +233,14 @@ class Product < ApplicationRecord
 
   private
 
+  # おすすめ商品の並び順を再整理
   def reorder_featured_products
     Product.featured.each_with_index do |product, index|
       product.update_column(:featured_order, index + 1)
     end
   end
 
+  # 季節限定商品の並び順を再整理
   def reorder_seasonal_products
     Product.seasonal.each_with_index do |product, index|
       product.update_column(:seasonal_order, index + 1)

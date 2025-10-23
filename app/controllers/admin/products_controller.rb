@@ -8,14 +8,40 @@ class Admin::ProductsController < Admin::AdminController
 
   # おすすめ商品管理
   def featured
-    @featured_products = Product.featured.order(:featured_order)
-    @available_products = Product.where(featured: false).order(:name)
+    # 下書きがある場合は下書きを表示、なければ公開中のものを表示
+    if Product.where(draft_featured: true).exists?
+      @featured_products = Product.draft_featured
+      @is_draft = true
+    else
+      @featured_products = Product.featured
+      @is_draft = false
+    end
+
+    # 下書きにも公開にも含まれていない商品を「利用可能な商品」として表示
+    draft_ids = Product.where(draft_featured: true).pluck(:id)
+    featured_ids = Product.where(featured: true).pluck(:id)
+    excluded_ids = (draft_ids + featured_ids).uniq
+
+    @available_products = Product.where.not(id: excluded_ids).order(:name)
   end
 
   # 季節限定商品管理
   def seasonal
-    @seasonal_products = Product.seasonal.order(:seasonal_order)
-    @available_products = Product.where(seasonal: false).order(:name)
+    # 下書きがある場合は下書きを表示、なければ公開中のものを表示
+    if Product.where(draft_seasonal: true).exists?
+      @seasonal_products = Product.draft_seasonal
+      @is_draft = true
+    else
+      @seasonal_products = Product.seasonal
+      @is_draft = false
+    end
+
+    # 下書きにも公開にも含まれていない商品を「利用可能な商品」として表示
+    draft_ids = Product.where(draft_seasonal: true).pluck(:id)
+    seasonal_ids = Product.where(seasonal: true).pluck(:id)
+    excluded_ids = (draft_ids + seasonal_ids).uniq
+
+    @available_products = Product.where.not(id: excluded_ids).order(:name)
   end
 
   # おすすめ商品に追加
@@ -29,7 +55,7 @@ class Admin::ProductsController < Admin::AdminController
   def remove_from_featured
     @product = Product.find(params[:id])
     @product.remove_from_featured
-    
+
     respond_to do |format|
       format.html { redirect_to featured_admin_products_path, notice: "「#{@product.name}」をおすすめ商品から削除しました" }
       format.json { render json: { success: true, message: "「#{@product.name}」をおすすめ商品から削除しました" } }
@@ -47,7 +73,7 @@ class Admin::ProductsController < Admin::AdminController
   def remove_from_seasonal
     @product = Product.find(params[:id])
     @product.remove_from_seasonal
-    
+
     respond_to do |format|
       format.html { redirect_to seasonal_admin_products_path, notice: "「#{@product.name}」を季節限定商品から削除しました" }
       format.json { render json: { success: true, message: "「#{@product.name}」を季節限定商品から削除しました" } }
@@ -56,18 +82,48 @@ class Admin::ProductsController < Admin::AdminController
 
   # おすすめ商品の並び順を更新
   def update_featured_order
-    params[:order].each_with_index do |id, index|
-      Product.find(id).update_column(:featured_order, index + 1)
+    publish = params[:publish] == true || params[:publish] == "true"
+
+    Rails.logger.debug "=== update_featured_order DEBUG ==="
+    Rails.logger.debug "params[:order]: #{params[:order].inspect}"
+    Rails.logger.debug "publish: #{publish}"
+
+    if publish
+      # 公開処理：下書きから本番にコピー
+      publish_featured_products(params[:order])
+      render json: { success: true, message: "おすすめ商品を公開しました" }
+    else
+      # 下書き保存処理
+      save_featured_draft(params[:order])
+      render json: { success: true, message: "下書き保存しました" }
     end
-    head :ok
+  rescue StandardError => e
+    Rails.logger.error "Error in update_featured_order: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { success: false, errors: [ e.message ] }, status: :unprocessable_entity
   end
 
   # 季節限定商品の並び順を更新
   def update_seasonal_order
-    params[:order].each_with_index do |id, index|
-      Product.find(id).update_column(:seasonal_order, index + 1)
+    publish = params[:publish] == true || params[:publish] == "true"
+
+    Rails.logger.debug "=== update_seasonal_order DEBUG ==="
+    Rails.logger.debug "params[:order]: #{params[:order].inspect}"
+    Rails.logger.debug "publish: #{publish}"
+
+    if publish
+      # 公開処理：下書きから本番にコピー
+      publish_seasonal_products(params[:order])
+      render json: { success: true, message: "季節限定商品を公開しました" }
+    else
+      # 下書き保存処理
+      save_seasonal_draft(params[:order])
+      render json: { success: true, message: "下書き保存しました" }
     end
-    head :ok
+  rescue StandardError => e
+    Rails.logger.error "Error in update_seasonal_order: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { success: false, errors: [ e.message ] }, status: :unprocessable_entity
   end
 
   # 新規作成フォーム
@@ -302,5 +358,99 @@ class Admin::ProductsController < Admin::AdminController
       :image,
       :remove_image
     )
+  end
+
+  # おすすめ商品の下書き保存
+  def save_featured_draft(product_ids)
+    Rails.logger.debug "=== save_featured_draft ==="
+    Rails.logger.debug "product_ids: #{product_ids.inspect}"
+
+    # まず、すべての商品の下書きフラグをクリア
+    Product.where(draft_featured: true).update_all(draft_featured: false, draft_featured_order: nil)
+
+    # 新しい順序で下書き保存
+    product_ids.each_with_index do |id, index|
+      product = Product.find(id)
+      product.save_featured_draft(index + 1)
+      Rails.logger.debug "商品ID #{id} を下書き順序 #{index + 1} で保存"
+    end
+
+    Rails.logger.debug "下書き保存完了"
+  end
+
+  # 季節限定商品の下書き保存
+  def save_seasonal_draft(product_ids)
+    Rails.logger.debug "=== save_seasonal_draft ==="
+    Rails.logger.debug "product_ids: #{product_ids.inspect}"
+
+    # まず、すべての商品の下書きフラグをクリア
+    Product.where(draft_seasonal: true).update_all(draft_seasonal: false, draft_seasonal_order: nil)
+
+    # 新しい順序で下書き保存
+    product_ids.each_with_index do |id, index|
+      product = Product.find(id)
+      product.save_seasonal_draft(index + 1)
+      Rails.logger.debug "商品ID #{id} を下書き順序 #{index + 1} で保存"
+    end
+
+    Rails.logger.debug "下書き保存完了"
+  end
+
+  # おすすめ商品の公開
+  def publish_featured_products(product_ids)
+    Rails.logger.debug "=== publish_featured_products ==="
+    Rails.logger.debug "product_ids: #{product_ids.inspect}"
+
+    # すべての公開中のおすすめ商品をクリア
+    Product.where(featured: true).update_all(featured: false, featured_order: nil)
+
+    # 新しい順序で公開
+    product_ids.each_with_index do |id, index|
+      product = Product.find(id)
+      product.update(
+        featured: true,
+        featured_order: index + 1,
+        visible: true,
+        published_at: Time.current,
+        draft_featured: false,
+        draft_featured_order: nil,
+        draft_saved_at: nil
+      )
+      Rails.logger.debug "商品ID #{id} を公開順序 #{index + 1} で公開（visible: true, published_at: #{Time.current}）"
+    end
+
+    # 下書きフラグをすべてクリア
+    Product.where(draft_featured: true).update_all(draft_featured: false, draft_featured_order: nil)
+
+    Rails.logger.debug "公開完了"
+  end
+
+  # 季節限定商品の公開（修正版）
+  def publish_seasonal_products(product_ids)
+    Rails.logger.debug "=== publish_seasonal_products ==="
+    Rails.logger.debug "product_ids: #{product_ids.inspect}"
+
+    # まず、すべての公開中の季節限定商品をクリア
+    Product.where(seasonal: true).update_all(seasonal: false, seasonal_order: nil)
+
+    # 新しい順序で公開
+    product_ids.each_with_index do |id, index|
+      product = Product.find(id)
+      product.update(
+        seasonal: true,
+        seasonal_order: index + 1,
+        visible: true,
+        published_at: Time.current,
+        draft_seasonal: false,
+        draft_seasonal_order: nil,
+        draft_saved_at: nil
+      )
+      Rails.logger.debug "商品ID #{id} を公開順序 #{index + 1} で公開（visible: true, published_at: #{Time.current}）"
+    end
+
+    # 下書きフラグをすべてクリア
+    Product.where(draft_seasonal: true).update_all(draft_seasonal: false, draft_seasonal_order: nil)
+
+    Rails.logger.debug "公開完了"
   end
 end
