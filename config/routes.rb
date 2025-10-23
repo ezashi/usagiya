@@ -74,8 +74,7 @@ Rails.application.routes.draw do
     # お知らせ管理
     resources :notices, only: [ :index, :new, :create, :edit, :update, :destroy ] do
       member do
-        post :save_draft
-        post :publish
+        patch :publish
         get :preview
       end
     end
