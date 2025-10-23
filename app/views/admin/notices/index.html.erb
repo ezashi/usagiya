@@ -277,7 +277,7 @@
             </div>
             <div class="stat-content">
                 <div class="stat-label">公開中</div>
-                <div class="stat-value"><%= @notices.where(published: true).count %></div>
+                <div class="stat-value"><%= @notices.where.not(published_at: nil).count %></div>
             </div>
         </div>
 
@@ -289,7 +289,7 @@
             </div>
             <div class="stat-content">
                 <div class="stat-label">下書き</div>
-                <div class="stat-value"><%= @notices.where(published: false).count %></div>
+                <div class="stat-value"><%= @notices.where(published_at: nil).count %></div>
             </div>
         </div>
     </div>

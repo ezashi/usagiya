@@ -466,15 +466,11 @@
                     プレビュー
                 </button>
 
-                <%= f.submit "下書き保存", 
-                       class: "admin-btn admin-btn-secondary",
-                       name: "draft",
-                       value: "draft" %>
+                <%= f.submit "下書き保存",
+                       class: "admin-btn admin-btn-secondary" %>
 
-                <%= f.submit (@notice.published? ? "変更を公開" : "公開する"), 
+                <%= f.submit "公開",
                        class: "admin-btn admin-btn-success",
-                       name: "publish",
-                       value: "publish",
                        data: { confirm: @notice.published? ? nil : "お知らせを公開しますか？" } %>
             </div>
 
