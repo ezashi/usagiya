@@ -1,10 +1,10 @@
 // Trixエディタの日本語化と機能拡張
 
-// Trixが読み込まれる前に設定を行う
-document.addEventListener('trix-before-initialize', function() {
-  if (typeof Trix !== 'undefined') {
-    // ツールバーボタンの日本語化
-    Trix.config.lang = {
+// Trixの設定（このファイルはtrixより前にimportされる）
+if (typeof Trix === 'undefined') {
+  // Trixがまだ読み込まれていない場合は、グローバル変数を準備
+  window.trixConfig = {
+    lang: {
       bold: "太字",
       italic: "斜体",
       strike: "取り消し線",
@@ -20,50 +20,61 @@ document.addEventListener('trix-before-initialize', function() {
       undo: "元に戻す",
       redo: "やり直し",
       remove: "削除"
-    };
+    }
+  };
+}
 
-    // ツールバーのカスタマイズ（日本語化）
-    Trix.config.toolbar.getDefaultHTML = function() {
-      return `
-        <div class="trix-button-row">
-          <span class="trix-button-group trix-button-group--text-tools" data-trix-button-group="text-tools">
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-bold" data-trix-attribute="bold" data-trix-key="b" title="太字" tabindex="-1">太字</button>
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-italic" data-trix-attribute="italic" data-trix-key="i" title="斜体" tabindex="-1">斜体</button>
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-strike" data-trix-attribute="strike" title="取り消し線" tabindex="-1">取消線</button>
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-link" data-trix-attribute="href" data-trix-action="link" data-trix-key="k" title="リンク" tabindex="-1">リンク</button>
-          </span>
-          <span class="trix-button-group trix-button-group--block-tools" data-trix-button-group="block-tools">
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-heading-1" data-trix-attribute="heading1" title="見出し" tabindex="-1">見出し</button>
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-quote" data-trix-attribute="quote" title="引用" tabindex="-1">引用</button>
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-code" data-trix-attribute="code" title="コード" tabindex="-1">コード</button>
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-bullet-list" data-trix-attribute="bullet" title="箇条書き" tabindex="-1">● リスト</button>
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-number-list" data-trix-attribute="number" title="番号付きリスト" tabindex="-1">1. 番号</button>
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-decrease-nesting-level" data-trix-action="decreaseNestingLevel" title="インデント解除" tabindex="-1">← 戻す</button>
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-increase-nesting-level" data-trix-action="increaseNestingLevel" title="インデント" tabindex="-1">→ 進む</button>
-          </span>
-          <span class="trix-button-group trix-button-group--file-tools" data-trix-button-group="file-tools">
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-attach" data-trix-action="attachFiles" title="画像を挿入" tabindex="-1">📷 画像</button>
-          </span>
-          <span class="trix-button-group-spacer"></span>
-          <span class="trix-button-group trix-button-group--history-tools" data-trix-button-group="history-tools">
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-undo" data-trix-action="undo" data-trix-key="z" title="元に戻す" tabindex="-1">↶ 戻す</button>
-            <button type="button" class="trix-button trix-button--icon trix-button--icon-redo" data-trix-action="redo" data-trix-key="shift+z" title="やり直し" tabindex="-1">↷ 進む</button>
-          </span>
-        </div>
-        <div class="trix-dialogs" data-trix-dialogs>
-          <div class="trix-dialog trix-dialog--link" data-trix-dialog="href" data-trix-dialog-attribute="href">
-            <div class="trix-dialog__link-fields">
-              <input type="url" name="href" class="trix-input trix-input--dialog" placeholder="URLを入力してください" aria-label="URL" required data-trix-input>
-              <div class="trix-button-group">
-                <input type="button" class="trix-button trix-button--dialog" value="リンク" data-trix-method="setAttribute">
-                <input type="button" class="trix-button trix-button--dialog" value="リンク解除" data-trix-method="removeAttribute">
-              </div>
+// Trixが読み込まれる前に設定を行う
+document.addEventListener('trix-before-initialize', function() {
+  console.log('trix-before-initialize fired');
+
+  // ツールバーのカスタマイズ（日本語化）
+  Trix.config.toolbar.getDefaultHTML = function() {
+    return `
+      <div class="trix-button-row">
+        <span class="trix-button-group trix-button-group--text-tools" data-trix-button-group="text-tools">
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-bold" data-trix-attribute="bold" data-trix-key="b" title="太字" tabindex="-1">太字</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-italic" data-trix-attribute="italic" data-trix-key="i" title="斜体" tabindex="-1">斜体</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-strike" data-trix-attribute="strike" title="取り消し線" tabindex="-1">取消線</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-link" data-trix-attribute="href" data-trix-action="link" data-trix-key="k" title="リンク" tabindex="-1">リンク</button>
+        </span>
+        <span class="trix-button-group trix-button-group--block-tools" data-trix-button-group="block-tools">
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-heading-1" data-trix-attribute="heading1" title="見出し" tabindex="-1">見出し</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-quote" data-trix-attribute="quote" title="引用" tabindex="-1">引用</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-code" data-trix-attribute="code" title="コード" tabindex="-1">コード</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-bullet-list" data-trix-attribute="bullet" title="箇条書き" tabindex="-1">● リスト</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-number-list" data-trix-attribute="number" title="番号付きリスト" tabindex="-1">1. 番号</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-decrease-nesting-level" data-trix-action="decreaseNestingLevel" title="インデント解除" tabindex="-1">← 戻す</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-increase-nesting-level" data-trix-action="increaseNestingLevel" title="インデント" tabindex="-1">→ 進む</button>
+        </span>
+        <span class="trix-button-group trix-button-group--file-tools" data-trix-button-group="file-tools">
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-attach" data-trix-action="attachFiles" title="画像を挿入" tabindex="-1">📷 画像</button>
+        </span>
+        <span class="trix-button-group-spacer"></span>
+        <span class="trix-button-group trix-button-group--history-tools" data-trix-button-group="history-tools">
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-undo" data-trix-action="undo" data-trix-key="z" title="元に戻す" tabindex="-1">↶ 戻す</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-redo" data-trix-action="redo" data-trix-key="shift+z" title="やり直し" tabindex="-1">↷ 進む</button>
+        </span>
+      </div>
+      <div class="trix-dialogs" data-trix-dialogs>
+        <div class="trix-dialog trix-dialog--link" data-trix-dialog="href" data-trix-dialog-attribute="href">
+          <div class="trix-dialog__link-fields">
+            <input type="url" name="href" class="trix-input trix-input--dialog" placeholder="URLを入力してください" aria-label="URL" required data-trix-input>
+            <div class="trix-button-group">
+              <input type="button" class="trix-button trix-button--dialog" value="リンク" data-trix-method="setAttribute">
+              <input type="button" class="trix-button trix-button--dialog" value="リンク解除" data-trix-method="removeAttribute">
             </div>
           </div>
         </div>
-      `;
-    };
-  }
+      </div>
+    `;
+  };
+
+  // 画像添付時のファイル名・サイズを非表示にする
+  Trix.config.attachments.preview.caption = {
+    name: false,
+    size: false
+  };
 });
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -311,6 +322,32 @@ style.textContent = `
 
   trix-editor * {
     max-width: 100%;
+  }
+
+  /* 本文の上下の空白を削除 */
+  trix-editor > div:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  trix-editor > div:last-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* ActionTextのattachmentキャプションを非表示 */
+  trix-editor .attachment__caption {
+    display: none !important;
+  }
+
+  trix-editor .attachment__name,
+  trix-editor .attachment__size {
+    display: none !important;
+  }
+
+  /* figcaptionを非表示（ファイル名・サイズ） */
+  trix-editor figcaption {
+    display: none !important;
   }
 
   /* 画像スタイル */
