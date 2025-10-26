@@ -3,6 +3,7 @@ import "@hotwired/turbo-rails"
 import "./controllers/index"
 import "trix"
 import "@rails/actiontext"
+import "./trix_customization"
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 

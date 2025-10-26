@@ -252,6 +252,9 @@
     .notice-content {
         color: #666;
         line-height: 1.8;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
     }
 
     /* お知らせなし */
@@ -295,6 +298,11 @@
     }
 
     /* Proseスタイル（リッチテキスト） */
+    .prose {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
     .prose h1,
     .prose h2,
     .prose h3 {
@@ -302,6 +310,8 @@
         font-weight: bold;
         margin-top: 1.5rem;
         margin-bottom: 0.75rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
     .prose h1 {
@@ -322,6 +332,8 @@
 
     .prose p {
         margin-bottom: 1rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
     .prose ul,
@@ -332,6 +344,8 @@
 
     .prose li {
         margin-bottom: 0.5rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
     .prose img {
@@ -339,6 +353,11 @@
         height: auto;
         border-radius: 0.5rem;
         margin: 1.5rem 0;
+        display: block;
+    }
+
+    .prose * {
+        max-width: 100%;
     }
 
     /* レスポンシブ */
