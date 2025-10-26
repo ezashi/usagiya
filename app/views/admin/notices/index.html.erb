@@ -250,6 +250,77 @@
         background-color: currentColor;
     }
 
+    .notice-content {
+        color: #666;
+        line-height: 1.8;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+    }
+
+    /* Proseスタイル */
+    .prose {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .prose h1,
+    .prose h2,
+    .prose h3 {
+        color: #333;
+        font-weight: bold;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .prose h1 {
+        font-size: 1.75rem;
+        border-bottom: 3px solid #ec4899;
+        padding-bottom: 0.5rem;
+    }
+
+    .prose h2 {
+        font-size: 1.5rem;
+        border-left: 4px solid #ec4899;
+        padding-left: 0.75rem;
+    }
+
+    .prose h3 {
+        font-size: 1.25rem;
+    }
+
+    .prose p {
+        margin-bottom: 1rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .prose ul,
+    .prose ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .prose li {
+        margin-bottom: 0.5rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .prose img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.5rem;
+        margin: 1.5rem 0;
+        display: block;
+    }
+
+    .prose * {
+        max-width: 100%;
+    }
+
     @media (max-width: 768px) {
         .admin-notices {
             padding: 1rem;
