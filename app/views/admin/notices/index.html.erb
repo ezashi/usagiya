@@ -222,6 +222,34 @@
         margin: 0 0 1.5rem 0;
     }
 
+    /* ステータスバッジ */
+    .admin-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .admin-status-published {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--admin-success, #10b981);
+    }
+
+    .admin-status-draft {
+        background-color: rgba(148, 163, 184, 0.1);
+        color: var(--admin-text-muted, #94a3b8);
+    }
+
+    .admin-status-dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 9999px;
+        background-color: currentColor;
+    }
+
     @media (max-width: 768px) {
         .admin-notices {
             padding: 1rem;
@@ -282,7 +310,7 @@
                             <td>
                                 <div class="notice-title-cell">
                                     <%= link_to edit_admin_notice_path(notice), class: "notice-title-link" do %>
-                                    <%= notice.title %>
+                                    <%= notice.title.present? ? notice.title : (notice.draft_title.present? ? notice.draft_title : '（タイトル未入力）') %>
                                     <% end %>
                                     <% if notice.published? && notice.published_at %>
                                     <span class="notice-date">
@@ -292,7 +320,17 @@
                                 </div>
                             </td>
                             <td>
-                                <% if notice.published? %>
+                                <% if notice.published? && notice.has_draft? %>
+                                <span class="admin-status admin-status-published" style="margin-bottom: 0.25rem;">
+                                    <span class="admin-status-dot"></span>
+                                    公開中
+                                </span>
+                                <br>
+                                <span class="admin-status admin-status-draft">
+                                    <span class="admin-status-dot"></span>
+                                    下書き
+                                </span>
+                                <% elsif notice.published? %>
                                 <span class="admin-status admin-status-published">
                                     <span class="admin-status-dot"></span>
                                     公開中

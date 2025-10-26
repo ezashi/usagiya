@@ -38,22 +38,22 @@ class Admin::NoticesController < Admin::AdminController
   end
 
   def edit
+    # 下書きがある場合は、フォームに下書きの内容を表示
+    if @notice.has_draft?
+      @notice.title = @notice.draft_title
+      @notice.content = @notice.draft_content
+    end
   end
 
   def update
     if params[:commit] == "公開"
       # 公開ボタンが押された場合
-      if @notice.has_draft?
-        # 下書きがある場合は下書きの内容を公開
-        @notice.title = @notice.draft_title
-        @notice.content = @notice.draft_content
-      else
-        # 下書きがない場合はフォームの内容を使用
-        @notice.title = params[:notice][:title]
-        @notice.content = params[:notice][:content]
-      end
-
+      # フォームから送信された内容を公開
+      @notice.title = params[:notice][:title]
+      @notice.content = params[:notice][:content]
       @notice.published_at = Time.current
+
+      # 下書きをクリア
       @notice.draft_title = nil
       @notice.draft_content = nil
       @notice.draft_saved_at = nil
@@ -71,7 +71,7 @@ class Admin::NoticesController < Admin::AdminController
       # published_atはそのまま（公開中なら公開のまま、未公開なら未公開のまま）
 
       if @notice.save(validate: false)
-        redirect_to edit_admin_notice_path(@notice), notice: "お知らせを下書き保存しました（公開内容は変更されていません）"
+        redirect_to edit_admin_notice_path(@notice), notice: "お知らせを下書き保存しました"
       else
         render :edit, status: :unprocessable_entity
       end
