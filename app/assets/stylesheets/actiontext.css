@@ -438,3 +438,28 @@ trix-editor .attachment__metadata {
   padding: 0 !important;
   max-width: 100% !important;
 }
+
+/* 画像のファイル名・サイズ・キャプションを非表示 */
+trix-editor .attachment__caption,
+trix-editor .attachment__name,
+trix-editor .attachment__size,
+trix-editor .attachment__metadata,
+trix-editor figcaption,
+.trix-content .attachment__caption,
+.trix-content .attachment__name,
+.trix-content .attachment__size,
+.trix-content .attachment__metadata,
+.trix-content figcaption {
+  display: none !important;
+}
+
+/* 本文の上下の空白を削除 */
+trix-editor > div:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+trix-editor > div:last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
