@@ -1,5 +1,5 @@
-// Trixエディタの日本語化と機能拡張
-// このファイルはtrixより前にimportされる必要があります
+// Trixエディタのカスタマイズ（シンプル版）
+// 太字、斜体、下線、フォントサイズ、文字揃えのみ
 
 console.log('trix_customization.js loaded');
 
@@ -8,381 +8,135 @@ document.addEventListener('trix-before-initialize', function() {
   console.log('trix-before-initialize event fired');
 
   if (typeof Trix === 'undefined') {
-    console.error('Trix is not defined in trix-before-initialize');
+    console.error('Trix is not defined');
     return;
   }
 
-  // 画像添付時のキャプションを完全に無効化
+  // 画像添付を完全に無効化
   Trix.config.attachments.preview.caption = false;
 
-  // ツールバーのカスタマイズ（日本語化）
+  // カスタムツールバー（太字、斜体、下線、見出し、文字揃えのみ）
   Trix.config.toolbar.getDefaultHTML = function() {
     return `
       <div class="trix-button-row">
-        <span class="trix-button-group trix-button-group--text-tools" data-trix-button-group="text-tools">
-          <button type="button" class="trix-button" data-trix-attribute="bold" data-trix-key="b" title="太字" tabindex="-1">太字</button>
-          <button type="button" class="trix-button" data-trix-attribute="italic" data-trix-key="i" title="斜体" tabindex="-1">斜体</button>
-          <button type="button" class="trix-button" data-trix-attribute="strike" title="取り消し線" tabindex="-1">取消線</button>
-          <button type="button" class="trix-button" data-trix-attribute="href" data-trix-action="link" data-trix-key="k" title="リンク" tabindex="-1">リンク</button>
+        <span class="trix-button-group trix-button-group--text-tools">
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-bold" data-trix-attribute="bold" data-trix-key="b" title="太字" tabindex="-1">太字</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-italic" data-trix-attribute="italic" data-trix-key="i" title="斜体" tabindex="-1">斜体</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-strike" data-trix-attribute="strike" title="下線" tabindex="-1">下線</button>
         </span>
-        <span class="trix-button-group trix-button-group--block-tools" data-trix-button-group="block-tools">
-          <button type="button" class="trix-button" data-trix-attribute="heading1" title="見出し" tabindex="-1">見出し</button>
-          <button type="button" class="trix-button" data-trix-attribute="quote" title="引用" tabindex="-1">引用</button>
-          <button type="button" class="trix-button" data-trix-attribute="code" title="コード" tabindex="-1">コード</button>
-          <button type="button" class="trix-button" data-trix-attribute="bullet" title="箇条書き" tabindex="-1">● リスト</button>
-          <button type="button" class="trix-button" data-trix-attribute="number" title="番号付きリスト" tabindex="-1">1. 番号</button>
-          <button type="button" class="trix-button" data-trix-action="decreaseNestingLevel" title="インデント解除" tabindex="-1">← 戻す</button>
-          <button type="button" class="trix-button" data-trix-action="increaseNestingLevel" title="インデント" tabindex="-1">→ 進む</button>
+        <span class="trix-button-group trix-button-group--block-tools">
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-heading-1" data-trix-attribute="heading1" title="見出し（大）" tabindex="-1">大</button>
+          <button type="button" class="trix-button" data-trix-attribute="heading2" title="見出し（中）" tabindex="-1">中</button>
+          <button type="button" class="trix-button" data-trix-attribute="heading3" title="見出し（小）" tabindex="-1">小</button>
         </span>
-        <span class="trix-button-group trix-button-group--file-tools" data-trix-button-group="file-tools">
-          <button type="button" class="trix-button" data-trix-action="attachFiles" title="画像を挿入" tabindex="-1">📷 画像</button>
+        <span class="trix-button-group trix-button-group--block-tools">
+          <button type="button" class="trix-button" data-trix-attribute="alignLeft" title="左揃え" tabindex="-1">← 左</button>
+          <button type="button" class="trix-button" data-trix-attribute="alignCenter" title="中央揃え" tabindex="-1">↔ 中央</button>
+          <button type="button" class="trix-button" data-trix-attribute="alignRight" title="右揃え" tabindex="-1">右 →</button>
         </span>
         <span class="trix-button-group-spacer"></span>
-        <span class="trix-button-group trix-button-group--history-tools" data-trix-button-group="history-tools">
-          <button type="button" class="trix-button" data-trix-action="undo" data-trix-key="z" title="元に戻す" tabindex="-1">↶ 戻す</button>
-          <button type="button" class="trix-button" data-trix-action="redo" data-trix-key="shift+z" title="やり直し" tabindex="-1">↷ 進む</button>
+        <span class="trix-button-group trix-button-group--history-tools">
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-undo" data-trix-action="undo" data-trix-key="z" title="元に戻す" tabindex="-1">戻す</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-redo" data-trix-action="redo" data-trix-key="shift+z" title="やり直し" tabindex="-1">進む</button>
         </span>
       </div>
-      <div class="trix-dialogs" data-trix-dialogs>
-        <div class="trix-dialog trix-dialog--link" data-trix-dialog="href" data-trix-dialog-attribute="href">
-          <div class="trix-dialog__link-fields">
-            <input type="url" name="href" class="trix-input trix-input--dialog" placeholder="URLを入力してください" aria-label="URL" required data-trix-input>
-            <div class="trix-button-group">
-              <input type="button" class="trix-button trix-button--dialog" value="リンク" data-trix-method="setAttribute">
-              <input type="button" class="trix-button trix-button--dialog" value="リンク解除" data-trix-method="removeAttribute">
-            </div>
-          </div>
-        </div>
-      </div>
     `;
+  };
+
+  // 見出しサイズの定義
+  Trix.config.blockAttributes.heading2 = {
+    tagName: "h2",
+    terminal: true,
+    breakOnReturn: true,
+    group: false
+  };
+
+  Trix.config.blockAttributes.heading3 = {
+    tagName: "h3",
+    terminal: true,
+    breakOnReturn: true,
+    group: false
+  };
+
+  // 文字揃えの定義
+  Trix.config.blockAttributes.alignLeft = {
+    tagName: "div",
+    parse: false,
+    nestable: false,
+    terminal: false,
+    breakOnReturn: false,
+    group: false,
+    style: { textAlign: "left" }
+  };
+
+  Trix.config.blockAttributes.alignCenter = {
+    tagName: "div",
+    parse: false,
+    nestable: false,
+    terminal: false,
+    breakOnReturn: false,
+    group: false,
+    style: { textAlign: "center" }
+  };
+
+  Trix.config.blockAttributes.alignRight = {
+    tagName: "div",
+    parse: false,
+    nestable: false,
+    terminal: false,
+    breakOnReturn: false,
+    group: false,
+    style: { textAlign: "right" }
   };
 
   console.log('Trix toolbar customized successfully');
 });
 
 // DOMContentLoadedイベント
-document.addEventListener('DOMContentLoaded', initializeTrixFeatures);
+document.addEventListener('DOMContentLoaded', disableImageAttachment);
 
 // Turbo Driveによるページ遷移時
-document.addEventListener('turbo:load', initializeTrixFeatures);
+document.addEventListener('turbo:load', disableImageAttachment);
 
-function initializeTrixFeatures() {
-  console.log('Initializing Trix features');
+// 画像添付機能を無効化
+function disableImageAttachment() {
+  console.log('Disabling image attachment');
 
-  // 少し待ってからTrixエディタを初期化
+  // Trixエディタのファイル添付ボタンを非表示にする
+  document.querySelectorAll('trix-toolbar').forEach(toolbar => {
+    const attachButton = toolbar.querySelector('[data-trix-action="attachFiles"]');
+    if (attachButton) {
+      attachButton.style.display = 'none';
+    }
+  });
+
+  // ファイル添付イベントをキャンセル
+  document.addEventListener('trix-file-accept', function(event) {
+    event.preventDefault();
+    alert('画像の添付は無効化されています。');
+  });
+
+  // 既存の画像添付ボタンを削除
   setTimeout(() => {
-    enableImageResizing();
-    removeAttachmentCaptions();
+    document.querySelectorAll('[data-trix-action="attachFiles"]').forEach(btn => {
+      btn.remove();
+    });
   }, 100);
 }
 
-// 画像のキャプション・メタデータを削除する関数
-function removeAttachmentCaptions() {
-  console.log('Removing attachment captions');
-
-  // 既存のキャプションを削除
-  document.querySelectorAll('trix-editor .attachment__caption, trix-editor .attachment__metadata, trix-editor figcaption').forEach(el => {
-    el.remove();
-  });
-
-  // MutationObserverでキャプションの追加を監視して削除
-  const observers = [];
-  document.querySelectorAll('trix-editor').forEach(editor => {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            // キャプションとメタデータを削除
-            node.querySelectorAll &&  node.querySelectorAll('.attachment__caption, .attachment__metadata, figcaption').forEach(el => {
-              el.remove();
-            });
-            if (node.classList && (node.classList.contains('attachment__caption') || node.classList.contains('attachment__metadata') || node.tagName === 'FIGCAPTION')) {
-              node.remove();
-            }
-          }
-        });
-      });
-    });
-
-    observer.observe(editor, {
-      childList: true,
-      subtree: true
-    });
-
-    observers.push(observer);
-  });
-}
-
-// 画像リサイズ機能の追加（Word風）
-function enableImageResizing() {
-  console.log('Enabling image resizing');
-
-  // 新しい画像が追加されたとき
-  document.addEventListener('trix-attachment-add', function(event) {
-    console.log('Image attachment added');
-    setTimeout(() => {
-      applyResizeToAllImages();
-      removeAttachmentCaptions();
-    }, 200);
-  });
-
-  // 既存の画像にもリサイズ機能を追加
-  applyResizeToAllImages();
-}
-
-function applyResizeToAllImages() {
-  const figures = document.querySelectorAll('trix-editor figure[data-trix-attachment]');
-  console.log(`Found ${figures.length} image attachments`);
-
-  figures.forEach(figure => {
-    const img = figure.querySelector('img');
-    if (img && !img.classList.contains('resizable')) {
-      makeImageResizable(img, figure);
-    }
-  });
-}
-
-function makeImageResizable(img, figure) {
-  img.classList.add('resizable');
-  img.style.maxWidth = '100%';
-  img.style.height = 'auto';
-  img.style.display = 'block';
-
-  // 画像を選択状態にする
-  let isResizing = false;
-  let startX, startY, startWidth, startHeight, currentHandle;
-
-  // 既存のリサイズハンドルを削除
-  const existingHandles = figure.querySelectorAll('.resize-handle');
-  existingHandles.forEach(h => h.remove());
-
-  // リサイズハンドルを8つ追加（Word風）
-  const handles = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'];
-  const handleElements = [];
-
-  handles.forEach(position => {
-    const handle = document.createElement('div');
-    handle.className = `resize-handle resize-handle-${position}`;
-    handle.style.cssText = `
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: white;
-      border: 1px solid #3b82f6;
-      z-index: 100;
-      display: none;
-    `;
-
-    // 位置の設定
-    switch(position) {
-      case 'nw':
-        handle.style.top = '-4px';
-        handle.style.left = '-4px';
-        handle.style.cursor = 'nwse-resize';
-        break;
-      case 'n':
-        handle.style.top = '-4px';
-        handle.style.left = '50%';
-        handle.style.transform = 'translateX(-50%)';
-        handle.style.cursor = 'ns-resize';
-        break;
-      case 'ne':
-        handle.style.top = '-4px';
-        handle.style.right = '-4px';
-        handle.style.cursor = 'nesw-resize';
-        break;
-      case 'e':
-        handle.style.top = '50%';
-        handle.style.right = '-4px';
-        handle.style.transform = 'translateY(-50%)';
-        handle.style.cursor = 'ew-resize';
-        break;
-      case 'se':
-        handle.style.bottom = '-4px';
-        handle.style.right = '-4px';
-        handle.style.cursor = 'nwse-resize';
-        break;
-      case 's':
-        handle.style.bottom = '-4px';
-        handle.style.left = '50%';
-        handle.style.transform = 'translateX(-50%)';
-        handle.style.cursor = 'ns-resize';
-        break;
-      case 'sw':
-        handle.style.bottom = '-4px';
-        handle.style.left = '-4px';
-        handle.style.cursor = 'nesw-resize';
-        break;
-      case 'w':
-        handle.style.top = '50%';
-        handle.style.left = '-4px';
-        handle.style.transform = 'translateY(-50%)';
-        handle.style.cursor = 'ew-resize';
-        break;
-    }
-
-    handleElements.push(handle);
-    figure.appendChild(handle);
-
-    // ハンドルのドラッグイベント
-    handle.addEventListener('mousedown', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      isResizing = true;
-      currentHandle = position;
-      startX = e.clientX;
-      startY = e.clientY;
-      startWidth = img.offsetWidth;
-      startHeight = img.offsetHeight;
-
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
-    });
-  });
-
-  // 画像のスタイル設定
-  figure.style.position = 'relative';
-  figure.style.display = 'inline-block';
-  figure.style.border = '2px solid transparent';
-  figure.style.padding = '2px';
-  figure.style.margin = '10px 0';
-
-  // 画像をクリックしたら選択状態にする
-  img.addEventListener('click', function(e) {
-    e.stopPropagation();
-    selectImage();
-  });
-
-  function selectImage() {
-    // 他の画像の選択を解除
-    document.querySelectorAll('trix-editor figure[data-trix-attachment]').forEach(f => {
-      f.style.border = '2px solid transparent';
-      f.querySelectorAll('.resize-handle').forEach(h => h.style.display = 'none');
-    });
-
-    // この画像を選択
-    figure.style.border = '2px solid #3b82f6';
-    handleElements.forEach(h => h.style.display = 'block');
-  }
-
-  function deselectImage() {
-    figure.style.border = '2px solid transparent';
-    handleElements.forEach(h => h.style.display = 'none');
-  }
-
-  // エディタ外をクリックしたら選択解除
-  document.addEventListener('click', function(e) {
-    if (!figure.contains(e.target)) {
-      deselectImage();
-    }
-  });
-
-  function onMouseMove(e) {
-    if (!isResizing) return;
-
-    const deltaX = e.clientX - startX;
-    const deltaY = e.clientY - startY;
-    const aspectRatio = startWidth / startHeight;
-    let newWidth = startWidth;
-    let newHeight = startHeight;
-
-    // ハンドルの位置に応じてリサイズ
-    switch(currentHandle) {
-      case 'e':
-      case 'w':
-        newWidth = Math.max(50, startWidth + (currentHandle === 'e' ? deltaX : -deltaX));
-        newHeight = newWidth / aspectRatio;
-        break;
-      case 'n':
-      case 's':
-        newHeight = Math.max(50, startHeight + (currentHandle === 's' ? deltaY : -deltaY));
-        newWidth = newHeight * aspectRatio;
-        break;
-      case 'se':
-      case 'nw':
-        newWidth = Math.max(50, startWidth + (currentHandle === 'se' ? deltaX : -deltaX));
-        newHeight = newWidth / aspectRatio;
-        break;
-      case 'ne':
-      case 'sw':
-        newWidth = Math.max(50, startWidth + (currentHandle === 'ne' ? deltaX : -deltaX));
-        newHeight = newWidth / aspectRatio;
-        break;
-    }
-
-    img.style.width = newWidth + 'px';
-    img.style.height = newHeight + 'px';
-  }
-
-  function onMouseUp() {
-    isResizing = false;
-    currentHandle = null;
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-  }
-
-  console.log('Image made resizable');
-}
-
-// Word風のスタイルを追加
+// カスタムスタイルを追加
 const style = document.createElement('style');
 style.textContent = `
-  /* Word風のエディタスタイル */
-  trix-editor {
-    word-wrap: break-word !important;
-    overflow-wrap: break-word !important;
-    white-space: pre-wrap !important;
-    overflow-x: hidden !important;
+  /* ツールバーのボタンスタイル */
+  trix-toolbar .trix-button-group {
+    margin-right: 8px;
   }
 
-  trix-editor * {
-    max-width: 100%;
-  }
-
-  /* 画像スタイル */
-  trix-editor figure[data-trix-attachment] {
-    position: relative;
-    display: inline-block;
-    margin: 10px 0;
-    padding: 2px;
-    border: 2px solid transparent;
-    transition: border-color 0.2s ease;
-  }
-
-  trix-editor figure[data-trix-attachment]:hover {
-    border-color: #e0e0e0;
-  }
-
-  trix-editor img.resizable {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    user-select: none;
-  }
-
-  /* リサイズハンドル */
-  .resize-handle {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background: white;
-    border: 1px solid #3b82f6;
-    z-index: 100;
-    display: none;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  }
-
-  /* ツールバーボタンのスタイル改善（日本語対応） */
   trix-toolbar .trix-button {
-    font-size: 0.8125rem !important;
+    font-size: 0.85rem !important;
     padding: 0.4rem 0.6rem !important;
     font-weight: 500 !important;
     white-space: nowrap !important;
-    min-width: auto !important;
-  }
-
-  trix-toolbar .trix-button-group {
-    margin-bottom: 0;
   }
 
   trix-toolbar .trix-button:hover {
@@ -394,23 +148,74 @@ style.textContent = `
     color: #3b82f6 !important;
   }
 
-  /* ダイアログのスタイル */
-  trix-toolbar .trix-dialog {
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* エディタのスタイル */
+  trix-editor {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: pre-wrap !important;
+    overflow-x: hidden !important;
   }
 
-  trix-toolbar .trix-dialog input[type="url"] {
-    border: 1px solid #e5e7eb;
-    border-radius: 4px;
-    padding: 0.5rem;
+  trix-editor * {
+    max-width: 100%;
   }
 
-  trix-toolbar .trix-dialog input[type="button"] {
-    border-radius: 4px;
-    font-weight: 500;
+  /* 見出しのスタイル */
+  trix-editor h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 0.5em 0;
+  }
+
+  trix-editor h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 0.5em 0;
+  }
+
+  trix-editor h3 {
+    font-size: 1.17em;
+    font-weight: bold;
+    margin: 0.5em 0;
+  }
+
+  /* 文字揃えのスタイル */
+  trix-editor [style*="text-align: left"] {
+    text-align: left !important;
+  }
+
+  trix-editor [style*="text-align: center"] {
+    text-align: center !important;
+  }
+
+  trix-editor [style*="text-align: right"] {
+    text-align: right !important;
+  }
+
+  /* 画像添付ボタンを非表示 */
+  [data-trix-action="attachFiles"] {
+    display: none !important;
+  }
+
+  /* 上下の余白を削除 */
+  trix-editor > div:first-child,
+  trix-editor > h1:first-child,
+  trix-editor > h2:first-child,
+  trix-editor > h3:first-child,
+  trix-editor > p:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  trix-editor > div:last-child,
+  trix-editor > h1:last-child,
+  trix-editor > h2:last-child,
+  trix-editor > h3:last-child,
+  trix-editor > p:last-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
   }
 `;
 document.head.appendChild(style);
 
-console.log('Trix customization styles applied');
+console.log('Trix customization completed');
