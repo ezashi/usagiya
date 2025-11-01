@@ -599,12 +599,32 @@ trix-editor figcaption,
 }
 
 /* 本文の上下の空白を削除 */
-trix-editor>div:first-child {
+trix-editor>div:first-child,
+trix-editor>h1:first-child,
+trix-editor>h2:first-child,
+trix-editor>h3:first-child,
+trix-editor>p:first-child,
+trix-editor>ul:first-child,
+trix-editor>ol:first-child,
+trix-editor>blockquote:first-child {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
 
-trix-editor>div:last-child {
+trix-editor>div:last-child,
+trix-editor>h1:last-child,
+trix-editor>h2:last-child,
+trix-editor>h3:last-child,
+trix-editor>p:last-child,
+trix-editor>ul:last-child,
+trix-editor>ol:last-child,
+trix-editor>blockquote:last-child {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
+}
+
+/* Trixエディタ自体のパディングも削除 */
+trix-editor {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
 }
