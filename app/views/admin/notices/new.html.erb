@@ -27,7 +27,7 @@
         display: none !important;
     }
 
-    /* テキスト装飾のスタイル */
+    /* テキスト装飾 */
     trix-editor strong {
         font-weight: bold;
     }
@@ -38,101 +38,6 @@
 
     trix-editor u {
         text-decoration: underline;
-    }
-
-    /* フォントサイズ */
-    trix-editor [data-font-size="10"] {
-        font-size: 10px !important;
-    }
-
-    trix-editor [data-font-size="12"] {
-        font-size: 12px !important;
-    }
-
-    trix-editor [data-font-size="14"] {
-        font-size: 14px !important;
-    }
-
-    trix-editor [data-font-size="16"] {
-        font-size: 16px !important;
-    }
-
-    trix-editor [data-font-size="18"] {
-        font-size: 18px !important;
-    }
-
-    trix-editor [data-font-size="20"] {
-        font-size: 20px !important;
-    }
-
-    trix-editor [data-font-size="24"] {
-        font-size: 24px !important;
-    }
-
-    trix-editor [data-font-size="28"] {
-        font-size: 28px !important;
-    }
-
-    trix-editor [data-font-size="32"] {
-        font-size: 32px !important;
-    }
-
-    trix-editor [data-font-size="36"] {
-        font-size: 36px !important;
-    }
-
-    trix-editor [data-font-size="48"] {
-        font-size: 48px !important;
-    }
-
-    /* フォントカラー */
-    trix-editor [data-color="black"] {
-        color: #000000 !important;
-    }
-
-    trix-editor [data-color="red"] {
-        color: #FF0000 !important;
-    }
-
-    trix-editor [data-color="blue"] {
-        color: #0000FF !important;
-    }
-
-    trix-editor [data-color="green"] {
-        color: #008000 !important;
-    }
-
-    trix-editor [data-color="yellow"] {
-        color: #FFFF00 !important;
-    }
-
-    trix-editor [data-color="orange"] {
-        color: #FFA500 !important;
-    }
-
-    trix-editor [data-color="purple"] {
-        color: #800080 !important;
-    }
-
-    trix-editor [data-color="gray"] {
-        color: #808080 !important;
-    }
-
-    trix-editor [data-color="white"] {
-        color: #FFFFFF !important;
-    }
-
-    /* 文字揃え */
-    trix-editor .text-align-left {
-        text-align: left !important;
-    }
-
-    trix-editor .text-align-center {
-        text-align: center !important;
-    }
-
-    trix-editor .text-align-right {
-        text-align: right !important;
     }
 
     /* フォントサイズとカラーのセレクトボックス */
@@ -167,43 +72,37 @@
     }
 
     /* 上下の余白を完全に削除 */
-    trix-editor>div:first-child,
-    trix-editor>h1:first-child,
-    trix-editor>h2:first-child,
-    trix-editor>h3:first-child,
-    trix-editor>p:first-child,
-    trix-editor>ul:first-child,
-    trix-editor>ol:first-child,
-    trix-editor>blockquote:first-child {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-
-    trix-editor>div:last-child,
-    trix-editor>h1:last-child,
-    trix-editor>h2:last-child,
-    trix-editor>h3:last-child,
-    trix-editor>p:last-child,
-    trix-editor>ul:last-child,
-    trix-editor>ol:last-child,
-    trix-editor>blockquote:last-child {
-        margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
-    }
-
-    /* Trixエディタ自体のパディングを調整 */
     trix-editor {
         padding-top: 0.5rem !important;
         padding-bottom: 0.5rem !important;
     }
 
-    /* 最初と最後の要素の内部余白も削除 */
-    trix-editor *:first-child {
+    trix-editor>*:first-child {
         margin-top: 0 !important;
+        padding-top: 0 !important;
     }
 
-    trix-editor *:last-child {
+    trix-editor>*:last-child {
         margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    trix-editor div:first-child,
+    trix-editor p:first-child,
+    trix-editor h1:first-child,
+    trix-editor h2:first-child,
+    trix-editor h3:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    trix-editor div:last-child,
+    trix-editor p:last-child,
+    trix-editor h1:last-child,
+    trix-editor h2:last-child,
+    trix-editor h3:last-child {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
     }
 </style>
 
@@ -312,7 +211,6 @@
     </div>
 </div>
 
-
 <script>
     // プレビューモーダル
     document.addEventListener('DOMContentLoaded', function() {
@@ -320,29 +218,27 @@
         if (previewBtn) {
             previewBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-
-                const title = document.querySelector('input[name="notice[title]"]').value;
-                const content = document.querySelector('trix-editor').innerHTML;
-
+                const title = document.querySelector('input[name="notice[title]"]')?.value || '';
+                const content = document.querySelector('trix-editor')?.innerHTML || '';
                 const previewHTML = `
         <div class="preview-header">
           <h3 class="preview-title">${title || '（タイトル未入力）'}</h3>
           <p class="preview-date">${new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
         </div>
-        <div class="preview-content">
-          ${content || '（本文未入力）'}
-        </div>
+        <div class="preview-content">${content || '（本文未入力）'}</div>
       `;
-
-                document.getElementById('modal-preview-content').innerHTML = previewHTML;
-                document.getElementById('preview-modal').style.display = 'flex';
+                const previewContent = document.getElementById('modal-preview-content');
+                const previewModal = document.getElementById('preview-modal');
+                if (previewContent) previewContent.innerHTML = previewHTML;
+                if (previewModal) previewModal.style.display = 'flex';
             });
         }
 
         const closePreviewBtn = document.getElementById('close-preview-btn');
         if (closePreviewBtn) {
             closePreviewBtn.addEventListener('click', function() {
-                document.getElementById('preview-modal').style.display = 'none';
+                const previewModal = document.getElementById('preview-modal');
+                if (previewModal) previewModal.style.display = 'none';
             });
         }
 
@@ -352,6 +248,28 @@
                 if (e.target === this) {
                     this.style.display = 'none';
                 }
+            });
+        }
+    });
+
+    document.addEventListener('turbo:load', function() {
+        const previewBtn = document.getElementById('preview-btn');
+        if (previewBtn) {
+            previewBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const title = document.querySelector('input[name="notice[title]"]')?.value || '';
+                const content = document.querySelector('trix-editor')?.innerHTML || '';
+                const previewHTML = `
+        <div class="preview-header">
+          <h3 class="preview-title">${title || '（タイトル未入力）'}</h3>
+          <p class="preview-date">${new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        </div>
+        <div class="preview-content">${content || '（本文未入力）'}</div>
+      `;
+                const previewContent = document.getElementById('modal-preview-content');
+                const previewModal = document.getElementById('preview-modal');
+                if (previewContent) previewContent.innerHTML = previewHTML;
+                if (previewModal) previewModal.style.display = 'flex';
             });
         }
     });
@@ -373,79 +291,9 @@
         // 下線属性を追加
         Trix.config.textAttributes.underline = {
             tagName: "u",
-            inheritable: true
-        };
-
-        // フォントサイズ属性を追加
-        const fontSizes = [10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48];
-        fontSizes.forEach(size => {
-            Trix.config.textAttributes[`fontSize${size}`] = {
-                tagName: "span",
-                styleProperty: "fontSize",
-                inheritable: true,
-                parser: function(element) {
-                    return element.dataset.fontSize === String(size);
-                },
-                render: function(element) {
-                    element.dataset.fontSize = size;
-                    element.style.fontSize = size + "px";
-                }
-            };
-        });
-
-        // カラー属性を追加
-        const colors = ['black', 'red', 'blue', 'green', 'yellow', 'orange', 'purple', 'gray', 'white'];
-        colors.forEach(color => {
-            Trix.config.textAttributes[`color${color.charAt(0).toUpperCase() + color.slice(1)}`] = {
-                tagName: "span",
-                styleProperty: "color",
-                inheritable: true,
-                parser: function(element) {
-                    return element.dataset.color === color;
-                },
-                render: function(element) {
-                    element.dataset.color = color;
-                }
-            };
-        });
-
-        // 文字揃え属性を追加
-        Trix.config.blockAttributes.alignLeft = {
-            tagName: "div",
-            parse: false,
-            nestable: false,
-            terminal: false,
-            breakOnReturn: false,
-            group: false,
-            htmlAttributes: ["class"],
-            render: function(element) {
-                element.classList.add("text-align-left");
-            }
-        };
-
-        Trix.config.blockAttributes.alignCenter = {
-            tagName: "div",
-            parse: false,
-            nestable: false,
-            terminal: false,
-            breakOnReturn: false,
-            group: false,
-            htmlAttributes: ["class"],
-            render: function(element) {
-                element.classList.add("text-align-center");
-            }
-        };
-
-        Trix.config.blockAttributes.alignRight = {
-            tagName: "div",
-            parse: false,
-            nestable: false,
-            terminal: false,
-            breakOnReturn: false,
-            group: false,
-            htmlAttributes: ["class"],
-            render: function(element) {
-                element.classList.add("text-align-right");
+            inheritable: true,
+            parser: function(element) {
+                return element.tagName === "U";
             }
         };
 
@@ -459,9 +307,9 @@
           <button type="button" class="trix-button" data-trix-attribute="underline" title="下線" tabindex="-1">下線</button>
         </span>
         <span class="trix-button-group trix-button-group--block-tools">
-          <button type="button" class="trix-button" data-trix-attribute="alignLeft" title="左揃え" tabindex="-1">← 左</button>
-          <button type="button" class="trix-button" data-trix-attribute="alignCenter" title="中央揃え" tabindex="-1">↔ 中央</button>
-          <button type="button" class="trix-button" data-trix-attribute="alignRight" title="右揃え" tabindex="-1">右 →</button>
+          <button type="button" class="trix-button" id="align-left-btn" title="左揃え" tabindex="-1">← 左</button>
+          <button type="button" class="trix-button" id="align-center-btn" title="中央揃え" tabindex="-1">↔ 中央</button>
+          <button type="button" class="trix-button" id="align-right-btn" title="右揃え" tabindex="-1">右 →</button>
         </span>
         <span class="trix-custom-controls">
           <label>
@@ -485,15 +333,15 @@
             色:
             <select id="font-color-select">
               <option value="">選択</option>
-              <option value="black">黒</option>
-              <option value="red">赤</option>
-              <option value="blue">青</option>
-              <option value="green">緑</option>
-              <option value="yellow">黄</option>
-              <option value="orange">オレンジ</option>
-              <option value="purple">紫</option>
-              <option value="gray">灰</option>
-              <option value="white">白</option>
+              <option value="#000000">黒</option>
+              <option value="#FF0000">赤</option>
+              <option value="#0000FF">青</option>
+              <option value="#008000">緑</option>
+              <option value="#FFFF00">黄</option>
+              <option value="#FFA500">オレンジ</option>
+              <option value="#800080">紫</option>
+              <option value="#808080">灰</option>
+              <option value="#FFFFFF">白</option>
             </select>
           </label>
         </span>
@@ -510,62 +358,133 @@
     });
 
     // フォントサイズとカラーの変更処理
+    function setupFontControls() {
+        const fontSizeSelect = document.getElementById('font-size-select');
+        const fontColorSelect = document.getElementById('font-color-select');
+        const alignLeftBtn = document.getElementById('align-left-btn');
+        const alignCenterBtn = document.getElementById('align-center-btn');
+        const alignRightBtn = document.getElementById('align-right-btn');
+        const editor = document.querySelector('trix-editor');
+
+        if (!editor || !editor.editor) {
+            console.log('Editor not ready, retrying...');
+            setTimeout(setupFontControls, 100);
+            return;
+        }
+
+        console.log('Setting up font controls');
+
+        // フォントサイズ変更
+        if (fontSizeSelect) {
+            fontSizeSelect.addEventListener('change', function() {
+                const size = this.value;
+                if (size && editor.editor) {
+                    const selectedRange = editor.editor.getSelectedRange();
+                    if (selectedRange[0] !== selectedRange[1]) {
+                        const selectedText = editor.editor.getDocument().toString().substring(selectedRange[0], selectedRange[1]);
+                        const html = `<span style="font-size: ${size}px;">${selectedText}</span>`;
+                        editor.editor.setSelectedRange(selectedRange);
+                        editor.editor.deleteInDirection("forward");
+                        editor.editor.insertHTML(html);
+                    }
+                    this.value = '';
+                }
+            });
+        }
+
+        // フォントカラー変更
+        if (fontColorSelect) {
+            fontColorSelect.addEventListener('change', function() {
+                const color = this.value;
+                if (color && editor.editor) {
+                    const selectedRange = editor.editor.getSelectedRange();
+                    if (selectedRange[0] !== selectedRange[1]) {
+                        const selectedText = editor.editor.getDocument().toString().substring(selectedRange[0], selectedRange[1]);
+                        const html = `<span style="color: ${color};">${selectedText}</span>`;
+                        editor.editor.setSelectedRange(selectedRange);
+                        editor.editor.deleteInDirection("forward");
+                        editor.editor.insertHTML(html);
+                    }
+                    this.value = '';
+                }
+            });
+        }
+
+        // 文字揃え - 左
+        if (alignLeftBtn) {
+            alignLeftBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (editor.editor) {
+                    const range = editor.editor.getSelectedRange();
+                    const position = range[0];
+                    const block = editor.editor.getDocument().getBlockAtPosition(position);
+
+                    // 現在の段落を取得
+                    const editorElement = editor.querySelector('[contenteditable]');
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        let node = selection.anchorNode;
+                        while (node && node !== editorElement) {
+                            if (node.nodeType === Node.ELEMENT_NODE && (node.tagName === 'DIV' || node.tagName === 'P')) {
+                                node.style.textAlign = 'left';
+                                break;
+                            }
+                            node = node.parentNode;
+                        }
+                    }
+                }
+            });
+        }
+
+        // 文字揃え - 中央
+        if (alignCenterBtn) {
+            alignCenterBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (editor.editor) {
+                    const editorElement = editor.querySelector('[contenteditable]');
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        let node = selection.anchorNode;
+                        while (node && node !== editorElement) {
+                            if (node.nodeType === Node.ELEMENT_NODE && (node.tagName === 'DIV' || node.tagName === 'P')) {
+                                node.style.textAlign = 'center';
+                                break;
+                            }
+                            node = node.parentNode;
+                        }
+                    }
+                }
+            });
+        }
+
+        // 文字揃え - 右
+        if (alignRightBtn) {
+            alignRightBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (editor.editor) {
+                    const editorElement = editor.querySelector('[contenteditable]');
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        let node = selection.anchorNode;
+                        while (node && node !== editorElement) {
+                            if (node.nodeType === Node.ELEMENT_NODE && (node.tagName === 'DIV' || node.tagName === 'P')) {
+                                node.style.textAlign = 'right';
+                                break;
+                            }
+                            node = node.parentNode;
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-            const fontSizeSelect = document.getElementById('font-size-select');
-            const fontColorSelect = document.getElementById('font-color-select');
-            const editor = document.querySelector('trix-editor');
-
-            if (fontSizeSelect && editor) {
-                fontSizeSelect.addEventListener('change', function() {
-                    const size = this.value;
-                    if (size) {
-                        editor.editor.activateAttribute(`fontSize${size}`);
-                        this.value = '';
-                    }
-                });
-            }
-
-            if (fontColorSelect && editor) {
-                fontColorSelect.addEventListener('change', function() {
-                    const color = this.value;
-                    if (color) {
-                        const attrName = `color${color.charAt(0).toUpperCase() + color.slice(1)}`;
-                        editor.editor.activateAttribute(attrName);
-                        this.value = '';
-                    }
-                });
-            }
-        }, 100);
+        setTimeout(setupFontControls, 200);
     });
 
     document.addEventListener('turbo:load', function() {
-        setTimeout(function() {
-            const fontSizeSelect = document.getElementById('font-size-select');
-            const fontColorSelect = document.getElementById('font-color-select');
-            const editor = document.querySelector('trix-editor');
-
-            if (fontSizeSelect && editor) {
-                fontSizeSelect.addEventListener('change', function() {
-                    const size = this.value;
-                    if (size) {
-                        editor.editor.activateAttribute(`fontSize${size}`);
-                        this.value = '';
-                    }
-                });
-            }
-
-            if (fontColorSelect && editor) {
-                fontColorSelect.addEventListener('change', function() {
-                    const color = this.value;
-                    if (color) {
-                        const attrName = `color${color.charAt(0).toUpperCase() + color.slice(1)}`;
-                        editor.editor.activateAttribute(attrName);
-                        this.value = '';
-                    }
-                });
-            }
-        }, 100);
+        setTimeout(setupFontControls, 200);
     });
 
     // 画像添付機能を無効化
@@ -593,10 +512,4 @@
 
     document.addEventListener('DOMContentLoaded', disableImageAttachment);
     document.addEventListener('turbo:load', disableImageAttachment);
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', disableImageAttachment);
-    } else {
-        disableImageAttachment();
-    }
 </script>
