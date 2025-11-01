@@ -1,266 +1,209 @@
 <% content_for :page_title, "お知らせを作成" %>
 
 <style>
-    /* お知らせフォームのスタイル */
-    .admin-notice-form {
-        padding: 2rem;
-        max-width: 1600px;
-        margin: 0 auto;
-        min-height: 100vh;
-    }
-
-    .form-header {
-        margin-bottom: 2rem;
-    }
-
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: var(--admin-text-secondary);
-        text-decoration: none;
-        margin-bottom: 1rem;
-        transition: color 0.2s ease;
-    }
-
-    .back-link:hover {
-        color: var(--admin-accent);
-    }
-
-    .back-icon {
-        transition: transform 0.2s ease;
-    }
-
-    .back-link:hover .back-icon {
-        transform: translateX(-3px);
-    }
-
-    .form-title {
-        color: var(--admin-text);
-        font-size: 2rem;
-        font-weight: 700;
-        margin: 0;
-    }
-
-    .notice-form {
-        display: block;
-    }
-
-    .form-layout {
-        display: grid;
-        grid-template-columns: 1fr 280px;
-        gap: 1.5rem;
-        align-items: start;
-    }
-
-    .form-main {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    .form-sidebar {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-        position: fixed;
-        top: 100px;
-        right: calc((100vw - 1600px) / 2 + 2rem);
-        width: 260px;
-        z-index: 10;
-    }
-
-    @media (max-width: 1650px) {
-        .form-sidebar {
-            position: sticky;
-            top: 100px;
-            right: auto;
-            align-self: flex-start;
-        }
-    }
-
-    .required-badge {
-        display: inline-block;
-        padding: 0.125rem 0.5rem;
-        background-color: var(--admin-error);
-        color: #ff0000;
-        font-size: 0.75rem;
-        font-weight: 600;
-        border-radius: 4px;
-        margin-left: 0.5rem;
-    }
-
-    /* タイトル入力 */
-    .title-input {
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-
-    /* リッチテキストエディタ */
-    .admin-rich-text {
-        min-height: 400px;
-    }
-
-    trix-toolbar {
-        background-color: var(--admin-bg-secondary);
-        border: 1px solid var(--admin-border);
-        border-bottom: none;
-        border-radius: 8px 8px 0 0;
-        padding: 0.75rem;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-    }
-
+    /* Trixカスタマイズスタイル */
     trix-toolbar .trix-button-group {
-        background-color: var(--admin-bg-card);
-        border: 1px solid var(--admin-border);
-        border-radius: 6px;
-        margin-right: 0.5rem;
+        margin-right: 8px;
     }
 
     trix-toolbar .trix-button {
-        border: none;
-        background-color: transparent;
-        color: var(--admin-text-secondary);
-        transition: all 0.2s ease;
-        font-size: 0.875rem;
-        padding: 0.5rem;
+        font-size: 0.85rem !important;
+        padding: 0.4rem 0.6rem !important;
+        font-weight: 500 !important;
+        white-space: nowrap !important;
     }
 
     trix-toolbar .trix-button:hover {
-        background-color: var(--admin-bg-hover);
-        color: var(--admin-text);
+        background-color: rgba(59, 130, 246, 0.1) !important;
     }
 
     trix-toolbar .trix-button.trix-active {
-        background-color: var(--admin-primary);
-        color: white;
+        background-color: rgba(59, 130, 246, 0.2) !important;
+        color: #3b82f6 !important;
     }
 
-    trix-editor {
-        background-color: white;
-        border: 1px solid var(--admin-border);
-        border-radius: 0 0 8px 8px;
-        color: #333;
-        padding: 2rem 3rem;
-        min-height: 500px;
-        max-height: none;
-        overflow-y: visible;
-        overflow-x: hidden;
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        white-space: pre-wrap !important;
-        line-height: 1.8;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif;
-        font-size: 1rem;
+    /* 画像添付ボタンを非表示 */
+    [data-trix-action="attachFiles"] {
+        display: none !important;
     }
 
-    trix-editor:focus {
-        outline: none;
-        border-color: var(--admin-accent);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    /* テキスト装飾のスタイル */
+    trix-editor strong {
+        font-weight: bold;
     }
 
-    /* 画像スタイル */
-    trix-editor figure[data-trix-attachment] {
-        position: relative;
-        display: inline-block;
-        margin: 1rem 0;
+    trix-editor em {
+        font-style: italic;
     }
 
-    trix-editor img {
-        max-width: 100%;
-        height: auto;
+    trix-editor u {
+        text-decoration: underline;
+    }
+
+    /* フォントサイズ */
+    trix-editor [data-font-size="10"] {
+        font-size: 10px !important;
+    }
+
+    trix-editor [data-font-size="12"] {
+        font-size: 12px !important;
+    }
+
+    trix-editor [data-font-size="14"] {
+        font-size: 14px !important;
+    }
+
+    trix-editor [data-font-size="16"] {
+        font-size: 16px !important;
+    }
+
+    trix-editor [data-font-size="18"] {
+        font-size: 18px !important;
+    }
+
+    trix-editor [data-font-size="20"] {
+        font-size: 20px !important;
+    }
+
+    trix-editor [data-font-size="24"] {
+        font-size: 24px !important;
+    }
+
+    trix-editor [data-font-size="28"] {
+        font-size: 28px !important;
+    }
+
+    trix-editor [data-font-size="32"] {
+        font-size: 32px !important;
+    }
+
+    trix-editor [data-font-size="36"] {
+        font-size: 36px !important;
+    }
+
+    trix-editor [data-font-size="48"] {
+        font-size: 48px !important;
+    }
+
+    /* フォントカラー */
+    trix-editor [data-color="black"] {
+        color: #000000 !important;
+    }
+
+    trix-editor [data-color="red"] {
+        color: #FF0000 !important;
+    }
+
+    trix-editor [data-color="blue"] {
+        color: #0000FF !important;
+    }
+
+    trix-editor [data-color="green"] {
+        color: #008000 !important;
+    }
+
+    trix-editor [data-color="yellow"] {
+        color: #FFFF00 !important;
+    }
+
+    trix-editor [data-color="orange"] {
+        color: #FFA500 !important;
+    }
+
+    trix-editor [data-color="purple"] {
+        color: #800080 !important;
+    }
+
+    trix-editor [data-color="gray"] {
+        color: #808080 !important;
+    }
+
+    trix-editor [data-color="white"] {
+        color: #FFFFFF !important;
+    }
+
+    /* 文字揃え */
+    trix-editor .text-align-left {
+        text-align: left !important;
+    }
+
+    trix-editor .text-align-center {
+        text-align: center !important;
+    }
+
+    trix-editor .text-align-right {
+        text-align: right !important;
+    }
+
+    /* フォントサイズとカラーのセレクトボックス */
+    trix-toolbar select {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.5rem;
+        border: 1px solid #ccc;
         border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    trix-editor img.resizable {
-        cursor: nwse-resize;
-    }
-
-    /* リサイズハンドル */
-    trix-editor figure[data-trix-attachment]:hover .image-resize-handle {
-        opacity: 1;
-    }
-
-    .image-resize-handle {
-        opacity: 0;
-        transition: opacity 0.2s ease;
-    }
-
-    /* テキストの折り返し */
-    trix-editor * {
-        max-width: 100%;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-    }
-
-    /* アクションボタン */
-    .action-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .action-buttons .admin-btn {
-        justify-content: center;
-        width: 100%;
-    }
-
-    /* プレビューモーダル */
-    .modal-preview-container {
         background-color: white;
-        color: #333;
-        border-radius: 8px;
-        padding: 2rem;
-        max-height: 70vh;
-        overflow-y: auto;
+        cursor: pointer;
+        margin: 0 4px;
     }
 
-    .preview-header {
-        border-bottom: 2px solid #f0f0f0;
-        padding-bottom: 1rem;
-        margin-bottom: 1.5rem;
+    trix-toolbar select:hover {
+        background-color: rgba(59, 130, 246, 0.1);
     }
 
-    .preview-title {
-        color: #333;
-        font-size: 1.75rem;
-        font-weight: 700;
-        margin: 0 0 0.5rem 0;
+    /* ツールバーのカスタムコントロール */
+    .trix-custom-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 8px;
     }
 
-    .preview-date {
-        color: #666;
-        font-size: 0.95rem;
+    .trix-custom-controls label {
+        font-size: 0.85rem;
         margin: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
     }
 
-    .preview-content {
-        color: #333;
-        line-height: 1.8;
+    /* 上下の余白を完全に削除 */
+    trix-editor>div:first-child,
+    trix-editor>h1:first-child,
+    trix-editor>h2:first-child,
+    trix-editor>h3:first-child,
+    trix-editor>p:first-child,
+    trix-editor>ul:first-child,
+    trix-editor>ol:first-child,
+    trix-editor>blockquote:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
     }
 
-    @media (max-width: 1024px) {
-        .form-layout {
-            grid-template-columns: 1fr;
-        }
-
-        .form-sidebar {
-            order: -1;
-        }
+    trix-editor>div:last-child,
+    trix-editor>h1:last-child,
+    trix-editor>h2:last-child,
+    trix-editor>h3:last-child,
+    trix-editor>p:last-child,
+    trix-editor>ul:last-child,
+    trix-editor>ol:last-child,
+    trix-editor>blockquote:last-child {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
     }
 
-    @media (max-width: 768px) {
-        .admin-notice-form {
-            padding: 1rem;
-        }
+    /* Trixエディタ自体のパディングを調整 */
+    trix-editor {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
 
-        .form-title {
-            font-size: 1.5rem;
-        }
+    /* 最初と最後の要素の内部余白も削除 */
+    trix-editor *:first-child {
+        margin-top: 0 !important;
+    }
+
+    trix-editor *:last-child {
+        margin-bottom: 0 !important;
     }
 </style>
 
@@ -369,35 +312,291 @@
     </div>
 </div>
 
+
 <script>
     // プレビューモーダル
-    document.getElementById('preview-btn').addEventListener('click', function(e) {
-        e.preventDefault();
+    document.addEventListener('DOMContentLoaded', function() {
+        const previewBtn = document.getElementById('preview-btn');
+        if (previewBtn) {
+            previewBtn.addEventListener('click', function(e) {
+                e.preventDefault();
 
-        const title = document.querySelector('input[name="notice[title]"]').value;
-        const content = document.querySelector('trix-editor').innerHTML;
+                const title = document.querySelector('input[name="notice[title]"]').value;
+                const content = document.querySelector('trix-editor').innerHTML;
 
-        const previewHTML = `
-    <div class="preview-header">
-      <h3 class="preview-title">${title || '（タイトル未入力）'}</h3>
-      <p class="preview-date">${new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-    </div>
-    <div class="preview-content">
-      ${content || '（本文未入力）'}
-    </div>
-  `;
+                const previewHTML = `
+        <div class="preview-header">
+          <h3 class="preview-title">${title || '（タイトル未入力）'}</h3>
+          <p class="preview-date">${new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        </div>
+        <div class="preview-content">
+          ${content || '（本文未入力）'}
+        </div>
+      `;
 
-        document.getElementById('modal-preview-content').innerHTML = previewHTML;
-        document.getElementById('preview-modal').style.display = 'flex';
-    });
+                document.getElementById('modal-preview-content').innerHTML = previewHTML;
+                document.getElementById('preview-modal').style.display = 'flex';
+            });
+        }
 
-    document.getElementById('close-preview-btn').addEventListener('click', function() {
-        document.getElementById('preview-modal').style.display = 'none';
-    });
+        const closePreviewBtn = document.getElementById('close-preview-btn');
+        if (closePreviewBtn) {
+            closePreviewBtn.addEventListener('click', function() {
+                document.getElementById('preview-modal').style.display = 'none';
+            });
+        }
 
-    document.getElementById('preview-modal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            this.style.display = 'none';
+        const previewModal = document.getElementById('preview-modal');
+        if (previewModal) {
+            previewModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
         }
     });
+
+    // Trixエディタのカスタマイズ
+    console.log('Trix customization script loaded');
+
+    document.addEventListener('trix-before-initialize', function() {
+        console.log('trix-before-initialize event fired');
+
+        if (typeof Trix === 'undefined') {
+            console.error('Trix is not defined');
+            return;
+        }
+
+        // 画像添付を完全に無効化
+        Trix.config.attachments.preview.caption = false;
+
+        // 下線属性を追加
+        Trix.config.textAttributes.underline = {
+            tagName: "u",
+            inheritable: true
+        };
+
+        // フォントサイズ属性を追加
+        const fontSizes = [10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48];
+        fontSizes.forEach(size => {
+            Trix.config.textAttributes[`fontSize${size}`] = {
+                tagName: "span",
+                styleProperty: "fontSize",
+                inheritable: true,
+                parser: function(element) {
+                    return element.dataset.fontSize === String(size);
+                },
+                render: function(element) {
+                    element.dataset.fontSize = size;
+                    element.style.fontSize = size + "px";
+                }
+            };
+        });
+
+        // カラー属性を追加
+        const colors = ['black', 'red', 'blue', 'green', 'yellow', 'orange', 'purple', 'gray', 'white'];
+        colors.forEach(color => {
+            Trix.config.textAttributes[`color${color.charAt(0).toUpperCase() + color.slice(1)}`] = {
+                tagName: "span",
+                styleProperty: "color",
+                inheritable: true,
+                parser: function(element) {
+                    return element.dataset.color === color;
+                },
+                render: function(element) {
+                    element.dataset.color = color;
+                }
+            };
+        });
+
+        // 文字揃え属性を追加
+        Trix.config.blockAttributes.alignLeft = {
+            tagName: "div",
+            parse: false,
+            nestable: false,
+            terminal: false,
+            breakOnReturn: false,
+            group: false,
+            htmlAttributes: ["class"],
+            render: function(element) {
+                element.classList.add("text-align-left");
+            }
+        };
+
+        Trix.config.blockAttributes.alignCenter = {
+            tagName: "div",
+            parse: false,
+            nestable: false,
+            terminal: false,
+            breakOnReturn: false,
+            group: false,
+            htmlAttributes: ["class"],
+            render: function(element) {
+                element.classList.add("text-align-center");
+            }
+        };
+
+        Trix.config.blockAttributes.alignRight = {
+            tagName: "div",
+            parse: false,
+            nestable: false,
+            terminal: false,
+            breakOnReturn: false,
+            group: false,
+            htmlAttributes: ["class"],
+            render: function(element) {
+                element.classList.add("text-align-right");
+            }
+        };
+
+        // カスタムツールバー
+        Trix.config.toolbar.getDefaultHTML = function() {
+            return `
+      <div class="trix-button-row">
+        <span class="trix-button-group trix-button-group--text-tools">
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-bold" data-trix-attribute="bold" data-trix-key="b" title="太字" tabindex="-1">太字</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-italic" data-trix-attribute="italic" data-trix-key="i" title="斜体" tabindex="-1">斜体</button>
+          <button type="button" class="trix-button" data-trix-attribute="underline" title="下線" tabindex="-1">下線</button>
+        </span>
+        <span class="trix-button-group trix-button-group--block-tools">
+          <button type="button" class="trix-button" data-trix-attribute="alignLeft" title="左揃え" tabindex="-1">← 左</button>
+          <button type="button" class="trix-button" data-trix-attribute="alignCenter" title="中央揃え" tabindex="-1">↔ 中央</button>
+          <button type="button" class="trix-button" data-trix-attribute="alignRight" title="右揃え" tabindex="-1">右 →</button>
+        </span>
+        <span class="trix-custom-controls">
+          <label>
+            サイズ:
+            <select id="font-size-select">
+              <option value="">選択</option>
+              <option value="10">10px</option>
+              <option value="12">12px</option>
+              <option value="14">14px</option>
+              <option value="16">16px</option>
+              <option value="18">18px</option>
+              <option value="20">20px</option>
+              <option value="24">24px</option>
+              <option value="28">28px</option>
+              <option value="32">32px</option>
+              <option value="36">36px</option>
+              <option value="48">48px</option>
+            </select>
+          </label>
+          <label>
+            色:
+            <select id="font-color-select">
+              <option value="">選択</option>
+              <option value="black">黒</option>
+              <option value="red">赤</option>
+              <option value="blue">青</option>
+              <option value="green">緑</option>
+              <option value="yellow">黄</option>
+              <option value="orange">オレンジ</option>
+              <option value="purple">紫</option>
+              <option value="gray">灰</option>
+              <option value="white">白</option>
+            </select>
+          </label>
+        </span>
+        <span class="trix-button-group-spacer"></span>
+        <span class="trix-button-group trix-button-group--history-tools">
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-undo" data-trix-action="undo" data-trix-key="z" title="元に戻す" tabindex="-1">戻す</button>
+          <button type="button" class="trix-button trix-button--icon trix-button--icon-redo" data-trix-action="redo" data-trix-key="shift+z" title="やり直し" tabindex="-1">進む</button>
+        </span>
+      </div>
+    `;
+        };
+
+        console.log('Trix toolbar customized successfully');
+    });
+
+    // フォントサイズとカラーの変更処理
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const fontSizeSelect = document.getElementById('font-size-select');
+            const fontColorSelect = document.getElementById('font-color-select');
+            const editor = document.querySelector('trix-editor');
+
+            if (fontSizeSelect && editor) {
+                fontSizeSelect.addEventListener('change', function() {
+                    const size = this.value;
+                    if (size) {
+                        editor.editor.activateAttribute(`fontSize${size}`);
+                        this.value = '';
+                    }
+                });
+            }
+
+            if (fontColorSelect && editor) {
+                fontColorSelect.addEventListener('change', function() {
+                    const color = this.value;
+                    if (color) {
+                        const attrName = `color${color.charAt(0).toUpperCase() + color.slice(1)}`;
+                        editor.editor.activateAttribute(attrName);
+                        this.value = '';
+                    }
+                });
+            }
+        }, 100);
+    });
+
+    document.addEventListener('turbo:load', function() {
+        setTimeout(function() {
+            const fontSizeSelect = document.getElementById('font-size-select');
+            const fontColorSelect = document.getElementById('font-color-select');
+            const editor = document.querySelector('trix-editor');
+
+            if (fontSizeSelect && editor) {
+                fontSizeSelect.addEventListener('change', function() {
+                    const size = this.value;
+                    if (size) {
+                        editor.editor.activateAttribute(`fontSize${size}`);
+                        this.value = '';
+                    }
+                });
+            }
+
+            if (fontColorSelect && editor) {
+                fontColorSelect.addEventListener('change', function() {
+                    const color = this.value;
+                    if (color) {
+                        const attrName = `color${color.charAt(0).toUpperCase() + color.slice(1)}`;
+                        editor.editor.activateAttribute(attrName);
+                        this.value = '';
+                    }
+                });
+            }
+        }, 100);
+    });
+
+    // 画像添付機能を無効化
+    function disableImageAttachment() {
+        console.log('Disabling image attachment');
+
+        document.querySelectorAll('trix-toolbar').forEach(toolbar => {
+            const attachButton = toolbar.querySelector('[data-trix-action="attachFiles"]');
+            if (attachButton) {
+                attachButton.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('trix-file-accept', function(event) {
+            event.preventDefault();
+            alert('画像の添付は無効化されています。');
+        });
+
+        setTimeout(() => {
+            document.querySelectorAll('[data-trix-action="attachFiles"]').forEach(btn => {
+                btn.remove();
+            });
+        }, 100);
+    }
+
+    document.addEventListener('DOMContentLoaded', disableImageAttachment);
+    document.addEventListener('turbo:load', disableImageAttachment);
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', disableImageAttachment);
+    } else {
+        disableImageAttachment();
+    }
 </script>
