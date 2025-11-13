@@ -336,16 +336,12 @@
                 </p>
             </div>
         </div>
-
-        <div class="scroll-indicator scroll-to-top with-arrow" data-target="section-0">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-            </svg>
+        <div class="scroll-indicator" data-target="section-4">
+            <div class="scroll-progress"></div>
         </div>
     </section>
+    <%= render 'shared/shop_info' %>
 </div>
-
-<%= render 'shared/shop_info' %>
 
 <script>
     (function() {
@@ -367,6 +363,63 @@
             }
 
             console.log('Initializing spirit page...');
+
+            // 店舗情報セクションにIDとスクロールインジケーターを追加
+            const shopInfoSection = document.querySelector('.shop-info-section');
+            if (shopInfoSection && !shopInfoSection.id) {
+                shopInfoSection.id = 'section-4';
+                shopInfoSection.setAttribute('data-section', '4');
+
+                // 上向きスクロールインジケーターを追加
+                const scrollIndicator = document.createElement('div');
+                scrollIndicator.className = 'scroll-indicator scroll-to-top with-arrow';
+                scrollIndicator.setAttribute('data-target', 'section-0');
+                scrollIndicator.innerHTML = `
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                    </svg>
+                `;
+                shopInfoSection.appendChild(scrollIndicator);
+            }
+
+            // スクロールインジケーターのクリック処理を初期化する関数
+            function initializeScrollIndicators() {
+                const scrollIndicators = document.querySelectorAll('.scroll-indicator');
+                scrollIndicators.forEach(indicator => {
+                    // 既に初期化済みかチェック
+                    if (indicator.dataset.clickInitialized === 'true') {
+                        return;
+                    }
+
+                    indicator.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('data-target');
+                        if (targetId) {
+                            const targetSection = document.getElementById(targetId);
+                            if (targetSection) {
+                                targetSection.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+                            }
+                        }
+                    });
+
+                    // ホバーエフェクト
+                    indicator.style.cursor = 'pointer';
+
+                    indicator.addEventListener('mouseenter', function() {
+                        this.style.opacity = '0.8';
+                    });
+
+                    indicator.addEventListener('mouseleave', function() {
+                        this.style.opacity = '1';
+                    });
+
+                    // 初期化済みフラグ
+                    indicator.dataset.clickInitialized = 'true';
+                });
+            }
 
             // スクロールアニメーション用のIntersection Observer
             const observerOptions = {
@@ -398,45 +451,11 @@
             }, observerOptions);
 
             // 各セクションを監視
-            const sections = document.querySelectorAll('.image-section');
+            const sections = document.querySelectorAll('.image-section, .shop-info-section');
             sections.forEach(section => observer.observe(section));
 
-            // スクロールインジケーターのクリック処理
-            const scrollIndicators = document.querySelectorAll('.scroll-indicator');
-            scrollIndicators.forEach(indicator => {
-                // 既に初期化済みかチェック
-                if (indicator.dataset.clickInitialized === 'true') {
-                    return;
-                }
-
-                indicator.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('data-target');
-                    if (targetId) {
-                        const targetSection = document.getElementById(targetId);
-                        if (targetSection) {
-                            targetSection.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }
-                    }
-                });
-
-                // ホバーエフェクト
-                indicator.style.cursor = 'pointer';
-
-                indicator.addEventListener('mouseenter', function() {
-                    this.style.opacity = '0.8';
-                });
-
-                indicator.addEventListener('mouseleave', function() {
-                    this.style.opacity = '1';
-                });
-
-                // 初期化済みフラグ
-                indicator.dataset.clickInitialized = 'true';
-            });
+            // スクロールインジケーターのクリック処理を初期化
+            initializeScrollIndicators();
 
             // コンテナに初期化済みフラグを設定
             container.dataset.initialized = 'true';
