@@ -15,7 +15,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        background-size: cover;
+        background-position: center;
         z-index: 1;
     }
 
@@ -187,7 +188,7 @@
 
 <!-- 店舗情報セクション -->
 <section class="shop-info-section">
-    <%= image_tag 'shop/store_bg.png', class: 'shop-info-background', alt: '店舗背景' %>
+    <div class="shop-info-background" style="background-image: url('<%= image_path('shop/motipai_danmen.png') %>');"></div>
     <div class="shop-info-overlay"></div>
 
     <div class="shop-info">
