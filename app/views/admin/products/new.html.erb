@@ -152,56 +152,234 @@
         padding-left: 2.5rem !important;
     }
 
-    /* リッチテキストエディタ */
-    .admin-rich-text {
-        min-height: 300px;
-    }
-
-    trix-toolbar {
+    /* カスタムエディタのスタイル */
+    .custom-editor-toolbar {
         background-color: var(--admin-bg-secondary);
         border: 1px solid var(--admin-border);
-        border-bottom: none;
         border-radius: 8px 8px 0 0;
-        padding: 0.75rem;
+        padding: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
     }
 
-    trix-toolbar .trix-button-group {
+    .toolbar-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .toolbar-label {
+        font-size: 0.875rem;
+        color: var(--admin-text);
+        font-weight: 500;
+        white-space: nowrap;
+        margin: 0;
+    }
+
+    .toolbar-input {
+        width: 80px;
+        padding: 0.375rem 0.5rem;
+        border: 1px solid var(--admin-border);
+        border-radius: 4px;
+        font-size: 0.875rem;
+    }
+
+    .toolbar-color-picker {
+        width: 50px;
+        height: 32px;
+        border: 1px solid var(--admin-border);
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .toolbar-btn {
+        padding: 0.375rem 0.75rem;
         background-color: var(--admin-bg-card);
         border: 1px solid var(--admin-border);
-        border-radius: 6px;
-        margin-right: 0.5rem;
-    }
-
-    trix-toolbar .trix-button {
-        border: none;
-        background-color: transparent;
-        color: var(--admin-text-secondary);
+        border-radius: 4px;
+        font-size: 0.875rem;
+        color: var(--admin-text);
+        cursor: pointer;
         transition: all 0.2s ease;
     }
 
-    trix-toolbar .trix-button:hover {
-        background-color: var(--admin-bg-hover);
-        color: var(--admin-text);
-    }
-
-    trix-toolbar .trix-button.trix-active {
+    .toolbar-btn:hover {
         background-color: var(--admin-primary);
         color: white;
+        border-color: var(--admin-primary);
     }
 
-    trix-editor {
+    .custom-editor {
         background-color: var(--admin-bg-secondary);
         border: 1px solid var(--admin-border);
+        border-top: none;
         border-radius: 0 0 8px 8px;
-        color: var(--admin-text);
-        padding: 1rem;
+        padding: 1.5rem;
         min-height: 300px;
+        max-height: 600px;
+        overflow-y: auto;
+        font-size: 1rem;
+        line-height: 1.8;
+        color: var(--admin-text);
+        outline: none;
     }
 
-    trix-editor:focus {
-        outline: none;
+    .custom-editor:focus {
         border-color: var(--admin-accent);
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .custom-editor[data-placeholder]:empty:before {
+        content: attr(data-placeholder);
+        color: var(--admin-text-muted);
+        font-style: italic;
+    }
+
+    .custom-editor img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .custom-editor img:hover {
+        opacity: 0.8;
+    }
+
+    /* 画像調整モーダル */
+    .image-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+    }
+
+    .image-modal-container {
+        background: white;
+        border-radius: 12px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .image-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .image-modal-header h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .image-modal-close {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #6b7280;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+    }
+
+    .image-modal-close:hover {
+        color: #1f2937;
+    }
+
+    .image-modal-body {
+        padding: 1.5rem;
+    }
+
+    .image-adjust-preview {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background-color: #f9fafb;
+        border-radius: 8px;
+    }
+
+    .image-adjust-preview img {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 4px;
+    }
+
+    .image-adjust-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .adjust-control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .adjust-control-group label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .adjust-input {
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.875rem;
+    }
+
+    .adjust-align-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .adjust-btn {
+        flex: 1;
+        padding: 0.5rem 1rem;
+        background-color: #f3f4f6;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .adjust-btn:hover {
+        background-color: #e5e7eb;
+        border-color: #9ca3af;
+    }
+
+    .adjust-btn.active {
+        background-color: var(--admin-primary);
+        color: white;
+        border-color: var(--admin-primary);
+    }
+
+    .image-modal-actions {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
     }
 
     /* トグルスイッチ */
@@ -517,9 +695,9 @@
                         </div>
 
                         <div class="upload-controls">
-                            <%= f.file_field :image, 
-                                 accept: "image/*", 
-                                 class: "file-input", 
+                            <%= f.file_field :image,
+                                 accept: "image/*",
+                                 class: "file-input",
                                  id: "image-input",
                                  onchange: "previewImage(event)",
                                  required: true %>
@@ -550,8 +728,8 @@
                         <%= f.label :name, class: "admin-form-label" do %>
                         商品名 <span class="required-badge">必須</span>
                         <% end %>
-                        <%= f.text_field :name, 
-                               class: "admin-form-control", 
+                        <%= f.text_field :name,
+                               class: "admin-form-control",
                                placeholder: "例: もちパイ（6個入り）",
                                required: true %>
                     </div>
@@ -562,8 +740,8 @@
                         <% end %>
                         <div class="price-input-wrapper">
                             <span class="currency-symbol">¥</span>
-                            <%= f.number_field :price, 
-                                   class: "admin-form-control price-input", 
+                            <%= f.number_field :price,
+                                   class: "admin-form-control price-input",
                                    placeholder: "1000",
                                    min: 0,
                                    step: 1,
@@ -584,9 +762,39 @@
                     </h2>
                 </div>
                 <div class="admin-card-body">
-                    <%= f.rich_text_area :description, 
-                                 class: "admin-rich-text",
-                                 placeholder: "商品の詳しい説明を入力してください..." %>
+                    <!-- カスタムエディタツールバー -->
+                    <div class="custom-editor-toolbar">
+                        <div class="toolbar-group">
+                            <label class="toolbar-label">フォントサイズ (px):</label>
+                            <input type="number" id="product-font-size" class="toolbar-input" min="8" max="100" placeholder="16">
+                            <button type="button" class="toolbar-btn" onclick="applyProductFontSize()">適用</button>
+                        </div>
+
+                        <div class="toolbar-group">
+                            <label class="toolbar-label">フォントカラー:</label>
+                            <input type="color" id="product-font-color" class="toolbar-color-picker" value="#000000">
+                            <button type="button" class="toolbar-btn" onclick="applyProductFontColor()">適用</button>
+                        </div>
+
+                        <div class="toolbar-group">
+                            <label class="toolbar-label">テキスト配置:</label>
+                            <button type="button" class="toolbar-btn" onclick="applyProductTextAlign('left')">← 左</button>
+                            <button type="button" class="toolbar-btn" onclick="applyProductTextAlign('center')">↔ 中央</button>
+                            <button type="button" class="toolbar-btn" onclick="applyProductTextAlign('right')">右 →</button>
+                        </div>
+
+                        <div class="toolbar-group">
+                            <label class="toolbar-label">画像:</label>
+                            <input type="file" id="product-image-upload" accept="image/*" style="display: none;" onchange="insertProductImage(event)">
+                            <button type="button" class="toolbar-btn" onclick="document.getElementById('product-image-upload').click()">画像を挿入</button>
+                        </div>
+                    </div>
+
+                    <!-- カスタムエディタ本体 -->
+                    <div id="product-description-editor" class="custom-editor" contenteditable="true" data-placeholder="商品の説明を入力してください..."></div>
+
+                    <!-- 隠しフィールド（フォーム送信用） -->
+                    <%= f.hidden_field :description, id: 'product-description-hidden' %>
                 </div>
             </div>
         </div>
@@ -656,12 +864,12 @@
                     プレビュー
                 </button>
 
-                <%= f.submit "保存", 
+                <%= f.submit "保存",
                        class: "admin-btn admin-btn-secondary",
                        name: "draft",
                        value: "下書き" %>
 
-                <%= f.submit "商品を追加", 
+                <%= f.submit "商品を追加",
                        class: "admin-btn admin-btn-success",
                        name: "publish",
                        value: "公開" %>
@@ -699,8 +907,49 @@
     </div>
 </div>
 
+<!-- 画像調整モーダル -->
+<div id="image-adjust-modal" class="image-modal-overlay" style="display: none;">
+    <div class="image-modal-container">
+        <div class="image-modal-header">
+            <h3>画像の調整</h3>
+            <button type="button" class="image-modal-close" onclick="closeImageAdjustModal()">×</button>
+        </div>
+        <div class="image-modal-body">
+            <div class="image-adjust-preview">
+                <img id="adjust-preview-img" src="" alt="プレビュー">
+            </div>
+
+            <div class="image-adjust-controls">
+                <div class="adjust-control-group">
+                    <label>画像の幅 (px):</label>
+                    <input type="number" id="image-width-input" class="adjust-input" min="50" max="800" value="400">
+                </div>
+
+                <div class="adjust-control-group">
+                    <label>画像の高さ (px):</label>
+                    <input type="number" id="image-height-input" class="adjust-input" min="50" max="800" value="300">
+                </div>
+
+                <div class="adjust-control-group">
+                    <label>画像の配置:</label>
+                    <div class="adjust-align-buttons">
+                        <button type="button" class="adjust-btn" onclick="setImageAlign('left')">左</button>
+                        <button type="button" class="adjust-btn" onclick="setImageAlign('center')">中央</button>
+                        <button type="button" class="adjust-btn" onclick="setImageAlign('right')">右</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-modal-actions">
+                <button type="button" class="admin-btn admin-btn-secondary" onclick="closeImageAdjustModal()">キャンセル</button>
+                <button type="button" class="admin-btn admin-btn-success" onclick="applyImageAdjustments()">適用</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    // 画像プレビュー
+    // 画像プレビュー（商品画像用）
     function previewImage(event) {
         const file = event.target.files[0];
         const preview = document.getElementById('image-preview');
@@ -764,9 +1013,9 @@
         document.getElementById('modal-product-name').textContent = name;
         document.getElementById('modal-product-price').textContent = '¥' + parseInt(price).toLocaleString();
 
-        // 説明文の取得（Trix Editorの内容）
-        const trixEditor = document.querySelector('trix-editor');
-        const description = trixEditor ? trixEditor.innerHTML : '説明はまだ入力されていません。';
+        // 説明文の取得（カスタムエディタの内容）
+        const editor = document.getElementById('product-description-editor');
+        const description = editor ? editor.innerHTML : '説明はまだ入力されていません。';
         document.getElementById('modal-product-description').innerHTML = description;
 
         // 画像の読み込み
@@ -798,11 +1047,227 @@
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closePreviewModal();
+            closeImageAdjustModal();
         }
     });
 
     // プレビューボタン
     document.getElementById('preview-btn')?.addEventListener('click', function() {
         openPreviewModal();
+    });
+
+    // ===== 商品説明エディタのJavaScript =====
+    let currentEditingImage = null;
+    let currentImageAlign = 'left';
+
+    // フォントサイズを適用
+    function applyProductFontSize() {
+        const editor = document.getElementById('product-description-editor');
+        const size = document.getElementById('product-font-size').value;
+
+        if (!size || size < 8 || size > 100) {
+            alert('8～100の範囲でフォントサイズを入力してください。');
+            return;
+        }
+
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0 && !selection.isCollapsed) {
+            const range = selection.getRangeAt(0);
+            const span = document.createElement('span');
+            span.style.fontSize = size + 'px';
+
+            try {
+                span.appendChild(range.extractContents());
+                range.insertNode(span);
+            } catch (e) {
+                console.error('フォントサイズの適用に失敗しました', e);
+            }
+
+            saveProductDescription();
+        } else {
+            alert('テキストを選択してください。');
+        }
+    }
+
+    // フォントカラーを適用
+    function applyProductFontColor() {
+        const editor = document.getElementById('product-description-editor');
+        const color = document.getElementById('product-font-color').value;
+
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0 && !selection.isCollapsed) {
+            const range = selection.getRangeAt(0);
+            const span = document.createElement('span');
+            span.style.color = color;
+
+            try {
+                span.appendChild(range.extractContents());
+                range.insertNode(span);
+            } catch (e) {
+                console.error('フォントカラーの適用に失敗しました', e);
+            }
+
+            saveProductDescription();
+        } else {
+            alert('テキストを選択してください。');
+        }
+    }
+
+    // テキスト配置を適用
+    function applyProductTextAlign(align) {
+        const editor = document.getElementById('product-description-editor');
+        const selection = window.getSelection();
+
+        if (selection.rangeCount > 0) {
+            let node = selection.anchorNode;
+
+            // テキストノードの場合、親要素を取得
+            if (node.nodeType === Node.TEXT_NODE) {
+                node = node.parentElement;
+            }
+
+            // ブロック要素を探す
+            while (node && node !== editor) {
+                if (node.nodeType === Node.ELEMENT_NODE &&
+                    (node.tagName === 'DIV' || node.tagName === 'P')) {
+                    node.style.textAlign = align;
+                    saveProductDescription();
+                    return;
+                }
+                node = node.parentElement;
+            }
+
+            // ブロック要素がない場合、新しいdivで囲む
+            const div = document.createElement('div');
+            div.style.textAlign = align;
+
+            if (!selection.isCollapsed) {
+                const range = selection.getRangeAt(0);
+                div.appendChild(range.extractContents());
+                range.insertNode(div);
+            }
+
+            saveProductDescription();
+        }
+    }
+
+    // 画像を挿入
+    function insertProductImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            alert('画像ファイルを選択してください。');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const editor = document.getElementById('product-description-editor');
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = '400px';
+            img.style.height = 'auto';
+            img.style.display = 'block';
+            img.style.margin = '1rem 0';
+            img.onclick = function() { openImageAdjustModal(img); };
+
+            editor.appendChild(img);
+            editor.appendChild(document.createElement('br'));
+
+            saveProductDescription();
+        };
+        reader.readAsDataURL(file);
+
+        // input をリセット
+        event.target.value = '';
+    }
+
+    // 画像調整モーダルを開く
+    function openImageAdjustModal(img) {
+        currentEditingImage = img;
+        const modal = document.getElementById('image-adjust-modal');
+        const preview = document.getElementById('adjust-preview-img');
+        const widthInput = document.getElementById('image-width-input');
+        const heightInput = document.getElementById('image-height-input');
+
+        preview.src = img.src;
+        widthInput.value = parseInt(img.style.width) || img.width;
+        heightInput.value = parseInt(img.style.height) || img.height;
+
+        // 現在の配置を取得
+        const parent = img.parentElement;
+        const textAlign = parent.style.textAlign || 'left';
+        currentImageAlign = textAlign;
+
+        // 配置ボタンをハイライト
+        document.querySelectorAll('.adjust-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.textContent.includes('左') && textAlign === 'left') btn.classList.add('active');
+            if (btn.textContent.includes('中央') && textAlign === 'center') btn.classList.add('active');
+            if (btn.textContent.includes('右') && textAlign === 'right') btn.classList.add('active');
+        });
+
+        modal.style.display = 'flex';
+    }
+
+    // 画像調整モーダルを閉じる
+    function closeImageAdjustModal() {
+        document.getElementById('image-adjust-modal').style.display = 'none';
+        currentEditingImage = null;
+    }
+
+    // 画像の配置を設定
+    function setImageAlign(align) {
+        currentImageAlign = align;
+
+        // ボタンのハイライトを更新
+        document.querySelectorAll('.adjust-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    }
+
+    // 画像調整を適用
+    function applyImageAdjustments() {
+        if (!currentEditingImage) return;
+
+        const width = document.getElementById('image-width-input').value;
+        const height = document.getElementById('image-height-input').value;
+
+        currentEditingImage.style.width = width + 'px';
+        currentEditingImage.style.height = height + 'px';
+
+        // 親要素の配置を設定
+        let parent = currentEditingImage.parentElement;
+        if (parent.tagName !== 'DIV') {
+            const div = document.createElement('div');
+            parent.insertBefore(div, currentEditingImage);
+            div.appendChild(currentEditingImage);
+            parent = div;
+        }
+        parent.style.textAlign = currentImageAlign;
+
+        saveProductDescription();
+        closeImageAdjustModal();
+    }
+
+    // エディタの内容を保存
+    function saveProductDescription() {
+        const editor = document.getElementById('product-description-editor');
+        const hiddenField = document.getElementById('product-description-hidden');
+        if (editor && hiddenField) {
+            hiddenField.value = editor.innerHTML;
+        }
+    }
+
+    // フォーム送信前に内容を保存
+    document.querySelector('.product-form')?.addEventListener('submit', function(e) {
+        saveProductDescription();
+    });
+
+    // エディタの変更を監視
+    document.getElementById('product-description-editor')?.addEventListener('input', function() {
+        saveProductDescription();
     });
 </script>

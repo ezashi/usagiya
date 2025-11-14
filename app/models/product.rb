@@ -1,7 +1,7 @@
 class Product < ApplicationRecord
   # Active Storage associations
   has_one_attached :image
-  has_rich_text :description
+  # has_rich_text :description  # カスタムエディタに変更したためコメントアウト
 
   # Validations
   validates :name, presence: true
