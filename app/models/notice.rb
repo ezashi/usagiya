@@ -1,7 +1,7 @@
 class Notice < ApplicationRecord
   # Active Storage and Action Text
-  has_rich_text :content
-  has_rich_text :draft_content
+  # has_rich_text :content
+  # has_rich_text :draft_content
 
   # Validations
   validates :title, presence: true, unless: :draft_only?

@@ -349,13 +349,10 @@ class Admin::ProductsController < Admin::AdminController
       :name,
       :price,
       :description,
-      :image_filename,
-      :category,
+      :image,
       :visible,
       :featured,
       :seasonal,
-      :display_order,
-      :image,
       :remove_image
     )
   end
