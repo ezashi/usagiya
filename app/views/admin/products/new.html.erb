@@ -1248,7 +1248,19 @@
             div.appendChild(currentEditingImage);
             parent = div;
         }
+
+        // 配置に応じてスタイルを設定
         parent.style.textAlign = currentImageAlign;
+        if (currentImageAlign === 'left') {
+            parent.style.marginLeft = '0';
+            parent.style.marginRight = 'auto';
+        } else if (currentImageAlign === 'center') {
+            parent.style.marginLeft = 'auto';
+            parent.style.marginRight = 'auto';
+        } else if (currentImageAlign === 'right') {
+            parent.style.marginLeft = 'auto';
+            parent.style.marginRight = '0';
+        }
 
         saveProductDescription();
         closeImageAdjustModal();
@@ -1263,9 +1275,19 @@
         }
     }
 
-    // フォーム送信前に内容を保存
+    // フォーム送信前に内容を保存と確認
     document.querySelector('.product-form')?.addEventListener('submit', function(e) {
         saveProductDescription();
+
+        // 公開ボタンが押された場合のみ確認ダイアログを表示
+        const submitButton = document.activeElement;
+        if (submitButton && submitButton.name === 'publish') {
+            const confirmMessage = '商品を公開してもよろしいですか？\n公開すると、一般ユーザーに表示されます。';
+            if (!confirm(confirmMessage)) {
+                e.preventDefault();
+                return false;
+            }
+        }
     });
 
     // エディタの変更を監視

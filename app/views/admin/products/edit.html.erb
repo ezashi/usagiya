@@ -808,7 +808,7 @@
                     <div id="product-description-editor" class="custom-editor" contenteditable="true" data-placeholder="商品の説明を入力してください..."></div>
 
                     <!-- 隠しフィールド（フォーム送信用） -->
-                    <%= f.hidden_field :description, id: 'product-description-hidden' %>
+                    <%= f.hidden_field :description, id: 'product-description-hidden', value: @display_description %>
                 </div>
             </div>
         </div>
@@ -1367,7 +1367,19 @@
             div.appendChild(currentEditingImage);
             parent = div;
         }
+
+        // 配置に応じてスタイルを設定
         parent.style.textAlign = currentImageAlign;
+        if (currentImageAlign === 'left') {
+            parent.style.marginLeft = '0';
+            parent.style.marginRight = 'auto';
+        } else if (currentImageAlign === 'center') {
+            parent.style.marginLeft = 'auto';
+            parent.style.marginRight = 'auto';
+        } else if (currentImageAlign === 'right') {
+            parent.style.marginLeft = 'auto';
+            parent.style.marginRight = '0';
+        }
 
         saveProductDescription();
         closeImageAdjustModal();
@@ -1392,9 +1404,19 @@
         }
     });
 
-    // フォーム送信前に内容を保存
+    // フォーム送信前に内容を保存と確認
     document.querySelector('.product-form')?.addEventListener('submit', function(e) {
         saveProductDescription();
+
+        // 公開ボタンが押された場合のみ確認ダイアログを表示
+        const submitButton = document.activeElement;
+        if (submitButton && submitButton.name === 'publish') {
+            const confirmMessage = '変更を公開してもよろしいですか？\n公開すると、一般ユーザーに表示されます。';
+            if (!confirm(confirmMessage)) {
+                e.preventDefault();
+                return false;
+            }
+        }
     });
 
     // エディタの変更を監視
