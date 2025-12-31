@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_14_005933) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_31_033439) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -89,6 +89,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_14_005933) do
     t.boolean "published", default: false
     t.string "draft_title"
     t.datetime "draft_saved_at"
+    t.text "draft_content"
     t.index ["draft_saved_at"], name: "index_notices_on_draft_saved_at"
     t.index ["published"], name: "index_notices_on_published"
   end
