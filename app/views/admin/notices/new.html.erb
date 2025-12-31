@@ -383,8 +383,9 @@
                        class: "admin-btn admin-btn-secondary" %>
 
                 <%= f.submit "公開",
-                       class: "admin-btn admin-btn-success",
-                       data: { turbo_confirm: "お知らせを公開しますか？\n一般ユーザーに表示されるようになります。" } %>
+                       id: "publish-btn",
+                       class: "admin-btn admin-btn-success" %>
+
             </div>
         </div>
     </div>
@@ -710,209 +711,288 @@
         }
     }
 
-    // テキスト配置を適用（画像コンテナには影響しない）
+    // テキスト配置を適用（画像には影響しない）
     function applyNoticeTextAlign(align) {
         const editor = document.getElementById('notice-content-editor');
         const selection = window.getSelection();
 
-        if (selection.rangeCount > 0) {
-            let node = selection.anchorNode;
+        if (!selection.rangeCount) {
+            alert('エディタ内にカーソルを置いてください。');
+            return;
+        }
 
-            // エディタ内にカーソルがあるか確認
-            if (!editor.contains(node)) {
-                alert('エディタ内にカーソルを置いてください。');
-                return;
-            }
+        // エディタ内にカーソルがあるか確認
+        if (!editor.contains(selection.anchorNode)) {
+            alert('エディタ内にカーソルを置いてください。');
+            return;
+        }
 
-            // テキストノードの場合、親要素を取得
-            if (node.nodeType === Node.TEXT_NODE) {
-                node = node.parentElement;
-            }
+        let node = selection.anchorNode;
 
-            // 画像要素またはその親コンテナ内にいる場合は処理しない
-            if (node.tagName === 'IMG') {
+        // テキストノードの場合、親要素を取得
+        if (node.nodeType === Node.TEXT_NODE) {
+            node = node.parentElement;
+        }
+
+        // 画像要素の場合は処理しない
+        if (node.tagName === 'IMG') {
+            alert('画像の配置は画像をクリックして変更してください。');
+            return;
+        }
+
+        // 画像コンテナ内にいるかチェック
+        let tempNode = node;
+        while (tempNode && tempNode !== editor) {
+            if (tempNode.classList && tempNode.classList.contains('notice-image-container')) {
                 alert('画像の配置は画像をクリックして変更してください。');
                 return;
             }
+            tempNode = tempNode.parentElement;
+        }
 
-            // 画像コンテナ内にいるかチェック（ただし、エディタの直接の子でない場合のみ）
-            let tempNode = node;
-            while (tempNode && tempNode !== editor) {
-                if (tempNode.classList && tempNode.classList.contains('notice-image-container')) {
-                    alert('画像の配置は画像をクリックして変更してください。');
-                    return;
-                }
-                tempNode = tempNode.parentElement;
+        // テキストが選択されている場合
+        if (!selection.isCollapsed) {
+            const range = selection.getRangeAt(0);
+
+            // 選択範囲内に画像が含まれているかチェック
+            const fragment = range.cloneContents();
+            const hasImage = fragment.querySelector('img');
+
+            if (hasImage) {
+                alert('画像を含む範囲は選択できません。テキストのみを選択してください。');
+                return;
             }
 
-            // ブロック要素を探す（画像コンテナは除外）
-            let blockNode = node;
-            while (blockNode && blockNode !== editor) {
-                if (blockNode.nodeType === Node.ELEMENT_NODE &&
-                    (blockNode.tagName === 'DIV' || blockNode.tagName === 'P') &&
-                    !blockNode.classList.contains('notice-image-container')) {
-                    blockNode.style.textAlign = align;
-                    saveNoticeContent();
-                    return;
-                }
-                blockNode = blockNode.parentElement;
-            }
-
-            // ブロック要素がない場合（エディタの直接の子テキストの場合）
-            // 選択範囲または現在の行を新しいdivで囲む
+            // 選択されたテキストを新しいdivで囲む
             const div = document.createElement('div');
             div.className = 'notice-text-block';
             div.style.textAlign = align;
+            div.appendChild(range.extractContents());
+            range.insertNode(div);
+            saveNoticeContent();
+            return;
+        }
 
-            if (!selection.isCollapsed) {
-                // テキストが選択されている場合
-                const range = selection.getRangeAt(0);
-                div.appendChild(range.extractContents());
-                range.insertNode(div);
-            } else {
-                // カーソルのみの場合、現在のテキストノードを囲む
-                if (node === editor) {
-                    // エディタ直下にカーソルがある場合
-                    const range = selection.getRangeAt(0);
-                    const textNode = range.startContainer;
-                    if (textNode.nodeType === Node.TEXT_NODE && textNode.textContent.trim()) {
-                        const wrapper = document.createElement('div');
-                        wrapper.className = 'notice-text-block';
-                        wrapper.style.textAlign = align;
-                        textNode.parentNode.insertBefore(wrapper, textNode);
-                        wrapper.appendChild(textNode);
-                    }
+        // カーソルのみの場合、ブロック要素を探す
+        let blockNode = node;
+        while (blockNode && blockNode !== editor) {
+            if (blockNode.nodeType === Node.ELEMENT_NODE &&
+                (blockNode.tagName === 'DIV' || blockNode.tagName === 'P') &&
+                !blockNode.classList.contains('notice-image-container')) {
+
+                // このブロック内に画像があるかチェック
+                const imagesInBlock = blockNode.querySelectorAll('img');
+                if (imagesInBlock.length > 0) {
+                    // 画像がある場合は、テキストと画像を分離
+                    separateTextAndImages(blockNode, align);
+                } else {
+                    // 画像がない場合は直接配置を変更
+                    blockNode.style.textAlign = align;
                 }
                 saveNoticeContent();
+                return;
             }
+            blockNode = blockNode.parentElement;
         }
 
-        // エディタの内容を保存
-        function saveNoticeContent() {
-            const editor = document.getElementById('notice-content-editor');
-            const hiddenField = document.getElementById('notice-content-hidden');
-            if (editor && hiddenField) {
-                const content = editor.innerHTML;
-                hiddenField.value = content;
-                // 念のためattributeも設定
-                hiddenField.setAttribute('value', content);
+        // ブロック要素がない場合
+        alert('配置を変更するテキストを選択してください。');
+    }
+
+    // テキストと画像を分離して、テキストのみに配置を適用
+    function separateTextAndImages(block, textAlign) {
+        const children = Array.from(block.childNodes);
+        const parent = block.parentNode;
+        const newElements = [];
+
+        let currentTextNodes = [];
+
+        children.forEach((child, index) => {
+            if (child.nodeType === Node.ELEMENT_NODE &&
+                (child.tagName === 'IMG' || child.classList?.contains('notice-image-container'))) {
+                // 画像または画像コンテナの場合
+                if (currentTextNodes.length > 0) {
+                    // 溜まったテキストノードを新しいdivに入れる
+                    const textDiv = document.createElement('div');
+                    textDiv.className = 'notice-text-block';
+                    textDiv.style.textAlign = textAlign;
+                    currentTextNodes.forEach(n => textDiv.appendChild(n.cloneNode(true)));
+                    newElements.push(textDiv);
+                    currentTextNodes = [];
+                }
+
+                // 画像は独自のコンテナに入れる
+                if (child.tagName === 'IMG') {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'notice-image-container';
+                    imgContainer.style.textAlign = child.parentElement?.style?.textAlign || 'center';
+                    imgContainer.style.margin = '1rem 0';
+                    imgContainer.appendChild(child.cloneNode(true));
+                    newElements.push(imgContainer);
+                } else {
+                    newElements.push(child.cloneNode(true));
+                }
+            } else if (child.nodeType === Node.TEXT_NODE && child.textContent.trim()) {
+                // テキストノード
+                currentTextNodes.push(child);
+            } else if (child.nodeType === Node.ELEMENT_NODE) {
+                // その他の要素（spanなど）
+                currentTextNodes.push(child);
             }
+        });
+
+        // 残りのテキストノードを処理
+        if (currentTextNodes.length > 0) {
+            const textDiv = document.createElement('div');
+            textDiv.className = 'notice-text-block';
+            textDiv.style.textAlign = textAlign;
+            currentTextNodes.forEach(n => textDiv.appendChild(n.cloneNode(true)));
+            newElements.push(textDiv);
         }
 
-        // ===== イベントリスナーの設定 =====
-        function initializeNoticeEditor() {
-            // プレビューボタン
-            const previewBtn = document.getElementById('preview-btn');
-            if (previewBtn) {
-                previewBtn.removeEventListener('click', openPreviewModal);
-                previewBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    openPreviewModal();
-                });
-            }
+        // 元のブロックを新しい要素で置換
+        newElements.forEach(el => parent.insertBefore(el, block));
+        block.remove();
+    }
 
-            // プレビューモーダルのオーバーレイクリック
-            const previewModal = document.getElementById('preview-modal');
-            if (previewModal) {
-                previewModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closePreviewModal();
-                    }
-                });
-            }
+    // エディタの内容を保存
+    function saveNoticeContent() {
+        const editor = document.getElementById('notice-content-editor');
+        const hiddenField = document.getElementById('notice-content-hidden');
+        if (editor && hiddenField) {
+            const content = editor.innerHTML;
+            hiddenField.value = content;
+            hiddenField.setAttribute('value', content);
+        }
+    }
 
-            // 画像設定モーダルのオーバーレイクリック
-            const imageSettingsModal = document.getElementById('image-settings-modal');
-            if (imageSettingsModal) {
-                imageSettingsModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeImageSettingsModal();
-                    }
-                });
-            }
-
-            // 画像ファイル選択
-            const imageInput = document.getElementById('notice-image-input');
-            if (imageInput) {
-                imageInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file && file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            openImageSettingsModal(event.target.result);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                    // 同じファイルを再選択できるようにリセット
-                    this.value = '';
-                });
-            }
-
-            // 画像配置ボタン
-            document.querySelectorAll('.image-align-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.image-align-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    selectedImageAlign = this.dataset.align;
-                });
+    // ===== イベントリスナーの設定 =====
+    function initializeNoticeEditor() {
+        // プレビューボタン
+        const previewBtn = document.getElementById('preview-btn');
+        if (previewBtn) {
+            previewBtn.removeEventListener('click', openPreviewModal);
+            previewBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                openPreviewModal();
             });
+        }
 
-            // フォーム送信前に内容を保存（複数のイベントに対応）
-            const form = document.querySelector('.notice-form');
-            if (form) {
-                // 通常のsubmitイベント
-                form.addEventListener('submit', function(e) {
+        // プレビューモーダルのオーバーレイクリック
+        const previewModal = document.getElementById('preview-modal');
+        if (previewModal) {
+            previewModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePreviewModal();
+                }
+            });
+        }
+
+        // 画像設定モーダルのオーバーレイクリック
+        const imageSettingsModal = document.getElementById('image-settings-modal');
+        if (imageSettingsModal) {
+            imageSettingsModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeImageSettingsModal();
+                }
+            });
+        }
+
+        // 画像ファイル選択
+        const imageInput = document.getElementById('notice-image-input');
+        if (imageInput) {
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        openImageSettingsModal(event.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                this.value = '';
+            });
+        }
+
+        // 画像配置ボタン
+        document.querySelectorAll('.image-align-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.image-align-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedImageAlign = this.dataset.align;
+            });
+        });
+
+        // フォーム送信前に内容を保存
+        const form = document.querySelector('.notice-form');
+        if (form) {
+            // 公開ボタンの確認ダイアログ
+            const publishBtn = document.getElementById('publish-btn');
+            if (publishBtn) {
+                publishBtn.addEventListener('click', function(e) {
+                    if (!confirm('お知らせを公開しますか？\n一般ユーザーに表示されるようになります。')) {
+                        e.preventDefault();
+                        return false;
+                    }
                     saveNoticeContent();
-                    console.log('Form submit - content saved:', document.getElementById('notice-content-hidden').value.substring(0, 100));
-                });
-
-                // Turbo対応
-                form.addEventListener('turbo:submit-start', function(e) {
-                    saveNoticeContent();
-                    console.log('Turbo submit - content saved:', document.getElementById('notice-content-hidden').value.substring(0, 100));
-                });
-
-                // ボタンクリック時にも保存
-                const submitButtons = form.querySelectorAll('input[type="submit"], button[type="submit"]');
-                submitButtons.forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        saveNoticeContent();
-                    });
                 });
             }
 
-            // エディタの変更を監視
-            const editor = document.getElementById('notice-content-editor');
-            if (editor) {
-                // 初期化時に内容を同期
+            // 通常のsubmitイベント
+            form.addEventListener('submit', function(e) {
                 saveNoticeContent();
+            });
 
-                editor.addEventListener('input', function() {
+            // Turbo対応
+            form.addEventListener('turbo:submit-start', function(e) {
+                saveNoticeContent();
+            });
+
+            // 下書き保存ボタンクリック時にも保存
+            const submitButtons = form.querySelectorAll('input[type="submit"]:not(#publish-btn)');
+            submitButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
                     saveNoticeContent();
                 });
-
-                // フォーカスアウト時にも保存
-                editor.addEventListener('blur', function() {
-                    saveNoticeContent();
-                });
-
-                // 既存の画像にクリックイベントを追加
-                setupExistingImages(editor);
-            }
-        }
-
-        // 既存の画像にクリックイベントを追加
-        function setupExistingImages(editor) {
-            const images = editor.querySelectorAll('img');
-            images.forEach(img => {
-                img.style.cursor = 'pointer';
-                img.classList.add('notice-inserted-image');
-                img.removeEventListener('click', handleImageClick);
-                img.addEventListener('click', handleImageClick);
             });
         }
 
-        // DOMContentLoaded と turbo:load の両方で初期化
-        document.addEventListener('DOMContentLoaded', initializeNoticeEditor);
-        document.addEventListener('turbo:load', initializeNoticeEditor);
+        // エディタの変更を監視
+        const editor = document.getElementById('notice-content-editor');
+        if (editor) {
+            saveNoticeContent();
+
+            editor.addEventListener('input', function() {
+                saveNoticeContent();
+            });
+
+            editor.addEventListener('blur', function() {
+                saveNoticeContent();
+            });
+
+            // エディタ内の画像クリックをイベント委譲で処理
+            editor.addEventListener('click', function(e) {
+                if (e.target.tagName === 'IMG') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openImageSettingsModal(e.target.src, e.target);
+                }
+            });
+
+            setupExistingImages(editor);
+        }
+    }
+
+    // 既存の画像にクリックイベントを追加
+    function setupExistingImages(editor) {
+        const images = editor.querySelectorAll('img');
+        images.forEach(img => {
+            img.style.cursor = 'pointer';
+            img.classList.add('notice-inserted-image');
+        });
+    }
+
+    // DOMContentLoaded と turbo:load の両方で初期化
+    document.addEventListener('DOMContentLoaded', initializeNoticeEditor);
+    document.addEventListener('turbo:load', initializeNoticeEditor);
 </script>
