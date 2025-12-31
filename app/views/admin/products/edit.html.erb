@@ -824,7 +824,7 @@
                     <div id="product-description-editor" class="custom-editor" contenteditable="true" data-placeholder="商品の説明を入力してください..."></div>
 
                     <!-- 隠しフィールド（フォーム送信用） -->
-                    <%= f.hidden_field :description, id: 'product-description-hidden' %>
+                    <%= f.hidden_field :description, id: 'product-description-hidden', value: @display_description %>
                 </div>
             </div>
         </div>
