@@ -1615,4 +1615,48 @@
     document.getElementById('product-description-editor')?.addEventListener('input', function() {
         saveProductDescription();
     });
+
+    // エディタ内の画像クリック処理(イベント委譲)
+    document.getElementById('product-description-editor')?.addEventListener('click', function(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            e.stopPropagation();
+            openImageAdjustModal(e.target);
+        }
+    });
+
+    // 公開ボタンのクリック処理
+    (function() {
+        const form = document.querySelector('.product-form');
+        const publishButton = form?.querySelector('input[name="publish"]');
+
+        if (publishButton) {
+            publishButton.addEventListener('click', function(e) {
+                const isFeatured = document.getElementById('featured-toggle')?.checked;
+                const isSeasonal = document.getElementById('seasonal-toggle')?.checked;
+
+                // カテゴリーが選択されていない場合
+                if (!isFeatured && !isSeasonal) {
+                    e.preventDefault();
+                    alert('カテゴリー(おすすめ商品または季節限定商品)が選択されていないため、下書きとして保存します。');
+
+                    // 下書きボタンをクリック
+                    const draftButton = form?.querySelector('input[name="draft"]');
+                    if (draftButton) {
+                        saveProductDescription();
+                        draftButton.click();
+                    }
+                    return;
+                }
+
+                // カテゴリーが選択されている場合は確認
+                if (!confirm('この商品を公開してもよろしいですか？')) {
+                    e.preventDefault();
+                    return;
+                }
+
+                saveProductDescription();
+            });
+        }
+    })();
 </script>
