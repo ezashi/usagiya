@@ -186,6 +186,23 @@
         font-style: italic;
     }
 
+    /* 挿入された画像のスタイル */
+    .notice-inserted-image {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .notice-inserted-image:hover {
+        outline: 3px solid var(--admin-primary);
+        outline-offset: 2px;
+        opacity: 0.9;
+    }
+
+    /* 画像コンテナ */
+    .notice-image-container {
+        margin: 1rem 0;
+    }
+
     /* アクションボタン */
     .action-buttons {
         display: flex;
@@ -264,7 +281,7 @@
         <h1 class="form-title">お知らせを編集</h1>
     </div>
 
-    <%= form_with model: [:admin, @notice], local: true, html: { novalidate: true, class: "notice-form" } do |f| %>
+    <%= form_with model: [:admin, @notice], data: { turbo: false }, html: { novalidate: true, class: "notice-form" } do |f| %>
     <% if @notice.errors.any? %>
     <div class="admin-alert admin-alert-error">
         <strong><%= pluralize(@notice.errors.count, "件") %>のエラーがあります:</strong>
@@ -329,10 +346,21 @@
                             <button type="button" class="toolbar-btn" onclick="applyNoticeTextAlign('center')">↔ 中央</button>
                             <button type="button" class="toolbar-btn" onclick="applyNoticeTextAlign('right')">右 →</button>
                         </div>
+
+                        <div class="toolbar-group">
+                            <label class="toolbar-label">画像:</label>
+                            <input type="file" id="notice-image-input" accept="image/*" style="display: none;">
+                            <button type="button" class="toolbar-btn" onclick="document.getElementById('notice-image-input').click()">
+                                <svg style="width: 1rem; height: 1rem; display: inline-block; vertical-align: middle; margin-right: 0.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                挿入
+                            </button>
+                        </div>
                     </div>
 
                     <!-- カスタムエディタ本体 -->
-                    <div id="notice-content-editor" class="custom-editor" contenteditable="true" data-placeholder="お知らせの内容を入力してください..."></div>
+                    <div id="notice-content-editor" class="custom-editor" contenteditable="true" data-placeholder="お知らせの内容を入力してください..."><%= (@notice.has_draft? ? @notice.draft_content : @notice.content).to_s.html_safe %></div>
 
                     <!-- 隠しフィールド（フォーム送信用） -->
                     <%= f.hidden_field :content, 
@@ -358,8 +386,8 @@
                        class: "admin-btn admin-btn-secondary" %>
 
                 <%= f.submit "公開",
-                       class: "admin-btn admin-btn-success",
-                       data: { turbo_confirm: "お知らせを公開しますか？\n一般ユーザーに表示されるようになります。" } %>
+                       id: "publish-btn",
+                       class: "admin-btn admin-btn-success" %>
             </div>
         </div>
     </div>
@@ -371,7 +399,7 @@
     <div class="admin-modal" style="max-width: 800px;">
         <div class="admin-modal-header">
             <h2 class="admin-modal-title">プレビュー</h2>
-            <button class="close-modal-btn" id="close-preview-btn">
+            <button type="button" class="close-modal-btn" onclick="closePreviewModal()">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -385,74 +413,231 @@
     </div>
 </div>
 
+<!-- 画像設定モーダル -->
+<div id="image-settings-modal" class="admin-modal-overlay" style="display: none;">
+    <div class="admin-modal" style="max-width: 500px;">
+        <div class="admin-modal-header">
+            <h2 class="admin-modal-title" id="image-modal-title">画像設定</h2>
+            <button type="button" class="close-modal-btn" onclick="closeImageSettingsModal()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="admin-modal-body">
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; color: #fff; font-weight: 500; margin-bottom: 0.5rem;">プレビュー</label>
+                <div id="image-preview-container" style="background: #374151; border-radius: 8px; padding: 1rem; text-align: center;">
+                    <img id="image-preview" src="" alt="プレビュー" style="max-width: 100%; max-height: 200px; border-radius: 4px;">
+                </div>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; color: #fff; font-weight: 500; margin-bottom: 0.5rem;">サイズ</label>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div style="flex: 1;">
+                        <label style="display: block; color: #9ca3af; font-size: 0.875rem; margin-bottom: 0.25rem;">幅 (px または %)</label>
+                        <input type="text" id="image-width" class="admin-form-control" placeholder="例: 300 または 50%" style="background: #374151; border-color: #4b5563; color: #fff;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; color: #9ca3af; font-size: 0.875rem; margin-bottom: 0.25rem;">高さ (px または auto)</label>
+                        <input type="text" id="image-height" class="admin-form-control" placeholder="例: 200 または auto" value="auto" style="background: #374151; border-color: #4b5563; color: #fff;">
+                    </div>
+                </div>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; color: #fff; font-weight: 500; margin-bottom: 0.5rem;">画像配置</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" class="toolbar-btn image-align-btn" data-align="left" style="flex: 1;">← 左</button>
+                    <button type="button" class="toolbar-btn image-align-btn active" data-align="center" style="flex: 1;">↔ 中央</button>
+                    <button type="button" class="toolbar-btn image-align-btn" data-align="right" style="flex: 1;">右 →</button>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button type="button" class="admin-btn admin-btn-secondary" onclick="closeImageSettingsModal()">キャンセル</button>
+                <button type="button" class="admin-btn admin-btn-danger" id="delete-image-btn" onclick="deleteSelectedImage()" style="display: none;">削除</button>
+                <button type="button" class="admin-btn admin-btn-primary" id="image-action-btn" onclick="insertImageWithSettings()">挿入</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    // プレビューモーダル
-    document.addEventListener('DOMContentLoaded', function() {
-        const previewBtn = document.getElementById('preview-btn');
-        if (previewBtn) {
-            previewBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const title = document.querySelector('input[name="notice[title]"]')?.value || '';
-                const content = document.getElementById('notice-content-editor')?.innerHTML || '';
-                const previewHTML = `
-                    <div class="preview-header">
-                        <h3 class="preview-title">${title || '（タイトル未入力）'}</h3>
-                        <p class="preview-date">${new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                    </div>
-                    <div class="preview-content">${content || '（本文未入力）'}</div>
-                `;
-                const previewContent = document.getElementById('modal-preview-content');
-                const previewModal = document.getElementById('preview-modal');
-                if (previewContent) previewContent.innerHTML = previewHTML;
-                if (previewModal) previewModal.style.display = 'flex';
-            });
-        }
+    // ===== グローバル変数 =====
+    let pendingImageData = null;
+    let selectedImageAlign = 'center';
+    let editingImageElement = null;
+    let isEditMode = false;
 
-        const closePreviewBtn = document.getElementById('close-preview-btn');
-        if (closePreviewBtn) {
-            closePreviewBtn.addEventListener('click', function() {
-                const previewModal = document.getElementById('preview-modal');
-                if (previewModal) previewModal.style.display = 'none';
-            });
-        }
-
+    // ===== プレビューモーダル =====
+    function openPreviewModal() {
+        const title = document.querySelector('input[name="notice[title]"]')?.value || '';
+        const content = document.getElementById('notice-content-editor')?.innerHTML || '';
+        const previewHTML = `
+            <div class="preview-header">
+                <h3 class="preview-title">${title || '（タイトル未入力）'}</h3>
+                <p class="preview-date">${new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            </div>
+            <div class="preview-content">${content || '（本文未入力）'}</div>
+        `;
+        const previewContent = document.getElementById('modal-preview-content');
         const previewModal = document.getElementById('preview-modal');
-        if (previewModal) {
-            previewModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.style.display = 'none';
-                }
-            });
-        }
-    });
+        if (previewContent) previewContent.innerHTML = previewHTML;
+        if (previewModal) previewModal.style.display = 'flex';
+    }
 
-    document.addEventListener('turbo:load', function() {
-        const previewBtn = document.getElementById('preview-btn');
-        if (previewBtn) {
-            previewBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const title = document.querySelector('input[name="notice[title]"]')?.value || '';
-                const content = document.getElementById('notice-content-editor')?.innerHTML || '';
-                const previewHTML = `
-                    <div class="preview-header">
-                        <h3 class="preview-title">${title || '（タイトル未入力）'}</h3>
-                        <p class="preview-date">${new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                    </div>
-                    <div class="preview-content">${content || '（本文未入力）'}</div>
-                `;
-                const previewContent = document.getElementById('modal-preview-content');
-                const previewModal = document.getElementById('preview-modal');
-                if (previewContent) previewContent.innerHTML = previewHTML;
-                if (previewModal) previewModal.style.display = 'flex';
-            });
+    function closePreviewModal() {
+        const previewModal = document.getElementById('preview-modal');
+        if (previewModal) previewModal.style.display = 'none';
+    }
+
+    // ===== 画像設定モーダル =====
+    function openImageSettingsModal(imageData, existingImage = null) {
+        pendingImageData = imageData;
+        editingImageElement = existingImage;
+        isEditMode = !!existingImage;
+
+        const preview = document.getElementById('image-preview');
+        if (preview) preview.src = imageData;
+
+        const modalTitle = document.getElementById('image-modal-title');
+        const actionBtn = document.getElementById('image-action-btn');
+        const deleteBtn = document.getElementById('delete-image-btn');
+
+        if (isEditMode) {
+            modalTitle.textContent = '画像編集';
+            actionBtn.textContent = '更新';
+            actionBtn.onclick = updateImageWithSettings;
+            deleteBtn.style.display = 'block';
+
+            const existingWidth = existingImage.style.width || '';
+            const existingHeight = existingImage.style.height || 'auto';
+            document.getElementById('image-width').value = existingWidth.replace('px', '');
+            document.getElementById('image-height').value = existingHeight === 'auto' ? 'auto' : existingHeight.replace('px', '');
+
+            const container = existingImage.parentElement;
+            selectedImageAlign = container?.style.textAlign || 'center';
+        } else {
+            modalTitle.textContent = '画像設定';
+            actionBtn.textContent = '挿入';
+            actionBtn.onclick = insertImageWithSettings;
+            deleteBtn.style.display = 'none';
+
+            document.getElementById('image-width').value = '';
+            document.getElementById('image-height').value = 'auto';
+            selectedImageAlign = 'center';
         }
-    });
+
+        document.querySelectorAll('.image-align-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.align === selectedImageAlign) btn.classList.add('active');
+        });
+
+        const modal = document.getElementById('image-settings-modal');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    function closeImageSettingsModal() {
+        const modal = document.getElementById('image-settings-modal');
+        if (modal) modal.style.display = 'none';
+        pendingImageData = null;
+        editingImageElement = null;
+        isEditMode = false;
+    }
+
+    function insertImageWithSettings() {
+        if (!pendingImageData) return;
+
+        const width = document.getElementById('image-width').value;
+        const height = document.getElementById('image-height').value || 'auto';
+
+        const editor = document.getElementById('notice-content-editor');
+        if (!editor) return;
+
+        const container = document.createElement('div');
+        container.className = 'notice-image-container';
+        container.style.textAlign = selectedImageAlign;
+        container.style.margin = '1rem 0';
+
+        const img = document.createElement('img');
+        img.src = pendingImageData;
+        img.alt = '挿入された画像';
+        img.className = 'notice-inserted-image';
+        img.style.maxWidth = '100%';
+        img.style.borderRadius = '8px';
+        img.style.cursor = 'pointer';
+
+        applyImageSize(img, width, height);
+
+        container.appendChild(img);
+        editor.appendChild(container);
+        editor.appendChild(document.createElement('br'));
+
+        saveNoticeContent();
+        closeImageSettingsModal();
+    }
+
+    function updateImageWithSettings() {
+        if (!editingImageElement) return;
+
+        const width = document.getElementById('image-width').value;
+        const height = document.getElementById('image-height').value || 'auto';
+
+        applyImageSize(editingImageElement, width, height);
+
+        const container = editingImageElement.parentElement;
+        if (container) {
+            container.style.textAlign = selectedImageAlign;
+        }
+
+        saveNoticeContent();
+        closeImageSettingsModal();
+    }
+
+    function applyImageSize(img, width, height) {
+        if (width) {
+            if (width.includes('%')) {
+                img.style.width = width;
+            } else {
+                img.style.width = width + 'px';
+            }
+        } else {
+            img.style.width = '';
+        }
+
+        if (height && height !== 'auto') {
+            if (height.includes('%')) {
+                img.style.height = height;
+            } else {
+                img.style.height = height + 'px';
+            }
+        } else {
+            img.style.height = 'auto';
+        }
+    }
+
+    function deleteSelectedImage() {
+        if (!editingImageElement) return;
+
+        if (confirm('この画像を削除しますか？')) {
+            const container = editingImageElement.parentElement;
+            if (container && container.className === 'notice-image-container') {
+                const nextSibling = container.nextSibling;
+                if (nextSibling && nextSibling.tagName === 'BR') {
+                    nextSibling.remove();
+                }
+                container.remove();
+            } else {
+                editingImageElement.remove();
+            }
+
+            saveNoticeContent();
+            closeImageSettingsModal();
+        }
+    }
 
     // ===== お知らせエディタのJavaScript =====
 
-    // フォントサイズを適用
     function applyNoticeFontSize() {
-        const editor = document.getElementById('notice-content-editor');
         const size = document.getElementById('notice-font-size').value;
 
         if (!size || size < 8 || size > 100) {
@@ -479,9 +664,7 @@
         }
     }
 
-    // フォントカラーを適用
     function applyNoticeFontColor() {
-        const editor = document.getElementById('notice-content-editor');
         const color = document.getElementById('notice-font-color').value;
 
         const selection = window.getSelection();
@@ -503,70 +686,210 @@
         }
     }
 
-    // テキスト配置を適用
     function applyNoticeTextAlign(align) {
         const editor = document.getElementById('notice-content-editor');
         const selection = window.getSelection();
 
-        if (selection.rangeCount > 0) {
-            let node = selection.anchorNode;
-
-            // テキストノードの場合、親要素を取得
-            if (node.nodeType === Node.TEXT_NODE) {
-                node = node.parentElement;
-            }
-
-            // ブロック要素を探す
-            while (node && node !== editor) {
-                if (node.nodeType === Node.ELEMENT_NODE &&
-                    (node.tagName === 'DIV' || node.tagName === 'P')) {
-                    node.style.textAlign = align;
-                    saveNoticeContent();
-                    return;
-                }
-                node = node.parentElement;
-            }
-
-            // ブロック要素がない場合、新しいdivで囲む
-            const div = document.createElement('div');
-            div.style.textAlign = align;
-
-            if (!selection.isCollapsed) {
-                const range = selection.getRangeAt(0);
-                div.appendChild(range.extractContents());
-                range.insertNode(div);
-            }
-
-            saveNoticeContent();
+        if (!selection.rangeCount) {
+            alert('エディタ内にカーソルを置いてください。');
+            return;
         }
+
+        if (!editor.contains(selection.anchorNode)) {
+            alert('エディタ内にカーソルを置いてください。');
+            return;
+        }
+
+        let node = selection.anchorNode;
+
+        if (node.nodeType === Node.TEXT_NODE) {
+            node = node.parentElement;
+        }
+
+        if (node.tagName === 'IMG') {
+            alert('画像の配置は画像をクリックして変更してください。');
+            return;
+        }
+
+        let tempNode = node;
+        while (tempNode && tempNode !== editor) {
+            if (tempNode.classList && tempNode.classList.contains('notice-image-container')) {
+                alert('画像の配置は画像をクリックして変更してください。');
+                return;
+            }
+            tempNode = tempNode.parentElement;
+        }
+
+        let blockNode = node;
+        while (blockNode && blockNode !== editor) {
+            if (blockNode.nodeType === Node.ELEMENT_NODE &&
+                (blockNode.tagName === 'DIV' || blockNode.tagName === 'P') &&
+                !blockNode.classList.contains('notice-image-container')) {
+                blockNode.style.textAlign = align;
+                saveNoticeContent();
+                return;
+            }
+            blockNode = blockNode.parentElement;
+        }
+
+        const div = document.createElement('div');
+        div.className = 'notice-text-block';
+        div.style.textAlign = align;
+
+        if (!selection.isCollapsed) {
+            const range = selection.getRangeAt(0);
+            div.appendChild(range.extractContents());
+            range.insertNode(div);
+        } else {
+            if (node === editor) {
+                const range = selection.getRangeAt(0);
+                const textNode = range.startContainer;
+                if (textNode.nodeType === Node.TEXT_NODE && textNode.textContent.trim()) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'notice-text-block';
+                    wrapper.style.textAlign = align;
+                    textNode.parentNode.insertBefore(wrapper, textNode);
+                    wrapper.appendChild(textNode);
+                }
+            }
+        }
+
+        saveNoticeContent();
     }
 
-    // エディタの内容を保存
     function saveNoticeContent() {
         const editor = document.getElementById('notice-content-editor');
         const hiddenField = document.getElementById('notice-content-hidden');
         if (editor && hiddenField) {
-            hiddenField.value = editor.innerHTML;
+            const content = editor.innerHTML;
+            hiddenField.value = content;
+            hiddenField.setAttribute('value', content);
         }
     }
 
-    // フォーム送信前に内容を保存
-    document.querySelector('.notice-form')?.addEventListener('submit', function(e) {
-        saveNoticeContent();
-    });
-
-    // エディタの変更を監視
-    document.getElementById('notice-content-editor')?.addEventListener('input', function() {
-        saveNoticeContent();
-    });
-
-    // 既存のお知らせ内容を読み込む
-    document.addEventListener('DOMContentLoaded', function() {
-        const editor = document.getElementById('notice-content-editor');
-        const hiddenField = document.getElementById('notice-content-hidden');
-
-        if (editor && hiddenField && hiddenField.value) {
-            editor.innerHTML = hiddenField.value;
+    // ===== イベントリスナーの設定 =====
+    function initializeNoticeEditor() {
+        // プレビューボタン
+        const previewBtn = document.getElementById('preview-btn');
+        if (previewBtn) {
+            previewBtn.removeEventListener('click', openPreviewModal);
+            previewBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                openPreviewModal();
+            });
         }
-    });
+
+        // プレビューモーダルのオーバーレイクリック
+        const previewModal = document.getElementById('preview-modal');
+        if (previewModal) {
+            previewModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePreviewModal();
+                }
+            });
+        }
+
+        // 画像設定モーダルのオーバーレイクリック
+        const imageSettingsModal = document.getElementById('image-settings-modal');
+        if (imageSettingsModal) {
+            imageSettingsModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeImageSettingsModal();
+                }
+            });
+        }
+
+        // 画像ファイル選択
+        const imageInput = document.getElementById('notice-image-input');
+        if (imageInput) {
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        openImageSettingsModal(event.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                this.value = '';
+            });
+        }
+
+        // 画像配置ボタン
+        document.querySelectorAll('.image-align-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.image-align-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedImageAlign = this.dataset.align;
+            });
+        });
+
+        // フォーム送信前に内容を保存
+        const form = document.querySelector('.notice-form');
+        if (form) {
+            // 公開ボタンの確認ダイアログ
+            const publishBtn = document.getElementById('publish-btn');
+            if (publishBtn) {
+                publishBtn.addEventListener('click', function(e) {
+                    if (!confirm('お知らせを公開しますか？\n一般ユーザーに表示されるようになります。')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                    saveNoticeContent();
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                saveNoticeContent();
+            });
+
+            form.addEventListener('turbo:submit-start', function(e) {
+                saveNoticeContent();
+            });
+
+            const submitButtons = form.querySelectorAll('input[type="submit"]:not(#publish-btn)');
+            submitButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    saveNoticeContent();
+                });
+            });
+        }
+
+        // エディタの変更を監視
+        const editor = document.getElementById('notice-content-editor');
+        if (editor) {
+            saveNoticeContent();
+
+            editor.addEventListener('input', function() {
+                saveNoticeContent();
+            });
+
+            editor.addEventListener('blur', function() {
+                saveNoticeContent();
+            });
+
+            // エディタ内の画像クリックをイベント委譲で処理
+            editor.addEventListener('click', function(e) {
+                if (e.target.tagName === 'IMG') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openImageSettingsModal(e.target.src, e.target);
+                }
+            });
+
+            setupExistingImages(editor);
+        }
+    }
+
+    function setupExistingImages(editor) {
+        const images = editor.querySelectorAll('img');
+        images.forEach(img => {
+            img.style.cursor = 'pointer';
+            img.classList.add('notice-inserted-image');
+        });
+    }
+
+    // DOMContentLoaded と turbo:load の両方で初期化
+    document.addEventListener('DOMContentLoaded', initializeNoticeEditor);
+    document.addEventListener('turbo:load', initializeNoticeEditor);
 </script>
