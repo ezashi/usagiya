@@ -222,6 +222,11 @@
         margin-top: 0.5rem;
     }
 
+    .notice-badge.draft {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+        color: #d97706;
+    }
+
     .event-actions {
         display: flex;
         gap: 0.5rem;
@@ -261,6 +266,15 @@
         background-color: rgba(239, 68, 68, 0.1);
     }
 
+    .publish-btn {
+        color: var(--admin-success);
+        border-color: var(--admin-success);
+    }
+
+    .publish-btn:hover {
+        background-color: rgba(16, 185, 129, 0.1);
+    }
+
     /* フォーム */
     .modal-actions {
         display: flex;
@@ -269,10 +283,30 @@
         margin-top: 1.5rem;
     }
 
+    .color-input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
     .color-input {
-        width: 100px;
-        height: 3rem;
+        width: 60px;
+        height: 40px;
         cursor: pointer;
+        border: 2px solid var(--admin-border);
+        border-radius: 8px;
+        padding: 0;
+    }
+
+    .color-preview {
+        width: 100px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        color: white;
     }
 
     .toggle-label {
@@ -325,6 +359,57 @@
         text-align: center;
         padding: 2rem;
         color: var(--admin-text-muted);
+    }
+
+    /* お知らせプレビュー */
+    .notice-preview-section {
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        border-radius: 8px;
+    }
+
+    .notice-preview-title {
+        color: #d97706;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .notice-preview-content {
+        background-color: var(--admin-bg-card);
+        padding: 1rem;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--admin-text);
+    }
+
+    .notice-publish-actions {
+        margin-top: 1rem;
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+    }
+
+    .form-hint {
+        color: var(--admin-text-muted);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+
+    .irregular-holiday-notice {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        background-color: rgba(244, 114, 182, 0.1);
+        border: 1px solid rgba(244, 114, 182, 0.3);
+        border-radius: 8px;
+        font-size: 0.875rem;
+        color: #db2777;
     }
 
     @media (max-width: 768px) {
@@ -402,7 +487,11 @@
             <span class="legend-label">販売終了日</span>
         </div>
         <div class="legend-item">
-            <span class="legend-color" style="background-color: var(--admin-text-muted);"></span>
+            <span class="legend-color" style="background-color: #f472b6;"></span>
+            <span class="legend-label">不定休</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #94a3b8;"></span>
             <span class="legend-label">その他</span>
         </div>
     </div>
@@ -411,7 +500,7 @@
     <div class="admin-card">
         <div class="admin-card-header">
             <h2 class="admin-card-title" id="current-month">
-                2025年10月
+                <%= @year %>年<%= @month %>月
             </h2>
         </div>
         <div class="admin-card-body">
@@ -444,21 +533,29 @@
                     <div class="event-content">
                         <div class="event-header">
                             <div>
-                                <h3 class="event-title"><%= event.title %></h3>
+                                <h3 class="event-title"><%= event.display_title %></h3>
                                 <p class="event-date">
-                                    <%= event.event_date.strftime('%Y年%m月%d日') %>
+                                    <%= event.event_date.strftime('%Y年%m月%d日') %>（<%= %w[日 月 火 水 木 金 土][event.event_date.wday] %>）
                                     <% if event.event_type %>
                                     <span class="event-type-badge"><%= event.event_type_label %></span>
                                     <% end %>
                                 </p>
                             </div>
                             <div class="event-actions">
+                                <% if event.notice.present? && !event.notice.published? %>
+                                <button class="icon-btn publish-btn" onclick="showPublishModal(<%= event.id %>)" title="お知らせを公開">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                </button>
+                                <% end %>
                                 <button class="icon-btn edit-btn" onclick="editEvent(<%= event.id %>)">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                     </svg>
                                 </button>
-                                <%= button_to admin_calendar_event_path(event), 
+                                <%= button_to admin_calendar_event_path(event),
                                   method: :delete,
                                   class: "icon-btn delete-btn",
                                   data: { confirm: "本当に削除しますか？" } do %>
@@ -472,12 +569,26 @@
                         <p class="event-description"><%= event.description %></p>
                         <% end %>
                         <% if event.show_in_notice? %>
-                        <span class="notice-badge">
-                            <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                            </svg>
-                            お知らせに表示
-                        </span>
+                            <% if event.notice&.published? %>
+                            <span class="notice-badge">
+                                <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                お知らせに公開中
+                            </span>
+                            <% else %>
+                            <span class="notice-badge draft">
+                                <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                </svg>
+                                お知らせ下書き（未公開）
+                            </span>
+                            <% end %>
+                        <% end %>
+                        <% if event.irregular_holiday? %>
+                        <div class="irregular-holiday-notice">
+                            ※不定休は自動的にお知らせに公開されます
+                        </div>
                         <% end %>
                     </div>
                 </div>
@@ -494,7 +605,7 @@
 
 <!-- イベント追加/編集モーダル -->
 <div id="event-modal" class="admin-modal-overlay" style="display: none;">
-    <div class="admin-modal" style="max-width: 600px;">
+    <div class="admin-modal" style="max-width: 700px;">
         <div class="admin-modal-header">
             <h2 class="admin-modal-title" id="modal-title">イベントを追加</h2>
             <button class="close-modal-btn" id="close-modal-btn">
@@ -514,6 +625,7 @@
                         <option value="holiday">休業日</option>
                         <option value="sales_start">販売開始日</option>
                         <option value="sales_end">販売終了日</option>
+                        <option value="irregular_holiday">不定休</option>
                         <option value="other">その他</option>
                     </select>
                 </div>
@@ -524,27 +636,55 @@
                 </div>
 
                 <div class="admin-form-group" id="title-group" style="display: none;">
-                    <label class="admin-form-label">タイトル</label>
+                    <label class="admin-form-label">タイトル <span class="required-badge">必須</span></label>
                     <input type="text" id="event-title" name="title" class="admin-form-control" placeholder="例: 夏季限定商品販売開始" />
+                    <p class="form-hint">カレンダーに表示されるタイトルです</p>
                 </div>
 
                 <div class="admin-form-group" id="color-group" style="display: none;">
                     <label class="admin-form-label">カラー</label>
-                    <input type="color" id="event-color" name="color" class="admin-form-control color-input" />
+                    <div class="color-input-wrapper">
+                        <input type="color" id="event-color" name="color" class="color-input" value="#94a3b8" />
+                        <div class="color-preview" id="color-preview" style="background-color: #94a3b8;">プレビュー</div>
+                    </div>
+                    <p class="form-hint">カレンダーに表示される色を選択してください</p>
                 </div>
 
                 <div class="admin-form-group">
                     <label class="admin-form-label">説明文（任意）</label>
                     <textarea id="event-description" name="description" class="admin-form-control" rows="4" placeholder="イベントの詳細説明..."></textarea>
+                    <p class="form-hint">説明文を入力すると、お知らせに投稿できます</p>
                 </div>
 
-                <div class="admin-form-group">
+                <div class="admin-form-group" id="notice-group">
                     <label class="toggle-label">
                         <input type="checkbox" id="show-in-notice" name="show_in_notice" class="toggle-checkbox" />
                         <span class="toggle-slider"></span>
-                        <span class="toggle-title">お知らせに表示</span>
+                        <span class="toggle-title">お知らせに表示する</span>
                     </label>
-                    <p class="form-hint">チェックすると、お知らせページに自動的に表示されます</p>
+                    <p class="form-hint">チェックすると、説明文がお知らせとして保存されます。保存後にプレビューを確認し、公開できます。</p>
+                </div>
+
+                <!-- 不定休の場合の注意書き -->
+                <div id="irregular-holiday-info" class="irregular-holiday-notice" style="display: none;">
+                    <strong>※不定休の場合</strong><br>
+                    不定休は自動的にお知らせに公開されます。<br>
+                    同じ月に複数の不定休がある場合、まとめて表示されます。
+                </div>
+
+                <!-- お知らせプレビュー -->
+                <div id="notice-preview-section" class="notice-preview-section" style="display: none;">
+                    <div class="notice-preview-title">
+                        <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        お知らせプレビュー
+                    </div>
+                    <div class="notice-preview-content" id="notice-preview-content">
+                        お知らせの内容がここに表示されます
+                    </div>
+                    <p class="form-hint">保存後に公開ボタンを押すと、一般ユーザーの営業カレンダー画面に反映されます。</p>
                 </div>
 
                 <div class="modal-actions">
@@ -556,33 +696,80 @@
     </div>
 </div>
 
+<!-- 公開確認モーダル -->
+<div id="publish-modal" class="admin-modal-overlay" style="display: none;">
+    <div class="admin-modal" style="max-width: 600px;">
+        <div class="admin-modal-header">
+            <h2 class="admin-modal-title">お知らせを公開</h2>
+            <button class="close-modal-btn" onclick="closePublishModal()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="admin-modal-body">
+            <p style="margin-bottom: 1rem; color: var(--admin-text);">以下の内容でお知らせを公開します。</p>
+
+            <div class="notice-preview-section">
+                <div class="notice-preview-title">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    プレビュー
+                </div>
+                <div class="notice-preview-content" id="publish-preview-content">
+                    <!-- プレビュー内容 -->
+                </div>
+            </div>
+
+            <p style="margin-top: 1rem; color: var(--admin-text-secondary); font-size: 0.9rem;">
+                公開すると一般ユーザーの「営業カレンダー画面」および「お知らせ」ページに表示されます。
+            </p>
+
+            <div class="modal-actions">
+                <button type="button" class="admin-btn admin-btn-secondary" onclick="closePublishModal()">キャンセル</button>
+                <button type="button" class="admin-btn admin-btn-success" id="confirm-publish-btn">
+                    <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    公開する
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    let currentDate = new Date();
+    let currentDate = new Date(<%= @year %>, <%= @month - 1 %>, 1);
     let selectedEventId = null;
+    let publishEventId = null;
+
+    // イベントデータ（サーバーから取得）
+    const eventsData = <%= raw @calendar_events.map { |e|
+        {
+            id: e.id,
+            event_type: e.event_type,
+            event_date: e.event_date.strftime('%Y-%m-%d'),
+            title: e.title,
+            display_title: e.display_title,
+            color: e.color,
+            description: e.description,
+            show_in_notice: e.show_in_notice?,
+            notice_id: e.notice_id,
+            notice_published: e.notice&.published?,
+            notice_content: e.notice&.content || e.description
+        }
+    }.to_json %>;
 
     // イベントタイプの設定
     const eventTypes = {
-        'regular_holiday': {
-            title: '定休日',
-            color: '#ef4444'
-        },
-        'holiday': {
-            title: '休業日',
-            color: '#fca5a5'
-        },
-        'sales_start': {
-            title: '販売開始日',
-            color: '#f59e0b'
-        },
-        'sales_end': {
-            title: '販売終了日',
-            color: '#3b82f6'
-        },
-        'other': {
-            title: 'その他',
-            color: '#94a3b8'
-        }
+        'regular_holiday': { title: '定休日', color: '#ef4444', needsTitle: false },
+        'holiday': { title: '休業日', color: '#fca5a5', needsTitle: false },
+        'sales_start': { title: '販売開始日', color: '#f59e0b', needsTitle: true },
+        'sales_end': { title: '販売終了日', color: '#3b82f6', needsTitle: true },
+        'irregular_holiday': { title: '不定休', color: '#f472b6', needsTitle: false },
+        'other': { title: 'その他', color: '#94a3b8', needsTitle: true }
     };
 
     // カレンダー生成
@@ -638,7 +825,23 @@
         if (date && !isOtherMonth) {
             const eventsContainer = document.createElement('div');
             eventsContainer.className = 'day-events';
-            // ここでイベントデータがあれば表示
+
+            // この日のイベントを表示
+            const dateStr = date.toISOString().split('T')[0];
+            const dayEvents = eventsData.filter(e => e.event_date === dateStr);
+
+            dayEvents.forEach(event => {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'day-event';
+                eventDiv.style.backgroundColor = event.color;
+                eventDiv.textContent = event.display_title;
+                eventDiv.onclick = (e) => {
+                    e.stopPropagation();
+                    editEvent(event.id);
+                };
+                eventsContainer.appendChild(eventDiv);
+            });
+
             dayElement.appendChild(eventsContainer);
 
             dayElement.addEventListener('click', () => {
@@ -658,6 +861,7 @@
 
         if (!eventId) {
             document.getElementById('event-form').reset();
+            document.getElementById('event-id').value = '';
             updateFormFields();
         }
     }
@@ -674,76 +878,200 @@
 
         const titleGroup = document.getElementById('title-group');
         const colorGroup = document.getElementById('color-group');
+        const noticeGroup = document.getElementById('notice-group');
+        const irregularInfo = document.getElementById('irregular-holiday-info');
 
-        if (eventType === 'sales_start' || eventType === 'sales_end' || eventType === 'other') {
+        // タイトル入力フィールドの表示/非表示
+        if (config.needsTitle) {
             titleGroup.style.display = 'block';
         } else {
             titleGroup.style.display = 'none';
             document.getElementById('event-title').value = '';
         }
 
+        // カラー選択の表示/非表示（その他のみ）
         if (eventType === 'other') {
             colorGroup.style.display = 'block';
         } else {
             colorGroup.style.display = 'none';
             document.getElementById('event-color').value = config.color;
         }
+
+        // 不定休の場合の特別処理
+        if (eventType === 'irregular_holiday') {
+            irregularInfo.style.display = 'block';
+            noticeGroup.style.display = 'none';
+        } else {
+            irregularInfo.style.display = 'none';
+            noticeGroup.style.display = 'block';
+        }
+
+        updateNoticePreview();
     }
+
+    // お知らせプレビューの更新
+    function updateNoticePreview() {
+        const showInNotice = document.getElementById('show-in-notice').checked;
+        const description = document.getElementById('event-description').value;
+        const eventType = document.getElementById('event-type').value;
+        const previewSection = document.getElementById('notice-preview-section');
+        const previewContent = document.getElementById('notice-preview-content');
+
+        if (eventType === 'irregular_holiday') {
+            previewSection.style.display = 'none';
+            return;
+        }
+
+        if (showInNotice && description) {
+            previewSection.style.display = 'block';
+            previewContent.textContent = description;
+        } else {
+            previewSection.style.display = 'none';
+        }
+    }
+
+    // 公開モーダル
+    function showPublishModal(eventId) {
+        publishEventId = eventId;
+        const event = eventsData.find(e => e.id === eventId);
+        if (event) {
+            document.getElementById('publish-preview-content').textContent = event.notice_content || event.description;
+            document.getElementById('publish-modal').style.display = 'flex';
+        }
+    }
+
+    function closePublishModal() {
+        document.getElementById('publish-modal').style.display = 'none';
+        publishEventId = null;
+    }
+
+    // 公開実行
+    document.getElementById('confirm-publish-btn').addEventListener('click', function() {
+        if (!publishEventId) return;
+
+        fetch(`/admin/calendar/events/${publishEventId}/publish`, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('お知らせを公開しました！');
+                location.reload();
+            } else {
+                alert('エラーが発生しました: ' + (data.error || '不明なエラー'));
+            }
+        })
+        .catch(error => {
+            alert('エラーが発生しました: ' + error);
+        });
+    });
 
     // イベントリスナー
     document.getElementById('add-event-btn').addEventListener('click', () => openModal());
     document.getElementById('close-modal-btn').addEventListener('click', closeModal);
     document.getElementById('cancel-btn').addEventListener('click', closeModal);
     document.getElementById('event-type').addEventListener('change', updateFormFields);
+    document.getElementById('show-in-notice').addEventListener('change', updateNoticePreview);
+    document.getElementById('event-description').addEventListener('input', updateNoticePreview);
+
+    document.getElementById('event-color').addEventListener('input', function() {
+        document.getElementById('color-preview').style.backgroundColor = this.value;
+    });
 
     document.getElementById('event-modal').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });
 
+    document.getElementById('publish-modal').addEventListener('click', function(e) {
+        if (e.target === this) closePublishModal();
+    });
+
     document.getElementById('prev-month-btn').addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
-        generateCalendar();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        window.location.href = `/admin/calendar?year=${year}&month=${month}`;
     });
 
     document.getElementById('next-month-btn').addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
-        generateCalendar();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        window.location.href = `/admin/calendar?year=${year}&month=${month}`;
     });
 
     document.getElementById('today-btn').addEventListener('click', () => {
-        currentDate = new Date();
-        generateCalendar();
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        window.location.href = `/admin/calendar?year=${year}&month=${month}`;
     });
 
     // フォーム送信
     document.getElementById('event-form').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        const formData = new FormData(this);
-        const url = selectedEventId ? `/admin/calendar_events/${selectedEventId}` : '/admin/calendar_events';
-        const method = selectedEventId ? 'PATCH' : 'POST';
+        const eventType = document.getElementById('event-type').value;
+        const config = eventTypes[eventType];
+
+        const formData = {
+            event_type: eventType,
+            event_date: document.getElementById('event-date').value,
+            title: document.getElementById('event-title').value,
+            color: eventType === 'other' ? document.getElementById('event-color').value : config.color,
+            description: document.getElementById('event-description').value,
+            show_in_notice: eventType !== 'irregular_holiday' && document.getElementById('show-in-notice').checked
+        };
+
+        const eventId = document.getElementById('event-id').value;
+        const url = eventId ? `/admin/calendar/events/${eventId}` : '/admin/calendar/events';
+        const method = eventId ? 'PATCH' : 'POST';
 
         fetch(url, {
-                method: method,
-                headers: {
-                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Object.fromEntries(formData))
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('保存しました！');
-                    location.reload();
-                }
-            });
+            method: method,
+            headers: {
+                'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('保存しました！');
+                location.reload();
+            } else {
+                alert('エラーが発生しました: ' + (data.errors ? data.errors.join(', ') : '不明なエラー'));
+            }
+        })
+        .catch(error => {
+            alert('エラーが発生しました: ' + error);
+        });
     });
 
     function editEvent(eventId) {
-        // イベント編集の実装
-        alert('イベント編集機能は実装中です');
+        const event = eventsData.find(e => e.id === eventId);
+        if (!event) return;
+
+        selectedEventId = eventId;
+        document.getElementById('event-id').value = eventId;
+        document.getElementById('modal-title').textContent = 'イベントを編集';
+        document.getElementById('event-type').value = event.event_type;
+        document.getElementById('event-date').value = event.event_date;
+        document.getElementById('event-title').value = event.title || '';
+        document.getElementById('event-color').value = event.color || '#94a3b8';
+        document.getElementById('color-preview').style.backgroundColor = event.color || '#94a3b8';
+        document.getElementById('event-description').value = event.description || '';
+        document.getElementById('show-in-notice').checked = event.show_in_notice;
+
+        updateFormFields();
+        document.getElementById('event-modal').style.display = 'flex';
     }
 
     // 初期化

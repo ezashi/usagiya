@@ -82,8 +82,9 @@ Rails.application.routes.draw do
     # 営業カレンダー管理
     get "calendar", to: "calendar_events#index", as: "calendar"
     post "calendar/events", to: "calendar_events#create"
-    patch "calendar/events/:id", to: "calendar_events#update"
+    patch "calendar/events/:id", to: "calendar_events#update", as: "calendar_event"
     delete "calendar/events/:id", to: "calendar_events#destroy"
+    patch "calendar/events/:id/publish", to: "calendar_events#publish", as: "calendar_event_publish"
 
     # お問い合わせ管理
     resources :inquiries, only: [ :index, :show ] do

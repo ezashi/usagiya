@@ -13,8 +13,8 @@ class CalendarEventsController < ApplicationController
     @next_year = next_date.year
     @next_month = next_date.month
 
-    # その月のイベントを取得
-    @events = CalendarEvent.by_month(@year, @month).order(:event_date)
+    # その月の公開済みイベントを取得
+    @events = CalendarEvent.published.by_month(@year, @month).order(:event_date)
 
     # カレンダー生成
     @calendar = generate_calendar(@year, @month, @events)
@@ -61,15 +61,31 @@ class VirtualHoliday
     "定休日"
   end
 
+  def display_title
+    "定休日"
+  end
+
   def color
-    nil
+    "#ef4444"
   end
 
   def regular_holiday?
     true
   end
 
+  def holiday?
+    false
+  end
+
   def irregular_holiday?
+    false
+  end
+
+  def sales_start?
+    false
+  end
+
+  def sales_end?
     false
   end
 

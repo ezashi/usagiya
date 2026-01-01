@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_31_033439) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_01_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,6 +69,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_31_033439) do
     t.datetime "updated_at", null: false
     t.string "title"
     t.string "color"
+    t.boolean "show_in_notice", default: false
+    t.boolean "published", default: true
+    t.bigint "notice_id"
+    t.index ["notice_id"], name: "index_calendar_events_on_notice_id"
   end
 
   create_table "inquiries", force: :cascade do |t|
